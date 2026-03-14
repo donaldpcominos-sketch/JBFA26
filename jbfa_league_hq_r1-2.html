@@ -1,0 +1,1544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JBFA Fantasy League — 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0e1a; --surface:#111827; --surface2:#1a2236; --border:#1e2d4a;
+  --accent:#f0b429; --jb:#1a3a8f; --jbl:#2451b3;
+  --green:#34d399; --red:#f87171; --blue:#60a5fa; --purple:#a78bfa;
+  --text:#e8edf5; --muted:#5a7090;
+  --t1:#f0b429; --t2:#60a5fa; --t3:#a78bfa; --vip:#34d399;
+  --p3:#fb923c;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
+
+/* HEADER */
+header{position:sticky;top:0;z-index:200;background:var(--jb);border-bottom:3px solid var(--accent);box-shadow:0 4px 24px rgba(0,0,0,.5);}
+.hdr{max-width:1400px;margin:0 auto;display:flex;align-items:center;gap:1.25rem;padding:0 1.25rem;height:64px;}
+.logo-wrap{display:flex;align-items:center;gap:.75rem;flex-shrink:0;cursor:pointer;}
+.logo-img{height:44px;width:44px;object-fit:contain;border-radius:6px;}
+.logo-text{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:.06em;color:#fff;line-height:1;}
+.logo-sub{display:block;font-family:'DM Sans',sans-serif;font-size:.65rem;font-weight:600;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.12em;margin-top:-2px;}
+
+/* SEARCH */
+.sw{flex:1;max-width:360px;position:relative;}
+.sw input{width:100%;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:.45rem 1rem .45rem 2.2rem;color:#fff;font-family:'DM Sans',sans-serif;font-size:.875rem;outline:none;transition:border-color .2s,background .2s;}
+.sw input::placeholder{color:rgba(255,255,255,.4);}
+.sw input:focus{border-color:var(--accent);background:rgba(255,255,255,.18);}
+.si{position:absolute;left:.7rem;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.5);font-size:.8rem;pointer-events:none;}
+.sdrop{display:none;position:absolute;top:calc(100% + 8px);left:0;right:0;background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;z-index:500;box-shadow:0 8px 32px rgba(0,0,0,.7);max-height:320px;overflow-y:auto;}
+.sdi{display:flex;justify-content:space-between;align-items:center;padding:.65rem 1rem;cursor:pointer;border-bottom:1px solid var(--border);transition:background .12s;font-size:.85rem;}
+.sdi:last-child{border-bottom:none;}
+.sdi:hover{background:var(--surface2);}
+.sdi-name{font-weight:600;}
+.sdi-team{color:var(--muted);font-size:.77rem;}
+.rpill{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:6px;padding:.3rem .85rem;font-size:.8rem;font-weight:600;color:var(--accent);white-space:nowrap;flex-shrink:0;}
+
+/* NAV */
+.nav{background:var(--surface);border-bottom:1px solid var(--border);}
+.nav-inner{max-width:1400px;margin:0 auto;display:flex;padding:0 1.25rem;overflow-x:auto;-webkit-overflow-scrolling:touch;align-items:center;gap:6px;}
+.nb{background:none;border:1px solid transparent;border-radius:6px;color:var(--muted);font-family:'DM Sans',sans-serif;font-weight:600;font-size:.82rem;padding:.45rem .9rem;cursor:pointer;transition:color .15s,background .15s,border-color .15s;white-space:nowrap;flex-shrink:0;}
+.nb:hover{color:var(--text);background:var(--surface2);border-color:var(--border);}
+.nsep{width:1px;height:20px;background:var(--border);flex-shrink:0;margin:0 2px;}
+/* Overview active */
+#nb-ov.active{background:rgba(240,180,41,.15);border-color:rgba(240,180,41,.4);color:var(--accent);}
+/* How It Works active */
+#nb-how.active{background:var(--surface2);border-color:var(--border);color:var(--text);}
+/* Main Comp group */
+.nav-group{display:flex;align-items:center;background:rgba(26,58,143,.2);border:1px solid rgba(26,58,143,.5);border-radius:8px;padding:3px;gap:2px;flex-shrink:0;}
+.nav-group-label{font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#4a6fa8;padding:0 .5rem;white-space:nowrap;flex-shrink:0;}
+.nav-group .nb{border-radius:5px;border:none;padding:.38rem .8rem;color:var(--muted);}
+.nav-group .nb:hover{background:rgba(255,255,255,.08);color:var(--text);}
+.nav-group .nb.active{background:rgba(26,58,143,.5);border:none;color:#fff;}
+/* Survival active */
+#nb-c2.active{background:rgba(248,113,113,.12);border-color:rgba(248,113,113,.35);color:var(--red);}
+#nb-c2{color:#f87171;border-color:rgba(248,113,113,.2);}
+#nb-c2:hover{background:rgba(248,113,113,.1);border-color:rgba(248,113,113,.35);color:var(--red);}
+/* VIP active */
+#nb-vip{background:rgba(52,211,153,.08);border-color:rgba(52,211,153,.25);color:var(--vip);}
+#nb-vip:hover{background:rgba(52,211,153,.15);border-color:rgba(52,211,153,.4);}
+#nb-vip.active{background:rgba(52,211,153,.18);border-color:rgba(52,211,153,.5);color:var(--vip);}
+/* Prizes */
+#nb-prizes.active{background:var(--surface2);border-color:var(--border);color:var(--text);}
+
+/* MAIN */
+main{max-width:1400px;margin:0 auto;padding:1.5rem;}
+.panel{display:none!important;}
+.panel.active{display:block!important;}
+
+/* COACH VIEW */
+#cv{display:none;}
+#cv.open{display:block;}
+.cvback{display:inline-flex;align-items:center;gap:.4rem;background:none;border:none;color:var(--muted);font-size:.85rem;font-weight:600;cursor:pointer;margin-bottom:1.25rem;padding:0;font-family:'DM Sans',sans-serif;transition:color .2s;}
+.cvback:hover{color:var(--text);}
+.cvhero{background:linear-gradient(135deg,var(--jb) 0%,var(--jbl) 100%);border:1px solid var(--border);border-radius:16px;padding:1.75rem;margin-bottom:1.25rem;display:flex;align-items:flex-start;gap:1.5rem;position:relative;overflow:hidden;}
+.cvhero::before{content:'';position:absolute;top:0;right:0;width:200px;height:200px;background:radial-gradient(circle,rgba(240,180,41,.15) 0%,transparent 70%);pointer-events:none;}
+.cvav{width:64px;height:64px;border-radius:12px;flex-shrink:0;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:1.5rem;color:#fff;}
+.cvn{font-family:'Bebas Neue',sans-serif;font-size:2rem;line-height:1;letter-spacing:.04em;color:#fff;}
+.cvt{color:rgba(255,255,255,.65);font-size:.9rem;margin-top:.2rem;}
+.cvtags{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.65rem;align-items:center;}
+.cvstats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:.75rem;margin-bottom:1.25rem;}
+.cvstat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.85rem 1rem;}
+.cvsl{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:700;margin-bottom:.2rem;}
+.cvsv{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:.04em;line-height:1.1;}
+.cvsec{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:1rem;}
+.cvsect{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.06em;color:var(--muted);margin-bottom:.85rem;text-transform:uppercase;}
+.schips{display:flex;gap:.4rem;flex-wrap:wrap;}
+.schip{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:.25rem .65rem;font-size:.82rem;font-weight:600;}
+
+/* VIP BADGE */
+.vip{display:inline-flex;align-items:center;gap:.2rem;background:rgba(52,211,153,.15);color:var(--vip);border:1px solid rgba(52,211,153,.35);border-radius:4px;padding:.08rem .35rem;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;vertical-align:middle;margin-left:.3rem;white-space:nowrap;}
+.admin{display:inline-flex;align-items:center;gap:.2rem;background:rgba(96,165,250,.15);color:var(--blue);border:1px solid rgba(96,165,250,.3);border-radius:4px;padding:.08rem .35rem;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;vertical-align:middle;margin-left:.3rem;white-space:nowrap;}
+
+/* PRIZES */
+.prize-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.5rem;position:relative;overflow:hidden;}
+.prize-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.prize-card.gold::before{background:linear-gradient(90deg,var(--accent),#ffd700);}
+.prize-card.blue::before{background:linear-gradient(90deg,var(--blue),var(--purple));}
+.prize-card.green::before{background:linear-gradient(90deg,var(--green),var(--blue));}
+.prize-card.purple::before{background:linear-gradient(90deg,var(--purple),var(--red));}
+.prize-title{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.06em;margin-bottom:.25rem;}
+.prize-desc{font-size:.8rem;color:var(--muted);margin-bottom:1rem;line-height:1.5;}
+.prize-amount{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--accent);}
+.prize-tbc{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:var(--muted);}
+.prize-winner{margin-top:.5rem;font-size:.82rem;color:var(--muted);}
+.prize-winner strong{color:var(--text);}
+.prizes-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-bottom:1.5rem;}
+
+/* STAT CARDS */
+.sr{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem;margin-bottom:1.5rem;}
+.sc{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.1rem 1.25rem;}
+.scl{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:700;}
+.scv{font-family:'Bebas Neue',sans-serif;font-size:2rem;line-height:1.1;margin:.15rem 0;}
+.scs{font-size:.77rem;color:var(--muted);}
+
+/* SECTION HDR */
+.sh{display:flex;align-items:center;gap:1rem;margin-bottom:1rem;margin-top:1.75rem;}
+.sh:first-child{margin-top:0;}
+.sht{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:.06em;white-space:nowrap;}
+.shl{flex:1;height:1px;background:var(--border);}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:.15rem .5rem;border-radius:4px;}
+.bt1{background:rgba(240,180,41,.15);color:var(--t1);border:1px solid rgba(240,180,41,.3);}
+.bt2{background:rgba(96,165,250,.15);color:var(--t2);border:1px solid rgba(96,165,250,.3);}
+.bt3{background:rgba(167,139,250,.15);color:var(--t3);border:1px solid rgba(167,139,250,.3);}
+.bp3{background:rgba(251,146,60,.15);color:var(--p3);border:1px solid rgba(251,146,60,.3);}
+.balive{background:rgba(52,211,153,.15);color:var(--green);border:1px solid rgba(52,211,153,.3);}
+.bvip{background:rgba(52,211,153,.15);color:var(--vip);border:1px solid rgba(52,211,153,.3);}
+.bchamp{background:linear-gradient(135deg,rgba(240,180,41,.3),rgba(240,180,41,.12));color:#f0b429;border:1px solid rgba(240,180,41,.6);font-weight:700;}
+.bru{background:rgba(192,192,192,.12);color:#b0b8c8;border:1px solid rgba(192,192,192,.3);}
+
+/* TABLE */
+.tw{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:1.5rem;}
+.tw-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+table{width:100%;border-collapse:collapse;font-size:.875rem;min-width:480px;}
+thead th{background:var(--surface2);padding:.6rem 1rem;text-align:left;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap;}
+tbody tr{border-bottom:1px solid var(--border);transition:background .12s;cursor:pointer;}
+tbody tr:last-child{border-bottom:none;}
+tbody tr:hover{background:var(--surface2);}
+td{padding:.6rem 1rem;vertical-align:middle;}
+.trk{font-family:'Bebas Neue',sans-serif;font-size:1rem;color:var(--muted);width:44px;}
+.tco{font-weight:600;display:flex;align-items:center;gap:.25rem;flex-wrap:wrap;}
+.tte{color:var(--muted);font-size:.8rem;}
+.tsc{font-family:'Bebas Neue',sans-serif;font-size:1rem;}
+.tsc.hi{color:var(--accent);}
+.tdiv td{padding:.3rem 1rem;background:rgba(26,58,143,.2);font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--jbl);}
+
+/* hide less critical columns on mobile */
+@media(max-width:600px){
+  table{min-width:0;font-size:.82rem;}
+  td,thead th{padding:.5rem .6rem;}
+  .trk{width:32px;}
+  /* VIP table: hide Total and Overall Rank on mobile */
+  #vipb tr td:nth-child(5),
+  #vipb tr td:nth-child(6),
+  #vipt thead tr th:nth-child(5),
+  #vipt thead tr th:nth-child(6){display:none;}
+  /* P1 table: hide Total column on mobile */
+  #p1b tr td:nth-child(5),
+  #p1t thead tr th:nth-child(5){display:none;}
+  /* c2 survival: nothing to hide - already compact */
+  /* overview: nothing to hide - already has coach+team combined */
+}
+
+/* PAGER */
+.pager{display:flex;align-items:center;gap:.4rem;margin-top:1rem;justify-content:center;flex-wrap:wrap;}
+.pg{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:.3rem .7rem;color:var(--muted);font-size:.82rem;font-weight:600;cursor:pointer;transition:all .15s;}
+.pg:hover,.pg.on{background:var(--jb);color:#fff;border-color:var(--jb);}
+.pgd{color:var(--muted);font-size:.82rem;}
+
+/* FILTER */
+.fr{display:flex;gap:.75rem;margin-bottom:1rem;align-items:center;flex-wrap:wrap;}
+.fi{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.4rem .85rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.85rem;outline:none;transition:border-color .2s;width:240px;}
+.fi:focus{border-color:var(--accent);}
+.fil{font-size:.72rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.08em;}
+
+/* HOW IT WORKS */
+.hg{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem;margin-bottom:1.5rem;}
+.hc{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.5rem;}
+.hn{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;color:var(--border);line-height:1;margin-bottom:.4rem;}
+.ht{font-family:'Bebas Neue',sans-serif;font-size:1.15rem;letter-spacing:.04em;margin-bottom:.5rem;}
+.hc p{font-size:.875rem;color:var(--muted);line-height:1.65;}
+.hc strong{color:var(--text);}
+.hc .ac{color:var(--accent);}
+.tl{display:flex;margin-bottom:1.5rem;border-radius:10px;overflow:hidden;border:1px solid var(--border);}
+.tls{flex:1;padding:.85rem 1rem;background:var(--surface);border-right:1px solid var(--border);text-align:center;}
+.tls:last-child{border-right:none;}
+.tls.cur{background:rgba(26,58,143,.35);border-bottom:3px solid var(--accent);}
+.tlr{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--accent);}
+.tll{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-top:.15rem;}
+.tld{font-size:.72rem;color:var(--muted);margin-top:.2rem;}
+
+/* COMING SOON */
+.cs{text-align:center;padding:5rem 2rem;}
+.csi{font-size:3rem;margin-bottom:1rem;}
+.cs h3{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:.06em;color:var(--text);margin-bottom:.5rem;}
+.cs p{font-size:.875rem;color:var(--muted);max-width:380px;margin:0 auto;}
+
+
+/* HEATMAP sched cells */
+.scel{position:relative;overflow:hidden;}
+.scel .heat-bg{position:absolute;inset:0;z-index:0;pointer-events:none;border-radius:8px;}
+.scel > *{position:relative;z-index:1;}
+.heat-label{font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-top:.15rem;}
+
+/* TIER BOUNDARY */
+.tier-boundary{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:1rem;}
+.tb-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem;}
+.tb-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);}
+.tb-badge{}
+.tb-bar-wrap{background:var(--bg);border-radius:6px;height:8px;overflow:hidden;margin-bottom:.5rem;}
+.tb-bar{height:100%;border-radius:6px;transition:width .4s;}
+.tb-stats{display:flex;gap:.5rem;flex-wrap:wrap;font-size:.72rem;margin-top:.4rem;}
+.tb-pill{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.2rem .6rem;white-space:nowrap;}
+.tb-pill strong{font-weight:700;}
+.tb-danger{color:var(--red);}
+.tb-safe{color:var(--green);}
+.tb-mid{color:var(--accent);}
+
+/* SPARKLINE */
+.spark-wrap{margin-top:.5rem;}
+.spark-label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.4rem;}
+.spark-container{display:flex;align-items:flex-end;gap:3px;height:48px;}
+.spark-bar-wrap{display:flex;flex-direction:column;align-items:center;flex:1;height:100%;}
+.spark-bar{width:100%;border-radius:3px 3px 0 0;min-height:4px;transition:height .3s;}
+.spark-bar.cur{box-shadow:0 0 6px rgba(240,180,41,.5);}
+.spark-rlabel{font-size:.55rem;color:var(--muted);margin-top:2px;}
+.spark-score{font-size:.6rem;font-weight:600;color:var(--muted);margin-bottom:2px;}
+.spark-one{display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--muted);}
+.spark-one strong{color:var(--text);}
+
+/* TAP TOOLTIPS */
+.tip{position:relative;cursor:pointer;display:inline-block;}
+.tip .tiptext{visibility:hidden;opacity:0;position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:.25rem .55rem;font-size:.72rem;font-weight:600;color:var(--text);white-space:nowrap;pointer-events:none;transition:opacity .15s;z-index:999;font-family:'DM Sans',sans-serif;}
+.tip:hover .tiptext,.tip.tapped .tiptext{visibility:visible;opacity:1;}
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(68px,1fr));gap:.4rem;margin-bottom:1.5rem;}
+.scel{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.5rem;text-align:center;}
+.scel.cur{background:rgba(26,58,143,.3);border-color:var(--accent);}
+.scel.past{opacity:.4;}
+.scr{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);}
+.scd{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--red);}
+.scd.z{color:var(--green);}
+.scre{font-size:.65rem;color:var(--muted);}
+
+/* VIP HERO BANNER */
+.vip-banner{background:linear-gradient(135deg,#0d2a0d 0%,#0a1f1a 50%,#0d1a2a 100%);border:1px solid rgba(52,211,153,.25);border-radius:14px;padding:1.5rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:1.5rem;}
+.vip-banner-icon{font-size:3rem;flex-shrink:0;}
+.vip-banner h2{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:.06em;color:var(--vip);}
+.vip-banner p{font-size:.875rem;color:var(--muted);margin-top:.25rem;line-height:1.6;}
+
+@media(max-width:700px){
+  .hdr{gap:.5rem;padding:0 .75rem;}
+  .rpill{display:none;}
+  .logo-sub{display:none;}
+  .logo-img{height:36px;width:36px;}
+  .logo-text{font-size:1.25rem;}
+  .sw{max-width:none;flex:1;}
+  .sw input{font-size:1rem;padding:.55rem 1rem .55rem 2.4rem;border-radius:10px;}
+  main{padding:1rem;}
+  .sr{grid-template-columns:1fr 1fr;}
+  .cvhero{flex-direction:column;gap:1rem;}
+  .hg{grid-template-columns:1fr;}
+  .prizes-grid{grid-template-columns:1fr;}
+  .vip-banner{flex-direction:column;gap:.75rem;padding:1.25rem;}
+  .cvstats{grid-template-columns:1fr 1fr;}
+  div[style*="grid-template-columns:1fr 1fr"]{grid-template-columns:1fr!important;}
+  /* hide feedback button text on mobile, keep icon */
+  .hdr>button{padding:.35rem .6rem;font-size:.7rem;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hdr">
+    <div class="logo-wrap" onclick="goHome()">
+      <img class="logo-img" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIbGNtcwIQAABtbnRyUkdCIFhZWiAH4gADABQACQAOAB1hY3NwTVNGVAAAAABzYXdzY3RybAAAAAAAAAAAAAAAAAAA9tYAAQAAAADTLWhhbmSdkQA9QICwPUB0LIGepSKOAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAABxjcHJ0AAABDAAAAAx3dHB0AAABGAAAABRyWFlaAAABLAAAABRnWFlaAAABQAAAABRiWFlaAAABVAAAABRyVFJDAAABaAAAAGBnVFJDAAABaAAAAGBiVFJDAAABaAAAAGBkZXNjAAAAAAAAAAV1UkdCAAAAAAAAAAAAAAAAdGV4dAAAAABDQzAAWFlaIAAAAAAAAPNUAAEAAAABFslYWVogAAAAAAAAb6AAADjyAAADj1hZWiAAAAAAAABilgAAt4kAABjaWFlaIAAAAAAAACSgAAAPhQAAtsRjdXJ2AAAAAAAAACoAAAB8APgBnAJ1A4MEyQZOCBIKGAxiDvQRzxT2GGocLiBDJKwpai5+M+s5sz/WRldNNlR2XBdkHWyGdVZ+jYgskjacq6eMstu+mcrH12Xkd/H5////2wBDAAkGBwgHBgkICAgKCgkLDhcPDg0NDhwUFREXIh4jIyEeICAlKjUtJScyKCAgLj8vMjc5PDw8JC1CRkE6RjU7PDn/2wBDAQoKCg4MDhsPDxs5JiAmOTk5OTk5OTk5OTk5OTk5OTk5OTk5OTk5OTk5OTk5OTk5OTk5OTk5OTk5OTk5OTk5OTn/wAARCAQABAADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwDgqKKK+rOAKKKKACiiigAooooAKKKKACiiigAooooAKKSloAKKKSgBaKSigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKbQA6m0UUAFFFFABRRRQAUUUUAFFJRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRSUlABRRRQAUUUUAFFFNoAdRTaKACiiigAooooAKKSigBaKKSgBaKSigApaSigAooooAKKKSgBaSiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACim0UgHUU2igB1NoooAKKKKACiiigAooooAKKKKACikooAvUUUUxhRRRQAlFFFAgooooAKKKKACiiigAoopKACiiigBaSiigAooooAKKKKACiiigAooooAKKKKACiiigAoptFABS0lFABRRRQAUUUUAFFFFABRRRQAUUlFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUlLQAlJRRQAUUUUAFFFFABRRRQAU2iigAooooAKKKKACiiigAooooAKSlpKACiiigAooooAKKKKACiikoAWkoooAKKKKACiiigYUUUUCCiiigAooooAKKKKACiiigAooopAFNoooAKKKKACiiigYUUUUCCiiigAooooAKKKKACiikoAvUUUUxhSUtJQIKKKKACiiigApKWkoAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiim0AOptFFABRRRQAUUUUAFFFFABRRRQAUlLSUALRSUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABSUUlABRRRQAUUUUAFFFFABRRRQAUU2igAooooAKKKKACiiigAooooAKKKSgAooooAKKKKACiiigAooooAKSiigAooooAKKKKACiiigYUUUUCCiiigAooooAKKKKQBRRRQA2nU2igAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKSkoAWkoooAvUUUUwFooooGJRSUUCCiiigYUUUUCCiiigAooooAKKKKACiiigAooooAKKKKACiim0ALSUUUAFFFFABRRRQAUUUUAFFFFABRSUtACUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRSUAJRRRQAUUUUAFFFFABRRRQA2iiigAooooAKKKKACiiigAooooAKKKSgAooooAKKKKACiiigAooooAKKKKAEooooAKKKKBhRS0lABRRRQIKKKKACiiigAooopAFFFFABTaKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAoopKAEooooAKbRRQBoUlFFMAooooAKKKKACiiigAooooAKKKKACiiigAoptOoAKKKKACiim0AOptFFABRRRQAUUUUAFFFFABRRRQAUlFFABS0lFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRSUALSUlFABRRRQAUUUUAFFFFADadRRQAU2iigAooooAKKKKACiiigAooooAKKSigBaKSigAooooAKKKKACiiigAoopKACiiigApaKKBiUUUUALRSUUCFpKKKACiiigAooooAKKKKQBRRRQAUU2igAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKSkoAWkoooAbTqbRSAKKKKAL9FFFUAUUUUAFFFFABRRRQAUUUUAFFFNoAdRSUlABTqbRQA6im0UAFFFFABRRRQAUUUUAFFFFABRRSUALSUUUAFFFFABS0lFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUlAC0UlLQAU2lpKACiiigAooooAKKKKACiim0AOptFFABRRRQAUUUUAFFFFABRSUtABRRRQAlFFFABRRRQAUUUUAFFFJQAtFJS0AFJS0UAJS0lFAC0UUUAFFJRQAUUUUAFFFFABRRRQAUUUUgCim0UAOoptFABRRRQAtJRRQAUUUUAFFFFABRRRQAUUUUAFFFJQAtJSUUAFFFNpAOooptABRRRQAUUUUAX6KKKoAooooAKKKKACiiigAooooAKbTqbQAUUtJQAUUUtABSU6m0AFFFFABRRRQAUUUUAFFJS0AFJRRQAUUtJQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAlJRRQAUUUUAFFFFABRRRQAUUUUAFFFNoAKKKKACiiigAooooAKKKKACikpaAEopaSgAooooAKKKKACiiigAooooAKSlooASloooAKKKKAEpaKKACkoooAKKKKACiiigAooopAFFFFABRRTaACinUUANop1FADadRRQA2inU2gAooooAKKKKACiiigAoopKACkoooAKKKKQBTadTaAHU2iigAooooAKKKKAL9FFFUAUUUUAFFFFABRRRQAUUU2gAooooAKKKKACiiigAooooAKKKKACikpaACiikoAWikooAWkoooAWikooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAopKSgAooooAKKKKACiiigAooptADqbRRQA6m0UUAFFFFABRRRQAUUUUAFFFJQAUUUUAFFFFABRRRQAUUUlAC0UUUAFFFFABRRRQAUUUUAFFJRQAUUUUAFFFFABRRRSAKKKKACiim0AOptFFABRRTqACm06m0AOoptOoAKKbRQAUUUUAFFFFABRSUlAC0lFFABRRRSAKKKKACiiigAptFFABRRRQAUUUUAFFFFAF+iiiqAKKKKACm06m0ALSUUUAFFLSUAFFFFABRRRQAUUUUAFFFFABRRSUALRSUUAFFFFABS0lFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABSUUlABRRRQAUUUUAFFFFABRTaKACiiigAooooAKKKKACiiigAooooAKKSigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKSgAooooAKKKKACiiigAooooAKKKKQBRRRQAU2nU2gAp1Np1ADadTaKACiiigAp1NooAdTaKKACiiigApKKSgAooooAKKKKQBRRRQAU2iigAooooAKKKKACiiigAooooAKKKKQF+iiirAKKKKACkpKKACiiigB1NoooAKKKKACiiigAooooAKKKSgBaKSigAooooAWkoooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAoopKAFpKSigAooooAKKKKACim0UAFFFFABRRRQAUUUUAFFFFABRRRQAUUUlABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUlAC0UlFABRRRQAUUUUAFFFFABRRRSAKKKKACiiigAooooAKKKKACim06gBtFOptABRRRQAUUUUAFFFJQAUlFFABRRRQAUUUUgCim0UAOptFFABRRRQAUUUUALSUUUgCiiikAUUUUAFFFFAF+iiitAG0UtJQAUUUUAFFFFABRRRQAUUUlAC0lFFABRRRQAtJS0lABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRSUALRRSUAFJRRQAUUUUAFFFNoAdRTaKACiiigAooooAKKKKACiiigAoopKAFopKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAopKKACiiigAooooAKKKKACiiigAooopAFFFFABRRRQAUUUUAFFFFABRRTaAHUU2nUANooooAWkopKAFoptFAC0lFFABRRRSAKKKKACm0UUAFFFFABRRRQAUUUUAFFFFIAooopAFFFFABRRRQAUUUUAX6bRRWgBRRRQAUUUUAFFFFABRRRQAlLSUUAFLSUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRSUALSUlFADqbRRQAUUUUAFFFFABTadTaACiiigAooooAKKKKACiiigAooooASiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKSgAooooAKKKKACiiigAooooAKKKKACiiikAUUUUAFFFFABRRRQAUUUUAFFFNoAKdTaKACikpKAFpKKKACiiigAooopAFFFNoAKKKKACiiigAooooAKKKKACiiigAooopAFFFFIAooooAKKKKACiiigC9SUUVoAUUUUAFFFFABSUtFABSUtJQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFJQAUlFFABRRRQAUUUUAFFFFABRRRQAUUUUANooooAKKKKACiiigAooooAKKSloAKKSigAooooAWkoooAKKKKACiiigAooooAKKKKACiiigApKWkoAKKKKACiiigAooooAKKKKACiiikAUUUUAFFFFABRRRQAUUUUAFFFFABRRTaAFpKKKACiiigBtFFFABRRRSAKKKKACiim0AOptOptABRRRQAUUUUAFFFFABRRRQAUUUVIBRRRQAUUUUAFFFFABRRRQAUUUUAXaKKK0AKKKSgApaSigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKSgApKKKACiiigAooooAKKKKACiim0AOooooAbRRRQAUUUUAFFFFABRRRQAUUUlABS0lLQAlFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRSUUAFFFFABRRRQAUUUUAFFFFIAooopgFFFFIAooooAKKKKACiiigAooooAKKKKACm0UUAFFFFABSUtNoAKKKKACiiikAUUU2gAop1NoAKKKKACiiigAooooAKKKKACiiigAooopAFFFFIAooooAKKKKACiiigAoptOoAKbTqbQBfooorQApKWkoAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigBKSiigAooooAKKKKACiiigAooooAKbTqbQA6m06m0AFFFFABRRRQAUUUUAFFFJQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFJQAtFJRQAUUUUAFFFFABRRRQAUUUUgCiiigAooooAKKKKACiiigAooooAKKKKACim0UAFFFFABRRRQAUUUlABSU6m0gCiiigAooooAKbRRQAUUUUAFFFFABRRRQAUUUUgCiiikAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUlABSUUUAX6SiitACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAopKSgBaSiigAooooAKKKKACim0tAC0U2igB1FNooAKKKKAHU2iigAoopaAEooooAKKSigBaSiigAooooAKKKKACiiigAooooAKKKSgBaKKSgBaKSigAooooAKKKKACiiigAooooAKKKKQBRRRQAUUUUwCiiigAooooAKKKbQA6im0UAOptFNoAdRTadQAUU2igB1FNopAOoptFIBaSiigAoptOoAKbRRQAUUUUAFFFFABRRRQAUUUUAFFFFIAooopAFFFFABRRRQAUUUUAFFFFABRRRQAUUUlABSUUUALSUUUAXqKKK0AKKKKACiiigAooooAKKKKACiiigAooooAKK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6RyI7R5xlQ2WXd717nofxU8PansjuZv7Pmbtc/d/Bxx+eK8vMozklyo3otHoNFVYp4bmISQyLLG3R42yD+Iq1XknQFFFFABRRRQAUUUUAFFFFABRRRQAlFFZOs6zY6Nbtc6jeRWsK95O/so6sfpQlfYDWNeb/EL4iW/h5XsbCTz9U2/NxlLf/af/AGvQfnXKeNfixcXxez0HdawdDdvxKf8AdX+H69fpXnDFj8zfMx616OGwLl709jGdW2iJLm4mu7iWeeRpZpG3PJ1JJqKiivZOYKKKKACup+HPhRvE2rr53/IOt8Pce/8AdQe5/i9qxtA0W717U4rGzT98/wDF2jT+J29h/wDY19IeGtCtfDmkQ6dafdj+8/eR+7N7mvPxmK9nHljua0oX1NaNFiRUVdqrwAKmoorxTqCiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKzNW1Oz0bT5729m8q3hXLt/nuaAIPEOuWXh7TZb+/k2Rp0Hd27Ko7sa+dPGXi2+8V6gZrl9lun+qtv4Y1/wDZm9T/AEpPGviq68V6q9zNvS1i3eRb9kX/AOKP8Rrnq9jCYXk96W5hUn0Qv0oooruMAooooAKKKKACiiigAoptFADqbRRQAUUUUAFFFNoA0qKKK0EFFFFABRRRQAUUUUAFFFFADaKKKACiiigC3pmrX2ky79Pvp7T/AK4ysM/7y/dau00j4v65abY72O2v4/Xb5b/99D5f/Ha4CisKmHpz3iUqklse3aX8Y9EutovbW7st38WzzE/Nef0rp9P8ZeHdTT/RdZtOeitLsP5HBr5qoPP3ua5J5dTfws0VZn1osivyrbh7VLXyXa3NxafNBcywf9cZWT/0GtK38X+Ibf8A1eu6j/wOdj/PdWEssn9llKvE+os0Zr5ti+JHipPl/tuRv+2UR/8AZKk/4Wb4r/6DX/ktF/hUf2dV7ofton0dmivmuT4i+Kpf+Y5OP+2Ua/ySqFz4q126/wBbreoPu7eewH6baay2p1aE68T6Wvr+1sU33d1BBH6yyqg/WuS1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xc8VS/curaD/AK52y/8As26s+5+Iviq4/wBZr06/9c0RP5CuXoq1hqK+yT7R9zWm8U69P/rNd1J/+3h//ZTWbcXM1x/rppZf+ukrH/0I1HRWkacY/CHMGxP7i0n+7S0VRAUUUUAFFFFMAooooAKKKKQBRRRTAKSlpKACiiigAooooAKKKKACiiigYUlLSUAFFFFABRRRQAUUU2gB1FFNoAKKKKACiiigAoptFADqKbRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFAGhRTaKsQUUUUAFFFFABRRRQAUUU2gB1FNooAKKKKACiiigAooooAKKKKACiitPw3od14g1WKxtP4/vydo0H3nb6fqaiUowjzSA2/ht4PbxPqXnS/8g60ZfPP/AD09Ix9f4vQf71fREUccESpGu2NBtAXoBWfoOjWehaZBp9jHthhX8WPdj7mtYV8/iK8q079DshCyHUUUViWFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFACUVTvL21tE33N1FAvrI4X+dYF/8AETwnY8Sa3bO3pDul/wDQAaahJ7IVzq6K81vfjJ4diO2C3vbg+oiCD/x8iudv/jfcNuWy0aND/elmZv0AH/oVbRwtWXQn2iPbKK+d734teKLkfu7q2tf+uMC/+z7qwb3xd4gvv+PjXL/6eeyD/vlNtbRy+p1ZPton05c3VtbJme4ihX1dwv8AOsO98deF7H/X67Y/8Al3n9M18zOWkO+SRpfffn+dHTpW8cu/mkT7Y99vfi/4Wtv9VLd3X/XGBv8A2bFYl58b7Mf8emi3L/8AXWVU/lurx2itll9NC9sek3Xxs1hz/oul6fB/11d3P/stY958VfFdx/q9Sgg/642yf+zbq43vS1rHCUo9DP2rNi88X+ILv/Xa7qX0jmYD/wAd21kXEklwd00ks/8A10kY/wDoVMoraNOEfhQc4AKv3V206m0VRAUUU2gB1FFNpAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABSUUUAFFFFABRRRQAUUUUAFFFFAwoopKAFoopKACiiigAooooAKKbRQAUUUUAFFFFABRRRQAU2iigAooooAdTaKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAvUUUVYgooooAKKKKACm0UUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUASwQSXFxFDDG080hVEi7kn7qrX0N8PvCEPhTStjhX1CfDXEnv2RfYf/AF65j4PeCvsEa6/qEP8ApUy/6MmP9Wh/j/3m/QfWvWMV4eNxPtJcsdjppQtqx1FFFcRsFFFFABRRRQAUUVUu7q3tV33NzHAn96R1UfrQBaorkdQ+I3hWxJVtZtpW9IN0v/oANczqHxq0mEEWWm3tw3/TTbGP5k/+O1pGhOWyJc0j1SkrwnUPjRrE3y2lhZ2v+/ulb/2UVz1/8Q/E99w+tzRD/p2RY/5DP61vHAVWR7VH0k8kcab5G2gd24rAv/GvhvTk/wBK1u0z/djfe3/fIya+a7y7uL1vMu7qWf3llZ/51Cvy9OK6Y5b/ADMh1z3i9+MHhm3O23W8u/8ArnFtH5uVrnr743ydLLQ9v+1PPn9FH/s1eU0neto4CjHoS6zO4vvi34ouRiGa2sx/0ygz+r5rn7zxXrt7v+063fvu/wCm7Af98rtWsikreOGpR2iQ6kgYtL+8kbzffqf1ooorYkKKKKACiiigAooooAKKKbQA6im0UAFFFFABRTaKQBRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQMKKSigQUUUUAFFFFABRRRQAUUUUAFFFJQMWikooASiiigQtFFFAwooptADqbRRQAUUUUAFFFFABRRRQAU2iigB1NoooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigBKWikoAWiikoAv0UUVYgoptFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAV3fwq8EHXNQ/tK/jxpdo/y5/5eJB2/wB0d/y/vVz/AIN8MXPijWIrOL5IV+eeb/nmn/xR7V9J6fZWuk6fFaW0aw2sCbQvZQK87HYnlj7OG5vSh1ZfxRXM6h438NaZ8t3rlnvH8Mb72/75XJrltT+M+h2x22Vrd3reuBGP1+b9K8uFGpPZGzmken0leGX3xp1abC2Wn2lr7ys0p/8AZBXNah8QPFGoDbJrc8Q/6YbY/wD0EK3/AI9XRHAVZEOqj6Qurm3t4/MuJo4k/vSMFH61zGpfEPwtp24S6zBLJ6W+6T+WRXzpdTSXL+bcSSzyf3pnZz+tNrphlv8ANIh1+x7PqPxr0qH5LHTLu5f/AKaERj+rf+O1zmofGXW7gOLSzs7P0J3SN+u0V53RW8MFRj0JdVm9f+OfE2o/67W7lfaJ1jH6YrCnd538ySRpZD/FK+4/+PUlFdEacI/CjNykwoooqxDaWkooAdSUlFABRRRQAUUUUAFFNooAdRTaKACnU2igB1NoooAKKKbSAdRTaKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigYUUlFAgooooAKKKKACiiigAooooAKKSigYtFJRQAlFFFAhaKKKBhRRTaAHU2iigAooooAKKKKACim0UAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAJS0lFABRRRQBfptFFWIKKKKACiiigAooooAKKKKACiiigAooooAKKKKQBRRRTA2NK8U6rpFl9k0+5+xQv9/yYlDyH/achm+lZ9/qV7qP/H7fXN3/ANdZWf8Amar0Vl7KPNzWHzSGj5fu/LTqKKsQUUUUAFFFFABRRTaAHUUlFAC0lJRQAUUUUAFFFFABRRTaAHUUUUANooooAdRTaKQBRRRQAUUlJQA6m0UUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFJRQAUUUUAFFFFABRRRQAUUUUAFFFJQMWiikoAKKKKACiiigAooooAKKbRQA6im0UAFFFFABRRTaAHUU2igAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKSigAooooAu0UUVYgooooAKKKKACiiigAoooqQCiiigAooooAKKKKACiiigAooooAKKSkoAdRTaKAHUUUlABSUUUAFFFFABRRRQAUUUUAFFNooAdTaKKAHU2iikAUUUlAC0UUlAC02iigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKSigAooooAKKKKACiiigAoptFADqKSigYtJRRQAUUUUAFFFFABRRTaAHU2iigAooooAKKKKACim0UAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRSUALSUUUAFFFFABRRRQBdoooqxBRRRQAUUUVIBRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABSUUlABRS0UAJS0UlAC0lFFABRRRQAUUU2gB1FNooAKKKKACiiikAUUUlAC0UUUAJRSUUALSUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFJRRQAUUUUAFFFFABRRRQAUUUUAFFFJQMKKKKAEooooELRRRQMKKKbQA6m0UUAFFFFABRRRQAUU2igAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAopKWgAooooAKKKSgBaKKKACiiigAoopKACiiigAooooAKKKKACiiigC7RRRViCiiigAoooqQCiiigAooooAKKKKACiim0AOoptFAC0lFFABRRRQAtJRRQAUUUUAFFFNoAdTaKKACiiigAooooAKKKKACikpKQDqSkooAdSUlFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRSUUDCiiigQUUU2gB1FFFABRRSUDClpKKACiiigAooooAKKKKACiim0AOptFFABRRRQAUUUUAFFFNoAdTaKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiikoAKWkooAWiikoAWkoooAWiikoAWkoooAKKKKACiiigAooooAKKKKACiiioAu0UUVqIKKKKQBRRRQAUUUUAFFFFABRSUlAC0lFFABRRRQAtJRRQAUUUUAFFFFABTaKKACiiigAooooAKKKKACikpKAFpKKKQBRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUDCkoooEFFFFABRRRQAUUUUAFFFNoAWiiigYUUUUAJRRRQIWiiigYUU2igAooooAKKKKACiiigAoptFADqbRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFJQAUtJS0AFFFFABSUUUAFFFLQAlFFFABRRRQAUUUUAFFFFZgFFFFABRRRQBdooorUQUUUUAFFFFABRRRQAU2lpKACiiloASiiigAooooAKKKKACiim0AFFFFABRRRQAUUUUAFFFJSASiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACikooGFFFFABRRRQIKKKKACiiigY2iiigQtFFFAwooooAKKKKACiiigAptOptABRRRQAUUUUAFFFNoAdTaKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACkpaKACiiigAooooAKSlpKAClpKWgBKKKKACiiigBaSlpKzAKKKKACiiigAooooAKKKKACiiigAooooAu0UUVqIKKKKACikpKAFpKKKACiiigBaSiigAooooAKKbRQA6im0UAFFFFIAooooAKKKKACikpaACm0tJQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFAwopKKACiiigAooooAKKKKACiiigApKKKACiiigAooooAKKKKACim0UAFFFFABRRRQAUUU2gB1FNooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigApKKKACiiigBaKKSswFpKKKAFpKKKACiiigAooooAKKKKACiiigAoptFADqKbRSAu0UUVsIKKKKACiiigAooooAKbTqbQA6m0UUAFFFFABRRRQAUUUUAFFFJQAtNoopAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUlFAxaSiigAooooAbTqKKBBRRTaAHUlFFAwooooAKKKKACiiigAooooAKbRRQAUUUUAFFFFABRRRQAU2iigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKSgApaSloAKKSloAKKKKACiikoAKKKKACiiigAooooAKKKKzAKKKKACiiigAooooAKKKKACim0UAFFFFIAooooAKKKKALtFFFbCCiiigAooptADqKbRSAdRTaKACiiimAUUUUAFFFFIAoopKAFoptFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUDCikooAKKKKBBRRRQAUUUUAFFFFAwoptFAh1FNooAWiiigYtJRRQAUUUUAFFNooAKKKKACiiigAooooAKKbRQA6im0UAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFJQAtFJRQAtFFFABRRRWYBRRSUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFIQUUUlABRRRQMWkoooAuUUU2thBRRRQAUUUUAFFFFABRRRSAKKKSmAtNoopAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUlLSUALRRRQMSiikoAWiiigQUUUUAFFFFABTaKKAFooooGJRRRQIWiiigYUUUUAFFFNoAKKKKACiiigAooooAKKbRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFJQAtJRRQAUUUUAFFLSUAFLRSVmAtJRRQAUUUUAJS0lLSAKKKKYBTadRQAU2inUANop1NpALRS0lABRRRQAUUUUAFFFFACUUUUAW6KKK1EFFFFABRRRTAKKSikAtFFJQAUlFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFJRQMWkoooAKKKKACiiigQUUUUDCiikoAWkoooASiiigQUUUUALRRRQMKKKbQA6m0UUAFFFFABRRRQAUUU2gAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACikooAWkoooAKWkpaAEooooAWkoooAKKKKzAKKKKACiikpCClpKKBi0U2igB1JRRQAtJRRQAtJS0lAhaKKSgAooooGFFFFABRRRQAUUUUAWqKKK1EFFFFABRRRQAU2nU2gB1NoooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigYUUlFABRRRQAUUUUCCiiigYUUUUAFFJRQAUUUUAJRRRQIWiiigYUUUUAFFFNoAKKKKACiiigAooooAKbRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFJS0UAJS0lFABRRRWYBRRRQAUUUUAFFFFABRRSUhBS0lLQAUlLSUAFFFFAxaSlooEFFFJQAtFFFACUUtJQMKKKKACiiigAooooAtUUUlaiFoptFADqbRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRSUUDFpKKKACiiigAooooAKKKKBBRRRQMKSiigAooooASiiigQtFFFAwooptADqKbRQA6m0UUAFFFFABRRTaAHUUUUAFFNooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKzAKSiitACiiioAKKKKQBRRRSEFFFFABRSUtABRRSUAFLSUUDFopKKBC0lFFAxaKSigQtFJRQAtFFFABRSUUALSUUUDCiiigBaSiigCxRRRWogooooAKKKKACiiigYUUUUCCiiigAooooAKKKKACiiigAooooAKKKKACiiigYUUUlABRRRQAUUUUAFFFFABRRRQAUUUUAFJRRQAtJRRQAUUUUAFFFFABRRRQAU2nU2gAooooAKdTaKACiiigAptFFABRRRQA6m0UUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAJRRS0AJRS0lZgFFFFABRRRQAU2nU2gBaKKKQBRS0UCEpaKKAEopaSgYUUUtACUUtFACUUUUALSUtFAhKKWigBKKWigYlFLSUAJRRRQAUUUUALRRRQBYooorUAooooAKKKKACiiigQUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUlFAxaKSigAooooAKKKKACiiigAooooAKKSigBaSiigAooooAWkoooAKKKKACim0UAFFFFADqbRRQAUUUUAFFNp1ABRTaKACiiigAooooAdTaKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiikoAWiikoAWikooAWkoorMBaSiigAooooAKKKKACim0UgHUUlLQIKKKSgBaKSloAKKKSgApaSigYtFFNoAdSUUUALRSUUCFoopKAFooooGFFJRQAtFFJQIKWkooGLRTaKALNFFFaiCiiigYUUUUCCiiigAooooAKKSigBaKKKAEpaSigBaKKSgYUUUUAFFFJQAtFFJQAtFJRQAtFFJQAtFJRQAlFFFAhaKKKBhRRRQAUUU2gB1FFNoAKKKKACiiigAooooAKKKbQAUUUUAFOptFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRSUtABSUUUAFFFFZgFFFFABRRRQAUUUUAFFFNpAFOoopgJRRRSAKKKKAFooooEFFFJQAtJS0lABRRS0DCkoooAKKKKAEp1FNoAWlpKWgQUUUUAFFJS0AFJRRQMSiiigAooooAs0UUVqIKKKKACiiigAooooAKSlpKACiiigAooooAKKKKBhRRSUAFLSUUAFFFFABRRRQAUUUUAFFFFABRRTaAHUUUUAFFFFADadTaKACiiigAooooAKKKKACim0UAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFJQAUUUUAFFFFABRRRWYBRRRQA2iiigBaWkopALSUUUAFFFFABRRRQAUUUUAFLSUUAFLSUtAgpKKKBhRRRQAlFFFAC0UUUALSUUUAFFFFAC0UlFAgooooGFFFFACUUUUAFFFFAH//2Q==" alt="JBFA">
+      <div><div class="logo-text">JBFA</div><span class="logo-sub">Prize Comps 2026</span></div>
+    </div>
+    <div class="sw">
+      <span class="si">🔍</span>
+      <input id="gs" type="text" placeholder="Search coach or team…" autocomplete="off">
+      <div class="sdrop" id="sdrop"></div>
+    </div>
+    <div class="rpill" id="rpill" style="cursor:pointer">Round 1 of 27</div>
+    <button onclick="document.getElementById('fmodal').style.display='flex'" style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:.35rem .8rem;color:rgba(255,255,255,.8);font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:background .15s;" onmouseover="this.style.background='rgba(255,255,255,.2)'" onmouseout="this.style.background='rgba(255,255,255,.12)'">💬 Feedback</button>
+  </div>
+</header>
+
+<div class="nav">
+  <div class="nav-inner" style="padding:8px 1.25rem;">
+    <button class="nb active" id="nb-ov" onclick="showTab(event,'ov')">Overview</button>
+    <button class="nb" id="nb-how" onclick="showTab(event,'how')">How It Works</button>
+    <div class="nsep"></div>
+    <div class="nav-group">
+      <span class="nav-group-label">Main</span>
+      <button class="nb" id="nb-p1" onclick="showTab(event,'p1')">Phase 1</button>
+      <button class="nb" id="nb-p2" onclick="showTab(event,'p2')">Phase 2</button>
+      <button class="nb" id="nb-p3" onclick="showTab(event,'p3')">Phase 3</button>
+    </div>
+    <div class="nsep"></div>
+    <button class="nb" id="nb-c2" onclick="showTab(event,'c2')">Survival</button>
+    <div class="nsep"></div>
+    <button class="nb" id="nb-vip" onclick="showTab(event,'vip')">⭐ VIP</button>
+    <button class="nb" id="nb-prizes" onclick="showTab(event,'prizes')">🏆 Prizes</button>
+  </div>
+</div>
+
+<main>
+
+  <!-- COACH VIEW -->
+  <div id="cv">
+    <button class="cvback" onclick="closeCv()">← Back</button>
+    <div id="cvc"></div>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div class="panel active" id="panel-ov">
+    <div class="sr">
+      <div class="sc"><div class="scl">Coaches</div><div class="scv" id="sc-total">293</div><div class="scs">registered (R1)</div></div>
+      <div class="sc"><div class="scl">Current Round</div><div class="scv" style="color:var(--accent)">1</div><div class="scs">of 27</div></div>
+      <div class="sc"><div class="scl">VIP Entries</div><div class="scv" style="color:var(--vip)">68</div><div class="scs">in VIP comp</div></div>
+      <div class="sc"><div class="scl">Top Score R1</div><div class="scv" style="color:var(--accent)">1079</div><div class="scs">Jeremy Wirth</div></div>
+      <div class="sc"><div class="scl">Field Avg R1</div><div class="scv">926</div><div class="scs" id="sc-avg-sub">across 293 coaches</div></div>
+    </div>
+    <div class="sh"><div class="sht">Overall Leaders</div><div class="shl"></div><span class="badge bt1">Live</span></div>
+    <div class="tw"><div class="tw-scroll"><table>
+      <thead><tr><th>#</th><th>Coach</th><th class="scol-hdr">R1</th></tr></thead>
+      <tbody id="ov-top"></tbody>
+    </table></div></div>
+    <div class="sh"><div class="sht">🎙️ Podcaster Rankings</div><div class="shl"></div></div>
+    <div class="tw"><div class="tw-scroll"><table>
+      <thead><tr><th>#</th><th>Coach</th><th class="scol-hdr">R1</th><th>Tier</th><th>Survival</th></tr></thead>
+      <tbody id="ov-pod"></tbody>
+    </table></div></div>
+    <div class="sh"><div class="sht">Survival Knockout</div><div class="shl"></div></div>
+    <div class="sr" style="grid-template-columns:1fr 1fr 1fr;">
+      <div class="sc"><div class="scl">Alive After R1</div><div class="scv" style="color:var(--green)" id="sc-alive">293</div><div class="scs">no eliminations R1</div></div>
+      <div class="sc"><div class="scl">Eliminated R1</div><div class="scv" style="color:var(--muted)">0</div><div class="scs">R1 = safe round</div></div>
+      <div class="sc"><div class="scl">Next Cull R2</div><div class="scv" style="color:var(--red)">−20</div><div class="scs">lowest 20 scores cut</div></div>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div class="panel" id="panel-how">
+
+    <!-- ── MAIN SEASON COMP ── -->
+    <div style="border:1px solid rgba(26,58,143,.6);border-radius:16px;overflow:hidden;margin-bottom:2rem;">
+      <div style="background:linear-gradient(135deg,rgba(26,58,143,.5),rgba(26,58,143,.25));padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(26,58,143,.4);">
+        <div style="display:flex;align-items:center;gap:.75rem;">
+          <span style="font-size:1.4rem">🏟️</span>
+          <div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.06em;color:#fff">Main Season Comp</div>
+            <div style="font-size:.72rem;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.1em">3 Phases · Rounds 1–27</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:.4rem">
+          <span class="badge bt1">Phase 1</span>
+          <span class="badge bt2">Phase 2</span>
+          <span class="badge bp3">Phase 3</span>
+        </div>
+      </div>
+      <div style="padding:1.5rem;">
+        <div class="tl" style="margin-top:0">
+          <div class="tls cur"><div class="tlr">R1–R8</div><div class="tll">Phase 1</div><div class="tld">All together</div></div>
+          <div class="tls"><div class="tlr">R9–R18</div><div class="tll">Phase 2</div><div class="tld">3 Tier groups</div></div>
+          <div class="tls"><div class="tlr">R19–R27</div><div class="tll">Phase 3</div><div class="tld">Full Knockout</div></div>
+        </div>
+        <div class="hg">
+          <div class="hc">
+            <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.6rem"><span class="badge bt1" style="font-size:.75rem;padding:.2rem .6rem">Phase 1</span><span style="color:var(--muted);font-size:.8rem">Rounds 1–8</span></div>
+            <div class="ht">All In</div>
+            <p>All <span class="dyn-total">293</span> coaches compete together, points accumulate each week. Your <strong>rank after Round 8</strong> determines which tier you enter for Phase 2.</p>
+          </div>
+          <div class="hc">
+            <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.6rem"><span class="badge bt2" style="font-size:.75rem;padding:.2rem .6rem">Phase 2</span><span style="color:var(--muted);font-size:.8rem">Rounds 9–18</span></div>
+            <div class="ht">Tier Groups</div>
+            <p><strong class="ac">Points reset to zero</strong> at Round 9. Three separate competitions run for 10 rounds with their own prizes.</p>
+            <div style="display:flex;flex-direction:column;gap:.5rem;margin-top:.85rem">
+              <div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border-radius:6px;padding:.5rem .75rem"><div style="display:flex;align-items:center;gap:.5rem"><span class="badge bt1">Tier 1</span><span style="font-size:.82rem;font-weight:600">Premiership</span></div><span style="font-size:.78rem;color:var(--muted)">Top 100</span></div>
+              <div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border-radius:6px;padding:.5rem .75rem"><div style="display:flex;align-items:center;gap:.5rem"><span class="badge bt2">Tier 2</span><span style="font-size:.82rem;font-weight:600">Championship</span></div><span style="font-size:.78rem;color:var(--muted)">Ranks 101–200</span></div>
+              <div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border-radius:6px;padding:.5rem .75rem"><div style="display:flex;align-items:center;gap:.5rem"><span class="badge bt3">Tier 3</span><span style="font-size:.82rem;font-weight:600">State Cup</span></div><span style="font-size:.78rem;color:var(--muted)">Ranks 201+</span></div>
+            </div>
+          </div>
+          <div class="hc">
+            <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.6rem"><span class="badge bp3" style="font-size:.75rem;padding:.2rem .6rem">Phase 3</span><span style="color:var(--muted);font-size:.8rem">Rounds 19–27</span></div>
+            <div class="ht">Full Knockout</div>
+            <p>All coaches re-enter a <strong>seeded bracket</strong> based on Phase 2 results. Top seeds receive byes in R19. The <strong class="ac">top 4 coaches</strong> share the main prizes.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SURVIVAL KNOCKOUT ── -->
+    <div style="border:1px solid rgba(248,113,113,.3);border-radius:16px;overflow:hidden;margin-bottom:2rem;">
+      <div style="background:linear-gradient(135deg,rgba(220,38,38,.2),rgba(220,38,38,.08));padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(248,113,113,.2);">
+        <div style="display:flex;align-items:center;gap:.75rem;">
+          <span style="font-size:1.4rem">🎯</span>
+          <div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.06em;color:#fff">Survival Knockout</div>
+            <div style="font-size:.72rem;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.1em">Runs all 27 rounds in parallel</div>
+          </div>
+        </div>
+        <span class="badge balive" style="font-size:.7rem">Weekly Score Only</span>
+      </div>
+      <div style="padding:1.5rem;display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+        <div>
+          <div class="ht" style="margin-bottom:.5rem">How it works</div>
+          <p style="font-size:.875rem;color:var(--muted);line-height:1.65">Runs in parallel with the Main Season Comp across all 27 rounds. Each round the coaches with the <strong style="color:var(--text)">lowest score that week</strong> are eliminated — regardless of how they've performed before. <strong style="color:var(--text)">Weekly score only, never cumulative.</strong></p>
+        </div>
+        <div>
+          <div class="ht" style="margin-bottom:.5rem">Key facts</div>
+          <div style="display:flex;flex-direction:column;gap:.4rem">
+            <div style="display:flex;justify-content:space-between;font-size:.82rem;padding:.4rem .6rem;background:var(--surface2);border-radius:6px"><span style="color:var(--muted)">Started</span><strong>293 coaches</strong></div>
+            <div style="display:flex;justify-content:space-between;font-size:.82rem;padding:.4rem .6rem;background:var(--surface2);border-radius:6px"><span style="color:var(--muted)">Round 1</span><strong style="color:var(--green)">No eliminations</strong></div>
+            <div style="display:flex;justify-content:space-between;font-size:.82rem;padding:.4rem .6rem;background:var(--surface2);border-radius:6px"><span style="color:var(--muted)">Winner</span><strong>Last coach standing (R27)</strong></div>
+            <div style="display:flex;justify-content:space-between;font-size:.82rem;padding:.4rem .6rem;background:var(--surface2);border-radius:6px"><span style="color:var(--muted)">Prize</span><strong style="color:var(--muted)">TBC</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── VIP OVERALL COMP ── -->
+    <div style="border:1px solid rgba(52,211,153,.3);border-radius:16px;overflow:hidden;margin-bottom:1rem;">
+      <div style="background:linear-gradient(135deg,rgba(52,211,153,.15),rgba(52,211,153,.05));padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(52,211,153,.2);">
+        <div style="display:flex;align-items:center;gap:.75rem;">
+          <span style="font-size:1.4rem">⭐</span>
+          <div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.06em;color:var(--vip)">VIP Overall Comp</div>
+            <div style="font-size:.72rem;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.1em">68 designated entries · Cumulative all season</div>
+          </div>
+        </div>
+        <span class="badge bvip dyn-vip-badge" style="font-size:.7rem">68 Entries</span>
+      </div>
+      <div style="padding:1.5rem;display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+        <div>
+          <div class="ht" style="margin-bottom:.5rem">How it works</div>
+          <p style="font-size:.875rem;color:var(--muted);line-height:1.65">Exclusive to VIP members. A <strong style="color:var(--text)">cumulative season-long standings</strong> using each VIP's designated entry. Coaches with multiple teams nominate one entry for this leaderboard. Best cumulative score across all 27 rounds wins.</p>
+        </div>
+        <div>
+          <div class="ht" style="margin-bottom:.5rem">Key facts</div>
+          <div style="display:flex;flex-direction:column;gap:.4rem">
+            <div style="display:flex;justify-content:space-between;font-size:.82rem;padding:.4rem .6rem;background:var(--surface2);border-radius:6px"><span style="color:var(--muted)">Entrants</span><strong style="color:var(--vip)">68 VIP coaches</strong></div>
+            <div style="display:flex;justify-content:space-between;font-size:.82rem;padding:.4rem .6rem;background:var(--surface2);border-radius:6px"><span style="color:var(--muted)">Scoring</span><strong>Cumulative — all 27 rounds</strong></div>
+            <div style="display:flex;justify-content:space-between;font-size:.82rem;padding:.4rem .6rem;background:var(--surface2);border-radius:6px"><span style="color:var(--muted)">Entries per coach</span><strong>One designated entry only</strong></div>
+            <div style="display:flex;justify-content:space-between;font-size:.82rem;padding:.4rem .6rem;background:var(--surface2);border-radius:6px"><span style="color:var(--muted)">1st Prize</span><strong style="color:var(--vip)">$500 cash</strong></div>
+            <div style="display:flex;justify-content:space-between;font-size:.82rem;padding:.4rem .6rem;background:var(--surface2);border-radius:6px"><span style="color:var(--muted)">2nd Prize</span><strong style="color:var(--vip)">$100 JBFA Credit</strong></div>
+            <div style="display:flex;justify-content:space-between;font-size:.82rem;padding:.4rem .6rem;background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.15);border-radius:6px"><span style="color:var(--muted)">Jackpot bonus</span><strong style="color:var(--vip)">+25% on Main/Survival wins</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- PHASE 1 -->
+  <div class="panel" id="panel-p1">
+    <div class="sh" style="margin-top:0"><div class="sht">Phase 1 — Current Rankings</div><div class="shl"></div><span class="badge bt1" style="font-size:.68rem">Rounds 1–8</span></div>
+    <p style="color:var(--muted);font-size:.875rem;margin-bottom:1.25rem;">Standings after Round 1. Field locks after R2. Click any row for coach profile.</p>
+    <div class="fr">
+      <span class="fil">Filter:</span>
+      <input class="fi" id="p1fi" placeholder="Search coach or team…" oninput="fP1()">
+      <span style="margin-left:auto;font-size:.82rem;color:var(--muted)" id="p1ct"></span>
+    </div>
+    <div class="tw"><div class="tw-scroll"><table id="p1t">
+      <thead><tr><th>#</th><th>Coach</th><th class="scol-hdr">R1</th><th>Total</th><th>Tier</th></tr></thead>
+      <tbody id="p1b"></tbody>
+    </table></div></div>
+    <div class="pager" id="p1pg"></div>
+  </div>
+
+  <!-- PHASE 2 -->
+  <div class="panel" id="panel-p2">
+    <div class="cs"><div class="csi">🏆</div><h3>Phase 2 — Tier Groups</h3><p>Begins Round 9. Tier splits determined by Phase 1 ranking after Round 8.</p></div>
+  </div>
+
+  <!-- PHASE 3 -->
+  <div class="panel" id="panel-p3">
+    <div class="cs"><div class="csi">⚔️</div><h3>Phase 3 — Full Knockout</h3><p>Begins Round 19. All coaches re-enter a seeded bracket based on Phase 2 results.</p></div>
+  </div>
+
+  <!-- SURVIVAL -->
+  <div class="panel" id="panel-c2">
+    <div class="sh" style="margin-top:0"><div class="sht">Survival Knockout</div><div class="shl"></div></div>
+    <p style="color:var(--muted);font-size:.875rem;margin-bottom:1.5rem;"><strong style="color:var(--text)">Weekly score only — not cumulative.</strong> Each round the coaches with the lowest <em>that week's score</em> are eliminated, regardless of how they've performed before. Survive each round. Last coach standing after Round 27 wins.</p>
+    <div class="sr">
+      <div class="sc"><div class="scl">Started</div><div class="scv" id="sc-started">293</div><div class="scs">coaches</div></div>
+      <div class="sc"><div class="scl">Still Alive</div><div class="scv" style="color:var(--green)" id="sc-still-alive">293</div><div class="scs">after R1</div></div>
+      <div class="sc"><div class="scl">Eliminated</div><div class="scv" style="color:var(--muted)">0</div><div class="scs">R1 = safe</div></div>
+      <div class="sc"><div class="scl">Next Drop R2</div><div class="scv" style="color:var(--red)">20</div><div class="scs">lowest weekly scores cut</div></div>
+    </div>
+    <div class="sh"><div class="sht">Eliminated Last Round</div><div class="shl"></div></div>
+    <div class="tw"><div class="tw-scroll"><table><thead><tr><th>Coach</th><th>Team</th><th>Score</th><th>Round</th></tr></thead>
+    <tbody><tr><td colspan="4" style="text-align:center;color:var(--muted);padding:2rem;font-size:.875rem">No eliminations in Round 1.</td></tr></tbody></table></div></div>
+    <div class="sh"><div class="sht">Full Drop Schedule</div><div class="shl"></div></div>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.75rem;align-items:center;">
+      <span style="font-size:.7rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.08em">% cut:</span>
+      <span style="font-size:.72rem;color:var(--green);background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.25);border-radius:4px;padding:.1rem .4rem">0%</span>
+      <span style="font-size:.72rem;color:var(--blue);background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.25);border-radius:4px;padding:.1rem .4rem">&lt;5%</span>
+      <span style="font-size:.72rem;color:var(--accent);background:rgba(240,180,41,.1);border:1px solid rgba(240,180,41,.25);border-radius:4px;padding:.1rem .4rem">&lt;10%</span>
+      <span style="font-size:.72rem;color:#fb923c;background:rgba(251,146,60,.1);border:1px solid rgba(251,146,60,.25);border-radius:4px;padding:.1rem .4rem">&lt;20%</span>
+      <span style="font-size:.72rem;color:var(--red);background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.25);border-radius:4px;padding:.1rem .4rem">&lt;35%</span>
+      <span style="font-size:.72rem;color:#ef4444;background:rgba(220,38,38,.1);border:1px solid rgba(220,38,38,.25);border-radius:4px;padding:.1rem .4rem">35%+</span>
+    </div>
+    <div class="sg" id="sgrid"></div>
+    <div class="sh"><div class="sht">All Coaches — Survival Status</div><div class="shl"></div></div>
+    <div class="fr"><span class="fil">Filter:</span><input class="fi" id="c2fi" placeholder="Search…" oninput="fC2()"></div>
+    <div class="tw"><div class="tw-scroll"><table><thead><tr><th>#</th><th>Coach</th><th class="scol-hdr">R1</th><th>Status</th></tr></thead><tbody id="c2b"></tbody></table></div></div>
+    <div class="pager" id="c2pg"></div>
+  </div>
+
+  <!-- VIP COMP -->
+  <div class="panel" id="panel-vip">
+    <div class="vip-banner">
+      <div class="vip-banner-icon">⭐</div>
+      <div>
+        <h2>VIP Overall Comp</h2>
+        <p>Exclusive to VIP members. Cumulative season-long standings using each VIP's designated entry. One entry per coach. <span class="dyn-vip-count">68</span> competitors.</p>
+      </div>
+    </div>
+    <div class="sr">
+      <div class="sc"><div class="scl">VIP Entries</div><div class="scv" style="color:var(--vip)">68</div><div class="scs">competitors</div></div>
+      <div class="sc"><div class="scl">Current Leader</div><div class="scv" style="font-size:1rem;margin-top:.2rem" id="vip-leader">—</div><div class="scs">after R1</div></div>
+      <div class="sc"><div class="scl">Top Score R1</div><div class="scv" style="color:var(--accent)" id="vip-top">—</div><div class="scs" id="vip-top-team">—</div></div>
+      <div class="sc"><div class="scl">1st Prize</div><div class="scv" style="color:var(--vip);font-size:1.3rem;margin-top:.2rem">$500</div><div class="scs">+ $100 credit for 2nd</div></div>
+    </div>
+    <div class="sh"><div class="sht">VIP Leaderboard</div><div class="shl"></div></div>
+    <div class="fr"><span class="fil">Filter:</span><input class="fi" id="vipfi" placeholder="Search VIP coach or team…" oninput="fVip()"></div>
+    <div class="tw"><div class="tw-scroll"><table id="vipt">
+      <thead><tr><th>#</th><th>Coach</th><th class="scol-hdr">R1</th><th>Total</th><th>Overall Rank</th></tr></thead>
+      <tbody id="vipb"></tbody>
+    </table></div></div>
+    <div class="pager" id="vippg"></div>
+  </div>
+
+  <!-- PRIZES -->
+  <div class="panel" id="panel-prizes">
+    <div class="sh" style="margin-top:0"><div class="sht">Prize Pool — 2026 Season</div><div class="shl"></div></div>
+
+    <!-- MAIN SEASON COMP -->
+    <div style="border:1px solid rgba(26,58,143,.6);border-radius:16px;overflow:hidden;margin-bottom:2rem;">
+      <div style="background:linear-gradient(135deg,rgba(26,58,143,.5),rgba(26,58,143,.25));padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(26,58,143,.4);">
+        <div style="display:flex;align-items:center;gap:.75rem;">
+          <span style="font-size:1.4rem">🏟️</span>
+          <div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.06em;color:#fff">Main Season Comp</div>
+            <div style="font-size:.72rem;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.1em">Phase 2 Tiers · Phase 3 Knockout</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:.4rem;flex-wrap:wrap;justify-content:flex-end">
+          <span class="badge bt1">Tier 1</span>
+          <span class="badge bt2">Tier 2</span>
+          <span class="badge bt3">Tier 3</span>
+          <span class="badge" style="background:rgba(240,180,41,.15);color:var(--accent);border:1px solid rgba(240,180,41,.3)">Phase 3</span>
+        </div>
+      </div>
+      <div style="padding:1.5rem;">
+        <div class="prizes-grid">
+          <div class="prize-card blue">
+            <div class="prize-title"><span class="badge bt1" style="margin-bottom:.4rem;display:inline-flex">Tier 1</span> Premiership Winner</div>
+            <div class="prize-desc">Phase 2 winner among the top 100 coaches. Rounds 9–18.</div>
+            <div class="prize-tbc">TBC</div>
+            <div class="prize-winner">Winner: <strong>To be decided</strong></div>
+          </div>
+          <div class="prize-card blue">
+            <div class="prize-title"><span class="badge bt2" style="margin-bottom:.4rem;display:inline-flex">Tier 2</span> Championship Winner</div>
+            <div class="prize-desc">Phase 2 winner among ranks 101–200. Rounds 9–18.</div>
+            <div class="prize-tbc">TBC</div>
+            <div class="prize-winner">Winner: <strong>To be decided</strong></div>
+          </div>
+          <div class="prize-card blue">
+            <div class="prize-title"><span class="badge bt3" style="margin-bottom:.4rem;display:inline-flex">Tier 3</span> State Cup Winner</div>
+            <div class="prize-desc">Phase 2 winner among ranks 201+. Rounds 9–18.</div>
+            <div class="prize-tbc">TBC</div>
+            <div class="prize-winner">Winner: <strong>To be decided</strong></div>
+          </div>
+          <div class="prize-card gold">
+            <div class="prize-title">🏆 Phase 3 — Overall Winner</div>
+            <div class="prize-desc">Full knockout bracket winner. Rounds 19–27.</div>
+            <div class="prize-tbc">TBC</div>
+            <div class="prize-winner">Winner: <strong>To be decided</strong></div>
+          </div>
+          <div class="prize-card gold">
+            <div class="prize-title">Phase 3 — Runner Up</div>
+            <div class="prize-desc">Full knockout bracket — 2nd place. Rounds 19–27.</div>
+            <div class="prize-tbc">TBC</div>
+            <div class="prize-winner">Winner: <strong>To be decided</strong></div>
+          </div>
+          <div class="prize-card gold">
+            <div class="prize-title">Phase 3 — 3rd / 4th</div>
+            <div class="prize-desc">Full knockout bracket — semi-final losers.</div>
+            <div class="prize-tbc">TBC</div>
+            <div class="prize-winner">Winner: <strong>To be decided</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SURVIVAL KNOCKOUT -->
+    <div style="border:1px solid rgba(248,113,113,.3);border-radius:16px;overflow:hidden;margin-bottom:2rem;">
+      <div style="background:linear-gradient(135deg,rgba(220,38,38,.2),rgba(220,38,38,.08));padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(248,113,113,.2);">
+        <div style="display:flex;align-items:center;gap:.75rem;">
+          <span style="font-size:1.4rem">🎯</span>
+          <div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.06em;color:#fff">Survival Knockout</div>
+            <div style="font-size:.72rem;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.1em">Last coach standing wins</div>
+          </div>
+        </div>
+        <span class="badge balive" style="font-size:.7rem">All 27 Rounds</span>
+      </div>
+      <div style="padding:1.5rem;">
+        <div class="prizes-grid">
+          <div class="prize-card green">
+            <div class="prize-title">🎯 Last Coach Standing</div>
+            <div class="prize-desc">Sole survivor after Round 27. Weekly score, never cumulative.</div>
+            <div class="prize-tbc">TBC</div>
+            <div class="prize-winner">Winner: <strong>To be decided</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIP COMP -->
+    <div style="border:1px solid rgba(52,211,153,.3);border-radius:16px;overflow:hidden;margin-bottom:1.5rem;">
+      <div style="background:linear-gradient(135deg,rgba(52,211,153,.15),rgba(52,211,153,.05));padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(52,211,153,.2);">
+        <div style="display:flex;align-items:center;gap:.75rem;">
+          <span style="font-size:1.4rem">⭐</span>
+          <div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.06em;color:var(--vip)">VIP Overall Comp</div>
+            <div style="font-size:.72rem;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.1em">68 entries · Cumulative all season</div>
+          </div>
+        </div>
+        <span class="badge bvip dyn-vip-badge" style="font-size:.7rem">68 Entries</span>
+      </div>
+      <div style="padding:1.5rem;">
+        <div class="prizes-grid" style="margin-bottom:1rem">
+          <div class="prize-card purple">
+            <div class="prize-title">⭐ VIP Season Champion</div>
+            <div class="prize-desc">Best cumulative score across all 27 rounds among the <span class="dyn-vip-count">68</span> VIP designated entries.</div>
+            <div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--vip);letter-spacing:.04em;margin:.5rem 0;">$500</div>
+            <div class="prize-winner">Winner: <strong>To be decided</strong></div>
+          </div>
+          <div class="prize-card purple">
+            <div class="prize-title">⭐ VIP Season Runner-Up</div>
+            <div class="prize-desc">Second place in the VIP cumulative standings after 27 rounds.</div>
+            <div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--vip);letter-spacing:.04em;margin:.5rem 0;">$100 <span style="font-size:1rem;color:var(--muted)">JBFA Credit</span></div>
+            <div class="prize-winner">Winner: <strong>To be decided</strong></div>
+          </div>
+        </div>
+        <div style="background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.2);border-radius:10px;padding:.85rem 1.1rem;display:flex;align-items:flex-start;gap:.75rem;">
+          <span style="font-size:1.1rem;flex-shrink:0">⭐</span>
+          <div style="font-size:.82rem;color:var(--muted);line-height:1.6"><strong style="color:var(--vip)">VIP Jackpot Bonus</strong> — VIP members who win a prize in the <strong style="color:var(--text)">Main Season Comp</strong> or <strong style="color:var(--text)">Survival Knockout</strong> receive a <strong style="color:var(--vip)">25% bonus</strong> on top of their winnings. Does not apply to the VIP Overall Comp prizes.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sh"><div class="sht">Winnings Leaderboard</div><div class="shl"></div></div>
+    <div class="tw"><div class="tw-scroll"><table>
+      <thead><tr><th>#</th><th>Coach</th><th>Team</th><th>Comp Won</th><th>Winnings</th></tr></thead>
+      <tbody><tr><td colspan="5" style="text-align:center;color:var(--muted);padding:2rem;font-size:.875rem">No prizes awarded yet — season in progress.</td></tr></tbody>
+    </table></div></div>
+  </div>
+
+</main>
+
+<script>
+const COACHES=[
+  {rank:1,coach:"Jeremy Wirth",team:"Weststigers1",r1:1079,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:2,coach:"Joseph Cradock",team:"JosephCradock",r1:1029,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:3,coach:"Blake Whitaker",team:"Never Got The Late Mail",r1:1023,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:4,coach:"David Conlon",team:"Horrifically Gorgeous",r1:1004,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:5,coach:"Aaron Henderson",team:"Hendos Warriors",r1:1003,isVip:true,isAdmin:false,vipEntry:true,vipRank:1},
+  {rank:6,coach:"Jeremy Hubbard",team:"But I\'m a Stallion",r1:1001,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:7,coach:"Isaac Wiremu Borell-Hunt",team:"Api- Salute Dud",r1:1000,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:8,coach:"Jesse Lentini",team:"Thinkin Cleary",r1:995,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:9,coach:"Geordie Hardcastle",team:"The UnbeClearybles",r1:990,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:10,coach:"Liam Corson",team:"CASUAL BALLER",r1:990,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:11,coach:"James Phillips",team:"JPDRAGONS JBFA",r1:989,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:12,coach:"Richard Lane",team:"BUSLANE",r1:988,isVip:true,isAdmin:false,vipEntry:true,vipRank:2},
+  {rank:13,coach:"Woc Smith",team:"JBFA HOOKED NEK WEEK",r1:986,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:14,coach:"Stephen Stelmach",team:"stelmarky",r1:983,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:15,coach:"Brent Compton",team:"The Parkwood Pork Swords",r1:983,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:16,coach:"Will Taylor",team:"Bens Barber",r1:983,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:17,coach:"Finbarr Reynolds",team:"Triumph & Disaster",r1:982,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:18,coach:"Oli White",team:"Revilo\'s Raptors",r1:982,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:19,coach:"Sam Murray",team:"Brad Arthur 40-20",r1:979,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:20,coach:"Darrin Booth",team:"Daza11",r1:978,isVip:true,isAdmin:false,vipEntry:true,vipRank:3},
+  {rank:21,coach:"Sam C",team:"Carsonious",r1:978,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:22,coach:"Stuart Cane",team:"Cockatoo Stu",r1:977,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:23,coach:"Tyler Kendall",team:"Ruben Thiccy",r1:977,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:24,coach:"Callum Ferguson",team:"Fizzays Raskals",r1:977,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:25,coach:"Geordie Hardcastle",team:"Liam’s Martinis",r1:975,isVip:true,isAdmin:false,vipEntry:true,vipRank:4},
+  {rank:26,coach:"Caleb Greene",team:"Yeo win some Yeo lose some",r1:975,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:27,coach:"John Herrera",team:"Jacked Eagles",r1:975,isVip:true,isAdmin:false,vipEntry:true,vipRank:5},
+  {rank:28,coach:"Liam Doyle",team:"JBFA Elbanditos",r1:974,isVip:true,isAdmin:false,vipEntry:true,vipRank:6},
+  {rank:29,coach:"Manuel Poteri",team:"Rumble in tha Bronx",r1:974,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:30,coach:"Patrick Brennan",team:"PaddyB02",r1:974,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:31,coach:"Jason Swain",team:"Up tha boys",r1:969,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:32,coach:"Killian Slevin",team:"JBFA Slevdog",r1:969,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:33,coach:"Dave Lang",team:"Gravies",r1:968,isVip:true,isAdmin:false,vipEntry:true,vipRank:7},
+  {rank:34,coach:"Lee Stinson",team:"Pee Wee\'s Raiders",r1:965,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:35,coach:"Jeremy  Jones",team:"Jerome’s Homies",r1:964,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:36,coach:"Sean James",team:"Scrubcats",r1:964,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:37,coach:"Jared Kroeger",team:"Hellman’s Hornets",r1:963,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:38,coach:"Liam Trumble",team:"Freckle Wreckers",r1:963,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:39,coach:"Kyle Whittle",team:"JBFA Hectic 8-Ball",r1:963,isVip:true,isAdmin:false,vipEntry:true,vipRank:8},
+  {rank:40,coach:"Debbie Dixon",team:"JBFA Love the Sharks",r1:962,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:41,coach:"Glenn Wykes",team:"Guru Central",r1:962,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:42,coach:"David Moody",team:"Newcastle Eels - 2019 Winner",r1:962,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:43,coach:"Jay See Ess",team:"JBFA Jordan’s Mojo",r1:962,isVip:true,isAdmin:false,vipEntry:true,vipRank:9},
+  {rank:44,coach:"Adam Grant",team:"Grant\'s Giants",r1:961,isVip:true,isAdmin:false,vipEntry:true,vipRank:10},
+  {rank:45,coach:"Tony Martin",team:"Tozza Hammers",r1:961,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:46,coach:"Zarin Tuhua",team:"Amaiden",r1:961,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:47,coach:"Sam Motu",team:"SAMJNR77",r1:960,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:48,coach:"Jackie Ou",team:"Jingling Joes",r1:959,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:49,coach:"Jake Wood",team:"Check Out My Sombrero",r1:959,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:50,coach:"Joseph Smith",team:"SMITTYS LADS AND LEGENDS",r1:959,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:51,coach:"David Moody",team:"Singleton Bulldogs",r1:958,isVip:true,isAdmin:false,vipEntry:true,vipRank:11},
+  {rank:52,coach:"Harry Keir",team:"Savage Opress",r1:958,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:53,coach:"Jodeci Pene",team:"The Reall Warriors",r1:958,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:54,coach:"Kevin Maxted",team:"Fucksmithfield2nd",r1:958,isVip:true,isAdmin:false,vipEntry:true,vipRank:12},
+  {rank:55,coach:"Liam Weber",team:"Benny Barba\'s Bulldogs",r1:958,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:56,coach:"Caleb Metz",team:"Metz\'s",r1:957,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:57,coach:"David Bade",team:"Snake Point Wekas",r1:957,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:58,coach:"Adam Grant",team:"Adam’s Warriors88",r1:955,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:59,coach:"Peter Framhein",team:"Cleary Not Fair",r1:955,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:60,coach:"Will Morrison",team:"Setu & Forget",r1:955,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:61,coach:"Charlie Rowe",team:"darcy’s fat",r1:954,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:62,coach:"Jake Mullen",team:"Skibidii",r1:954,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:63,coach:"Amon Broadhurst",team:"TopBinsFC",r1:953,isVip:true,isAdmin:false,vipEntry:true,vipRank:13},
+  {rank:64,coach:"Eli Johannessen",team:"NSW DONT GET ORIGIN",r1:953,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:65,coach:"Ethan Jeong",team:"FIVELINES",r1:953,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:66,coach:"Soren Moon",team:"Sozsta",r1:953,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:67,coach:"Don Cominos",team:"TwoSeasonWonder",r1:953,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:68,coach:"Darryl Kereopa",team:"The Mattress Room",r1:952,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:69,coach:"Jake Vincent",team:"JBFA YeoBeauty",r1:952,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:70,coach:"Rory Diver",team:"ICU2 Jerry Jerry",r1:952,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:71,coach:"Jayden Addei",team:"yrnjay",r1:951,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:72,coach:"Chris Cook",team:"Bunny boy brothers LMC",r1:949,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:73,coach:"James Jackson",team:"Cristian",r1:949,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:74,coach:"Matthew Sylvander",team:"Deardon2Drinkwater JBFA",r1:949,isVip:true,isAdmin:false,vipEntry:true,vipRank:14},
+  {rank:75,coach:"Dylan Martin",team:"The Tongan Fisherman",r1:948,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:76,coach:"Paul Steele",team:"JBFA Sound the Alarm",r1:948,isVip:true,isAdmin:false,vipEntry:true,vipRank:15},
+  {rank:77,coach:"Don Cominos",team:"OneSeasonWonder",r1:947,isVip:true,isAdmin:false,vipEntry:true,vipRank:16},
+  {rank:78,coach:"Sam Owen",team:"Sam Owen",r1:947,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:79,coach:"William Hall",team:"Probly Popd Aneky",r1:947,isVip:true,isAdmin:false,vipEntry:true,vipRank:17},
+  {rank:80,coach:"Brandon Trpezanovski",team:"Brandon’s lil Whores",r1:946,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:81,coach:"Andrew Rumball",team:"JBFA KickAss Boys",r1:945,isVip:true,isAdmin:false,vipEntry:true,vipRank:18},
+  {rank:82,coach:"Benjamin Wright",team:"Wrighty’s Golden Team",r1:945,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:83,coach:"Jesse Lockyer",team:"MADHATTER’S",r1:945,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:84,coach:"Matty Van Loon",team:"Loonatics",r1:945,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:85,coach:"Shane Vos",team:"its Vossy",r1:945,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:86,coach:"Simon Jones",team:"Bondi Spy",r1:945,isVip:true,isAdmin:false,vipEntry:true,vipRank:19},
+  {rank:87,coach:"Jakeb Brown",team:"TuiWahsa-Sheck",r1:944,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:88,coach:"Kyle Ryland",team:"Woolston War Pigs",r1:944,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:89,coach:"Sam Kennedy",team:"Chan Kum Bong",r1:944,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:90,coach:"Selwynn Kraus",team:"Flagstone Flannies",r1:944,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:91,coach:"Blake Fowke",team:"Kotoni Baggs",r1:943,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:92,coach:"Brad Malone",team:"Bugsy\'s Brawlers",r1:943,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:93,coach:"Jamie Vooght",team:"Evilda",r1:943,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:94,coach:"Jarrod Etherington",team:"Frosty Mangoes",r1:943,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:95,coach:"Joey Braund",team:"Dennis Burgess Enthusiast",r1:943,isVip:true,isAdmin:false,vipEntry:true,vipRank:20},
+  {rank:96,coach:"Joshua Windsor",team:"Money8all",r1:943,isVip:true,isAdmin:false,vipEntry:true,vipRank:21},
+  {rank:97,coach:"Kyle Goldsack",team:"Trell-yeah",r1:943,isVip:true,isAdmin:false,vipEntry:true,vipRank:22},
+  {rank:98,coach:"Riley Connor",team:"Vossy for PM - Talking League",r1:943,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:99,coach:"Craig Sloane",team:"Crack12",r1:942,isVip:true,isAdmin:false,vipEntry:true,vipRank:23},
+  {rank:100,coach:"Brendan Riche",team:"Sukkar May Penisini To\'a Knight",r1:941,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:101,coach:"Jake Christie",team:"Doggies 13 Plus’s",r1:941,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:102,coach:"Joe Auimatagi",team:"Kainga dat shi cuzz",r1:941,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:103,coach:"Jacques Millichamp",team:"Murray Me Cam",r1:940,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:104,coach:"Ryan Heathcote",team:"Charging Rhinos",r1:940,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:105,coach:"Stephen Beatty",team:"JBFA BEATO83",r1:940,isVip:true,isAdmin:false,vipEntry:true,vipRank:24},
+  {rank:106,coach:"Jack Ferguson",team:"Dreamteam253",r1:940,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:107,coach:"Michael Doig",team:"Resting Mitch Face XVII",r1:939,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:108,coach:"John Herrera",team:"68th is Back",r1:938,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:109,coach:"Evan Cook",team:"metzgerhund",r1:937,isVip:true,isAdmin:false,vipEntry:true,vipRank:25},
+  {rank:110,coach:"Jay See Ess",team:"Kobe’s Mojo",r1:937,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:111,coach:"Jack Feeney",team:"The Bear Necessities",r1:936,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:112,coach:"Joshua Forrest-White",team:"The Savvy Davvys",r1:936,isVip:true,isAdmin:false,vipEntry:true,vipRank:26},
+  {rank:113,coach:"Abdul Jabado",team:"WEAK KIRAZY SALMON",r1:935,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:114,coach:"Hayden Hunter",team:"JBFA Superstorm",r1:935,isVip:true,isAdmin:false,vipEntry:true,vipRank:27},
+  {rank:115,coach:"Henry Budd",team:"Henrys Hobos",r1:935,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:116,coach:"Isobel Saccaro",team:"IS6300",r1:935,isVip:true,isAdmin:false,vipEntry:true,vipRank:28},
+  {rank:117,coach:"Les Farah",team:"Nathan Ramjet",r1:935,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:118,coach:"JP",team:"80Mint",r1:934,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:119,coach:"Jason Wathall",team:"Duplex",r1:934,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:120,coach:"Shane Krautz",team:"Skrautz",r1:934,isVip:true,isAdmin:false,vipEntry:true,vipRank:29},
+  {rank:121,coach:"Bailey Bajic",team:"TurkeyNugget18",r1:933,isVip:true,isAdmin:false,vipEntry:true,vipRank:30},
+  {rank:122,coach:"Chris Breese",team:"Oldirty",r1:933,isVip:true,isAdmin:false,vipEntry:true,vipRank:31},
+  {rank:123,coach:"Jayden Brown",team:"JBFA Fruitbat",r1:933,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:124,coach:"Paul Steele",team:"Dinner 4 Tu",r1:933,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:125,coach:"Kingi Kamariera",team:"KINGZWORLD",r1:933,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:126,coach:"Scott Fulcher",team:"trell mit dally m",r1:932,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:127,coach:"Tom Hore",team:"Deeply Closeted Storm Fan",r1:932,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:128,coach:"Tyson Hullena",team:"Masterton Magpies",r1:932,isVip:true,isAdmin:false,vipEntry:true,vipRank:32},
+  {rank:129,coach:"Christian Iodice",team:"REEDZ TEEM 6",r1:931,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:130,coach:"Dan Keen",team:"FuqBuk",r1:931,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:131,coach:"Jamie Brown",team:"JB Fantasy Analysis",r1:931,isVip:false,isAdmin:true,vipEntry:true,vipRank:33},
+  {rank:132,coach:"Mathew Belyea",team:"MangroveMatty",r1:931,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:133,coach:"Matt Henderson",team:"Mrhenderson",r1:931,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:134,coach:"Matthew Jackson",team:"Wackos Warriors",r1:931,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:135,coach:"Mitch Deguara",team:"This Time Hunt Held It",r1:931,isVip:true,isAdmin:false,vipEntry:true,vipRank:34},
+  {rank:136,coach:"Zac Cohen",team:"Choamps",r1:931,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:137,coach:"Jake Venn",team:"JBFA jv724",r1:930,isVip:true,isAdmin:false,vipEntry:true,vipRank:35},
+  {rank:138,coach:"Martin Dalton",team:"KAMAEMCO",r1:930,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:139,coach:"Cameron Jennings",team:"Ben Hunt’s Hands",r1:929,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:140,coach:"Elijah Moors",team:"Big Bundas",r1:929,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:141,coach:"Jack Cranston",team:"Cranno69",r1:929,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:142,coach:"Johno Fitch",team:"JBFA Football Factory",r1:929,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:143,coach:"Liam King",team:"Wong Option",r1:928,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:144,coach:"Pedro Harding",team:"Pistols Panthers",r1:928,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:145,coach:"Pvrko Prk",team:"Danikaring My Mason",r1:927,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:146,coach:"Cam Mackellar",team:"Kamoshika",r1:926,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:147,coach:"Kent Somerville",team:"Cleary Haas a Plan",r1:926,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:148,coach:"Kye Beck",team:"Kyeskillersss",r1:926,isVip:true,isAdmin:false,vipEntry:true,vipRank:36},
+  {rank:149,coach:"Matthew Sylvander",team:"RednoseReindeer",r1:926,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:150,coach:"Sam Mcalister",team:"Ohoka oranges",r1:926,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:151,coach:"Adam Thomas",team:"NFE",r1:925,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:152,coach:"Brodee Barrett",team:"DonkRylesDynasty",r1:925,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:153,coach:"James Peters",team:"Schiller\'s List",r1:925,isVip:true,isAdmin:false,vipEntry:true,vipRank:37},
+  {rank:154,coach:"Lloyd Mitchell",team:"QLD49",r1:925,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:155,coach:"Matt Lyons",team:"Chicken Winging It",r1:925,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:156,coach:"Nick Bowring",team:"Fasi your Mulitalo",r1:925,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:157,coach:"Theo Veeren",team:"Threat Level Midnight NRL",r1:925,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:158,coach:"James Brooking",team:"Bye round lover",r1:925,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:159,coach:"Caleb Williams",team:"To’o Sexy For This Shirt",r1:924,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:160,coach:"Gregory Simon",team:"Channel4 News Team",r1:923,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:161,coach:"Lazar Bodiroza",team:"Get Tuivasa Shrektttt",r1:923,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:162,coach:"Imran Ayoubi",team:"Arab Fantasy",r1:922,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:163,coach:"Kim Clayton",team:"JBFA SkrumBags",r1:922,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:164,coach:"Matt Thompson",team:"JBFA HaasNoTrades",r1:922,isVip:true,isAdmin:false,vipEntry:true,vipRank:38},
+  {rank:165,coach:"Zakk Patterson",team:"Nick Politis Budget",r1:922,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:166,coach:"Samuel Hooper",team:"Hoopers365",r1:922,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:167,coach:"Anthony Kidd",team:"JBFA Aurum",r1:921,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:168,coach:"Marcus Callander",team:"Marcus Callander",r1:921,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:169,coach:"Sam Wilson",team:"Squirrel Gripperz",r1:921,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:170,coach:"Andrew Luu",team:"Rage Trade Mondays",r1:920,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:171,coach:"Dane Taleni",team:"Bad News Browns",r1:920,isVip:true,isAdmin:false,vipEntry:true,vipRank:39},
+  {rank:172,coach:"Justin Daly",team:"Knee Capped",r1:920,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:173,coach:"Krik Turnre",team:"selgae aes hagnirraw ylnam",r1:920,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:174,coach:"Michael Maung",team:"The Burman Mongoose",r1:920,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:175,coach:"Brodie Monaghan",team:"Up the Bois",r1:919,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:176,coach:"Ian Webster",team:"Canberra isol",r1:919,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:177,coach:"Gary Vogel",team:"Garysboys",r1:918,isVip:true,isAdmin:false,vipEntry:true,vipRank:40},
+  {rank:178,coach:"Robin Smith",team:"BobsBigBadBlueBulguruBulldogs",r1:918,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:179,coach:"Lj Andrews",team:"LeBronco James",r1:918,isVip:true,isAdmin:false,vipEntry:true,vipRank:41},
+  {rank:180,coach:"Andrew Phillipps",team:"Can’t Stop Trading",r1:917,isVip:true,isAdmin:false,vipEntry:true,vipRank:42},
+  {rank:181,coach:"Blake Whipp",team:"Whippys Fantasy",r1:917,isVip:true,isAdmin:false,vipEntry:true,vipRank:43},
+  {rank:182,coach:"David Bugler",team:"Hopper",r1:917,isVip:true,isAdmin:false,vipEntry:true,vipRank:44},
+  {rank:183,coach:"Hamish Callander",team:"Bray park bandaids",r1:917,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:184,coach:"Heath Fitzgerald",team:"JBFA Roundtheleggzzz",r1:917,isVip:true,isAdmin:false,vipEntry:true,vipRank:45},
+  {rank:185,coach:"James Hoggett",team:"Jim’s Dream 13",r1:917,isVip:true,isAdmin:false,vipEntry:true,vipRank:46},
+  {rank:186,coach:"Heath Fitzgerald",team:"JBFA Heath\'s Blackbookers",r1:916,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:187,coach:"Kingi Kamariera",team:"Stacked az Bro",r1:916,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:188,coach:"Raymond Timbery",team:"TimberyJuice",r1:916,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:189,coach:"William Walter Geary",team:"dids team",r1:916,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:190,coach:"Joseph Coutts",team:"JBFA Payne in the Haaas",r1:915,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:191,coach:"Callum Ferguson",team:"Random As Funk",r1:914,isVip:true,isAdmin:false,vipEntry:true,vipRank:47},
+  {rank:192,coach:"Liam Trumble",team:"Trumble",r1:914,isVip:true,isAdmin:false,vipEntry:true,vipRank:48},
+  {rank:193,coach:"Mark Wilson",team:"BigBunnyHass",r1:914,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:194,coach:"Hayden Niehus",team:"JBFA Johnathan Hit You On The Burston\'s",r1:913,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:195,coach:"Jacob Pang",team:"PangJs Pandas",r1:913,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:196,coach:"Nigel Bowling",team:"Boozecluez",r1:913,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:197,coach:"Bevan Hoĺzheimer",team:"Rogue Don\'t know newcomers",r1:912,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:198,coach:"David Papponetti",team:"Pappa Dogs",r1:912,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:199,coach:"Gianni Bouzoukis",team:"Barba Blak Sheep",r1:912,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:200,coach:"Jamie Sisley",team:"White Zombies",r1:912,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:201,coach:"Harry Fuller",team:"Fuller Fantasy",r1:911,isVip:true,isAdmin:false,vipEntry:true,vipRank:49},
+  {rank:202,coach:"Mark Johnston",team:"johnohardyards",r1:910,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:203,coach:"Nash B",team:"Pumba’s Pigs",r1:910,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:204,coach:"Hayden Pewhairangi",team:"BIG PUMP",r1:910,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:205,coach:"Craig Ingram",team:"JBFA Scorchers",r1:910,isVip:true,isAdmin:false,vipEntry:true,vipRank:50},
+  {rank:206,coach:"Andy Ryan",team:"WWJTD",r1:909,isVip:true,isAdmin:false,vipEntry:true,vipRank:51},
+  {rank:207,coach:"Jaz Brady",team:"jazman84",r1:908,isVip:true,isAdmin:false,vipEntry:true,vipRank:52},
+  {rank:208,coach:"Logan Flutey",team:"Marty 5711",r1:908,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:209,coach:"Mike Washington",team:"INJURY MAGNET",r1:908,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:210,coach:"Tyson Coles",team:"Bennett Stole My Haas",r1:908,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:211,coach:"Anthony L",team:"Blocker ROACHES",r1:907,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:212,coach:"Jae Starling",team:"JPSTAR",r1:907,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:213,coach:"Lj Andrews",team:"Minor Prem Madhouse",r1:907,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:214,coach:"Luke Saragozza",team:"Saragozza Raptors",r1:907,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:215,coach:"Liam Prichard",team:"Hass to the Rabbitohs 2027",r1:906,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:216,coach:"Jarrad Knight",team:"Blk Mumba",r1:905,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:217,coach:"Kyle Whittle",team:"JBFA Hectic 8-ball 2",r1:905,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:218,coach:"Qio Tavanavanua",team:"team big vudi",r1:905,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:219,coach:"Josh Malouf",team:"Malo’s Dogs",r1:904,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:220,coach:"Ayden Cashman",team:"Shower Slipper",r1:903,isVip:true,isAdmin:false,vipEntry:true,vipRank:53},
+  {rank:221,coach:"Cameron Bridge",team:"DGCS 2",r1:903,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:222,coach:"Jessie Hammond",team:"Woorabindies",r1:903,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:223,coach:"Lachlan Smythe",team:"Smythe05",r1:903,isVip:true,isAdmin:false,vipEntry:true,vipRank:54},
+  {rank:224,coach:"Mark Lawless",team:"LA Knight",r1:903,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:225,coach:"Max Cockrem",team:"LickMyCockrem",r1:903,isVip:true,isAdmin:false,vipEntry:true,vipRank:55},
+  {rank:226,coach:"Greg Peters",team:"To\'o Good For Yeo",r1:901,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:227,coach:"Liam Connelly",team:"LiamC",r1:901,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:228,coach:"Oskar Morrison",team:"HughRooChu",r1:901,isVip:true,isAdmin:false,vipEntry:true,vipRank:56},
+  {rank:229,coach:"Xavier Cook",team:"Waiharara Worriers",r1:900,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:230,coach:"Aaron Johnson",team:"Eagles - Nest",r1:899,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:231,coach:"David Hindson",team:"Fatter pigs",r1:899,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:232,coach:"Dion Willcocks",team:"Green Schist Hooligans",r1:899,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:233,coach:"Bevan Stratton",team:"JBFA Bevs Mungo Team",r1:898,isVip:true,isAdmin:false,vipEntry:true,vipRank:57},
+  {rank:234,coach:"Matthew Sahota",team:"Sahota’s Benchwarmers",r1:898,isVip:true,isAdmin:false,vipEntry:true,vipRank:58},
+  {rank:235,coach:"Nikki Mcintosh",team:"Pretendy Chasers",r1:898,isVip:true,isAdmin:false,vipEntry:true,vipRank:59},
+  {rank:236,coach:"Wayne Ritchie",team:"BIG black DOG",r1:898,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:237,coach:"James Taylor",team:"Six2Go",r1:897,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:238,coach:"Mark Coleman",team:"EzraGramm",r1:897,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:239,coach:"Jayme Waka Hemi",team:"Waka571p",r1:897,isVip:true,isAdmin:false,vipEntry:true,vipRank:60},
+  {rank:240,coach:"Dean Smith",team:"Jenna Talia WTA",r1:896,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:241,coach:"Jayme Waka Hemi",team:"JBFA Hemi",r1:895,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:242,coach:"Ryan Bailey",team:"Stealthracing",r1:895,isVip:true,isAdmin:false,vipEntry:true,vipRank:61},
+  {rank:243,coach:"Aleki Morris-Lome",team:"Leki’s Boys",r1:894,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:244,coach:"Thomas Condon",team:"BenSickHunt",r1:894,isVip:true,isAdmin:false,vipEntry:true,vipRank:62},
+  {rank:245,coach:"Kane Flemming",team:"Coochiemen",r1:892,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:246,coach:"Kieran Mckay",team:"Back to Back Wooden Spooners",r1:892,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:247,coach:"James Craig",team:"Whangaehu Wizards",r1:892,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:248,coach:"Jordan Visser",team:"VissA\'s Vikings",r1:891,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:249,coach:"Bowen Refalo",team:"Doueihing Yeo Mam",r1:890,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:250,coach:"Dylan Lawson",team:"DBagzz",r1:889,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:251,coach:"Alex Jennings",team:"Kalyns Ponga",r1:888,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:252,coach:"Andrew Hobbs",team:"Bone Crushing Ballerina",r1:887,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:253,coach:"Cole De Git",team:"Haas Been",r1:887,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:254,coach:"Marcus Burst",team:"Yeooo Boyyy",r1:887,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:255,coach:"Matthew Keyworth",team:"JBFA FC",r1:887,isVip:true,isAdmin:false,vipEntry:true,vipRank:63},
+  {rank:256,coach:"Chris Smith",team:"Sharkies uk",r1:886,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:257,coach:"John Curtin",team:"Jockey\'s Jokers",r1:886,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:258,coach:"Max Ennis",team:"Max’s Magic Monkeys",r1:886,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:259,coach:"Thomas Procter",team:"Dark Arts",r1:886,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:260,coach:"Brock Haidle",team:"Truckin Useless",r1:885,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:261,coach:"Matthew Robbins",team:"Just a Stormchaser",r1:885,isVip:true,isAdmin:false,vipEntry:true,vipRank:64},
+  {rank:262,coach:"Sally Carter",team:"Cicada",r1:885,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:263,coach:"Benji Leonard",team:"Ben\'s Bois",r1:884,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:264,coach:"Kalem Bidois",team:"TUMZ88",r1:883,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:265,coach:"Nate Schreurs",team:"Ooo Long Johnson",r1:883,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:266,coach:"Joel Despea",team:"Typsy Gypsy",r1:882,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:267,coach:"Mohamad Sibassi",team:"Bench Warmer Sibassi",r1:882,isVip:true,isAdmin:false,vipEntry:true,vipRank:65},
+  {rank:268,coach:"Michael Whitford",team:"Whitson Warriors",r1:879,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:269,coach:"Glen Surjadinata",team:"Le Tryads",r1:878,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:270,coach:"Andrew Wilson",team:"TheCracker",r1:875,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:271,coach:"Braithan Collins",team:"364mafia",r1:874,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:272,coach:"Bradley Horne",team:"Hornedogs",r1:872,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:273,coach:"Austin Murphy",team:"NRLFA heilum luki’s my pookie",r1:871,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:274,coach:"Kyle Goldsack",team:"Cleary Out Of Options",r1:869,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:275,coach:"Hayden Pewhairangi",team:"Haydz Dog Pound",r1:869,isVip:true,isAdmin:false,vipEntry:true,vipRank:66},
+  {rank:276,coach:"Reece Hughes",team:"Hughesy3939",r1:868,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:277,coach:"Skye Brooks",team:"Scrum And Coke 98",r1:868,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:278,coach:"Jeffrey Topping",team:"Devils Donkeys",r1:865,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:279,coach:"Kelvin Danielson",team:"The WAH-Tang Clan",r1:864,isVip:true,isAdmin:false,vipEntry:true,vipRank:67},
+  {rank:280,coach:"Jake Mo",team:"Manu Chiefs",r1:859,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:281,coach:"Katie Jane",team:"K80s",r1:856,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:282,coach:"Tye Sheather",team:"Bonnie Blue and Gold Eels",r1:856,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:283,coach:"Martin Griffiths",team:"Griffs Greats 26",r1:848,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:284,coach:"Paul Humphries",team:"TRASH GORDON",r1:848,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:285,coach:"Russell Metge",team:"Up the Wahs 95",r1:847,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:286,coach:"Hayden Wise",team:"Wise23",r1:845,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:287,coach:"Toby Mccaw",team:"Filled To The Brim Son",r1:845,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:288,coach:"James Peters",team:"JBFA What about Capewell",r1:842,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:289,coach:"Steve Toyer",team:"JBFA Mybestteam",r1:841,isVip:true,isAdmin:false,vipEntry:true,vipRank:68},
+  {rank:290,coach:"Sam Eaton",team:"Sam\'s Meatheads",r1:840,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:291,coach:"Craig Ingram",team:"JBFA The Scorchers",r1:835,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:292,coach:"David Mckenzie",team:"DMack Entertainers",r1:826,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
+  {rank:293,coach:"Hayden Moore",team:"Stocklands Mooseknuckles",r1:817,isVip:false,isAdmin:false,vipEntry:false,vipRank:null}
+];
+
+const DROP=[{r:1,d:0},{r:2,d:20},{r:3,d:20},{r:4,d:20},{r:5,d:15},{r:6,d:15},{r:7,d:15},{r:8,d:15},{r:9,d:15},{r:10,d:15},{r:11,d:15},{r:12,d:15},{r:13,d:15},{r:14,d:15},{r:15,d:15},{r:16,d:10},{r:17,d:10},{r:18,d:8},{r:19,d:7},{r:20,d:5},{r:21,d:5},{r:22,d:4},{r:23,d:4},{r:24,d:4},{r:25,d:4},{r:26,d:4},{r:27,d:2}];
+const CUR=1,T1=100,T2=200,AVG=926;
+const SCOL=CUR===1?'R1':'Total';
+// Prize data — update when confirmed
+const PRIZES={p3winner:null,p3runner:null,p3third:null,tier1:null,tier2:null,tier3:null,survival:null,vip:null};
+// Coach winnings — update when prizes awarded
+const WINNINGS={};
+
+// ── HELPERS ───────────────────────────────────────────────────────────────
+function isVip(c){return c.isVip||c.isAdmin;}
+const CHAMP_2025='Andrew Phillipps';
+const RU_2025='Jake Venn';
+const PODCASTERS=['Jamie Brown','Mitch Deguara','Nikki Mcintosh','Matt Thompson'];
+const COMMISSIONER='Don Cominos';
+function vipTag(c){
+  var tags='';
+  if(c.isAdmin) tags+='<span class="admin">Admin</span>';
+  else if(c.isVip) tags+='<span class="vip">★ VIP</span>';
+  if(c.coach===CHAMP_2025) tags+='<span class="badge bchamp" style="line-height:1.25;text-align:center;padding:.2rem .5rem">✦ 2025 Overall<br>Winner</span>';
+  if(c.coach===RU_2025) tags+='<span class="badge bru" style="line-height:1.25;text-align:center;padding:.2rem .5rem">✦ 2025 Overall<br>Runner-Up</span>';
+  if(PODCASTERS.indexOf(c.coach)>=0) tags+='<span class="tip" onclick="tipTap(this)"><span class="tiptext">JBFA Podcaster</span><span style="font-size:.85em;opacity:.8;margin-left:1px">🎙️</span></span>';
+  if(c.coach===COMMISSIONER) tags+='<span class="tip" onclick="tipTap(this)"><span class="tiptext">League Commissioner</span><span style="font-size:.8em;opacity:.6;margin-left:2px">⚙️</span></span>';
+  if(c.coach==='Chris Cook') tags+='<span class="tip" onclick="tipTap(this)"><span class="tiptext">Stamp yo feet</span><span style="font-size:.8em;opacity:.75;margin-left:2px">🐇</span></span>';
+  return tags;
+}
+function getTier(r){return r<=T1?1:r<=T2?2:3;}
+function tb(r,l){
+  var t=getTier(r),cls=['bt1','bt2','bt3'][t-1];
+  var lbl=l?['Tier 1 — Premiership','Tier 2 — Championship','Tier 3 — State Cup'][t-1]:['T1','T2','T3'][t-1];
+  return '<span class="badge '+cls+'">'+lbl+'</span>';
+}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function ini(n){return n.split(' ').map(function(w){return w[0]||''}).join('').slice(0,2).toUpperCase();}
+function winnings(coachName){
+  var w=WINNINGS[coachName];
+  return w?'$'+w.toLocaleString():null;
+}
+var medals=['🥇','🥈','🥉'];
+
+// ── TABS ──────────────────────────────────────────────────────────────────
+var curTab='ov';
+function showTab(e,id){
+  document.getElementById('cv').classList.remove('open');
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.nb').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('panel-'+id).classList.add('active');
+  if(e&&e.target) e.target.classList.add('active');
+  curTab=id;
+}
+function goHome(){showTab(null,'ov');document.getElementById('nb-ov').classList.add('active');}
+
+// ── VIP SORTED LIST ───────────────────────────────────────────────────────
+var VIP_LIST = COACHES.filter(function(c){return c.vipEntry;}).sort(function(a,b){return b.r1-a.r1;});
+VIP_LIST.forEach(function(c,i){c.vipRankCalc=i+1;});
+
+// ── COACH VIEW ────────────────────────────────────────────────────────────
+function showCoach(rank){
+  var c=COACHES.find(function(x){return x.rank===rank;});
+  if(!c) return;
+  var t=getTier(rank),tname=['Tier 1 — Premiership','Tier 2 — Championship','Tier 3 — State Cup'][t-1];
+  var diff=c.r1-AVG,pct=Math.round((rank/COACHES.length)*100);
+  var allE=COACHES.filter(function(x){return x.coach===c.coach;});
+  var vipE=VIP_LIST.find(function(x){return x.coach===c.coach;});
+  var w=winnings(c.coach);
+
+  // multi-entry table
+  var multiH='';
+  if(allE.length>1){
+    multiH='<div class="cvsec"><div class="cvsect">All Entries for '+esc(c.coach)+'</div><table style="width:100%;border-collapse:collapse;font-size:.85rem"><thead><tr style="border-bottom:1px solid var(--border)"><th style="padding:.4rem .5rem;text-align:left;color:var(--muted);font-size:.7rem;text-transform:uppercase">Team</th><th style="padding:.4rem .5rem;text-align:left;color:var(--muted);font-size:.7rem;text-transform:uppercase">R1</th><th style="padding:.4rem .5rem;text-align:left;color:var(--muted);font-size:.7rem;text-transform:uppercase">Rank</th><th style="padding:.4rem .5rem;text-align:left;color:var(--muted);font-size:.7rem;text-transform:uppercase">VIP Entry</th></tr></thead><tbody>';
+    allE.forEach(function(e2){
+      var hi=e2.rank===rank;
+      multiH+='<tr style="border-bottom:1px solid var(--border);'+(hi?'background:rgba(240,180,41,.06)':'')+'"><td style="padding:.5rem;font-weight:'+(hi?'700':'400')+'">'+esc(e2.team)+(hi?' ◀':'')+'</td><td style="padding:.5rem;font-family:Bebas Neue,sans-serif">'+e2.r1+'</td><td style="padding:.5rem;font-family:Bebas Neue,sans-serif">#'+e2.rank+'</td><td style="padding:.5rem">'+(e2.vipEntry?'<span class="vip">★ VIP Entry</span>':'—')+'</td></tr>';
+    });
+    multiH+='</tbody></table></div>';
+  }
+
+  // buffer text
+  var buf='';
+  if(t===1) buf='<strong style="color:var(--green)">'+(T1-rank+1)+' place(s) inside</strong> the Tier 1 cut.';
+  else if(t===2) buf='<strong style="color:var(--accent)">'+(rank-T1)+' place(s) outside</strong> Tier 1. Need to gain '+(rank-T1)+' place(s).';
+  else buf='<strong style="color:var(--accent)">'+(rank-T2)+' place(s) outside</strong> Tier 2.';
+
+  // vip status
+  var vipH='';
+  if(isVip(c)){
+    if(c.vipEntry){
+      vipH='<div class="cvsec"><div class="cvsect">⭐ VIP Overall Comp</div><p style="font-size:.875rem;color:var(--muted);line-height:1.65">This is your <strong style="color:var(--text)">VIP designated entry</strong>. Currently ranked <strong style="color:var(--vip)">#'+(vipE?vipE.vipRankCalc:'—')+'</strong> of '+VIP_LIST.length+' in the VIP comp with '+c.r1+' points.</p></div>';
+    } else {
+      var vE=VIP_LIST.find(function(x){return x.coach===c.coach;});
+      vipH='<div class="cvsec"><div class="cvsect">⭐ VIP Overall Comp</div><p style="font-size:.875rem;color:var(--muted);line-height:1.65">You are a VIP but this is not your VIP designated entry.'+(vE?' Your VIP entry is <strong style="color:var(--text)">'+esc(vE.team)+'</strong> ranked #'+vE.vipRankCalc+' of '+VIP_LIST.length+' in the VIP comp.':'')+'</p></div>';
+    }
+  }
+
+  // winnings section
+  var winH='<div class="cvsec"><div class="cvsect">🏆 Winnings</div>'+(w?'<p style="font-size:.875rem;color:var(--muted)">Total winnings: <strong style="color:var(--accent);font-size:1.1rem">'+w+'</strong></p>':'<p style="font-size:.875rem;color:var(--muted)">No prizes awarded yet — season in progress. All prize pools are TBC.</p>')+'</div>';
+
+  document.getElementById('cvc').innerHTML=
+    '<div class="cvhero">'+
+      '<div class="cvav">'+ini(c.coach)+'</div>'+
+      '<div style="flex:1">'+
+        '<div class="cvn">'+esc(c.coach)+vipTag(c)+'</div>'+
+        '<div class="cvt">'+esc(c.team)+'</div>'+
+        '<div class="cvtags">'+tb(rank,true)+'<span class="badge balive">Survival: Alive</span><span class="badge" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.2)">#'+rank+' of '+COACHES.length+'</span>'+(c.vipEntry?'<span class="badge bvip">★ VIP Entry</span>':'')+'</div>'+
+      '</div>'+
+    '</div>'+
+    '<div class="cvstats">'+
+      '<div class="cvstat"><div class="cvsl">Overall Rank</div><div class="cvsv" style="color:var(--accent)">#'+rank+'</div></div>'+
+      '<div class="cvstat"><div class="cvsl">R1 Score</div><div class="cvsv">'+c.r1+'</div></div>'+
+      '<div class="cvstat"><div class="cvsl">vs Avg ('+AVG+')</div><div class="cvsv" style="color:'+(diff>=0?'var(--green)':'var(--red)')+'">'+( diff>=0?'+':'')+diff+'</div></div>'+
+      '<div class="cvstat"><div class="cvsl">Top % Field</div><div class="cvsv">'+pct+'%</div></div>'+
+      '<div class="cvstat"><div class="cvsl">Proj. Phase 2</div><div class="cvsv" style="font-size:.9rem;padding-top:.25rem">'+tb(rank,true)+'</div></div>'+
+      '<div class="cvstat"><div class="cvsl">Survival Status</div><div class="cvsv" style="color:var(--green);font-size:1.1rem">✓ Alive</div></div>'+
+    '</div>'+
+    '<div class="cvsec"><div class="cvsect">Round-by-Round Scores</div><div class="schips"><div class="schip">R1: '+c.r1+'</div></div></div>'+
+    tierBoundaryHtml(rank, c)+
+    sparklineHtml(c)+
+    '<div class="cvsec"><div class="cvsect">Main Season — Phase 1</div><p style="font-size:.875rem;color:var(--muted);line-height:1.65">Ranked <strong style="color:var(--text)">#'+rank+'</strong> of '+COACHES.length+'. Projected into <strong style="color:var(--text)">'+tname+'</strong> for Phase 2. '+buf+' Phase 1 runs until Round 8.</p></div>'+
+    '<div class="cvsec"><div class="cvsect">Survival Knockout</div><p style="font-size:.875rem;color:var(--muted);line-height:1.65"><strong style="color:var(--green)">✓ Alive.</strong> R1 had no eliminations. First knockouts after R2 — lowest 20 cut. Your R1 score: <strong style="color:var(--text)">'+c.r1+'</strong>.</p></div>'+
+    vipH+multiH+winH;
+
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
+  document.getElementById('cv').classList.add('open');
+  window.scrollTo(0,0);
+}
+
+function closeCv(){
+  document.getElementById('cv').classList.remove('open');
+  document.getElementById('panel-'+curTab).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ── SEARCH ────────────────────────────────────────────────────────────────
+var gs=document.getElementById('gs'),sd=document.getElementById('sdrop');
+gs.addEventListener('input',function(){
+  var q=this.value.toLowerCase().trim();
+  if(!q){sd.style.display='none';return;}
+  var hits=COACHES.filter(function(c){return c.coach.toLowerCase().indexOf(q)>=0||c.team.toLowerCase().indexOf(q)>=0;}).slice(0,10);
+  if(!hits.length){sd.style.display='none';return;}
+  sd.innerHTML=hits.map(function(c){
+    return '<div class="sdi" onclick="gs.value=\'\';sd.style.display=\'none\';showCoach('+c.rank+')">'+
+      '<div><div class="sdi-name">'+esc(c.coach)+vipTag(c)+'</div><div class="sdi-team">'+esc(c.team)+'</div></div>'+
+      '<div style="display:flex;gap:.3rem;align-items:center">'+tb(c.rank,false)+'</div>'+
+      '</div>';
+  }).join('');
+  sd.style.display='block';
+});
+document.addEventListener('click',function(e){if(!gs.contains(e.target)&&!sd.contains(e.target))sd.style.display='none';});
+
+// ── OVERVIEW TOP 10 ───────────────────────────────────────────────────────
+function renderPodcasters(){
+  var pods=COACHES.filter(function(c){return PODCASTERS.indexOf(c.coach)>=0;}).sort(function(a,b){return a.rank-b.rank;});
+  document.getElementById('ov-pod').innerHTML=pods.map(function(c){
+    var alive=c.eliminated?false:true;
+    var survBadge=alive
+      ?'<span class="badge balive">✓ Alive</span>'
+      :'<span class="badge" style="background:rgba(248,113,113,.15);color:var(--red);border:1px solid rgba(248,113,113,.3)">✗ Out</span>';
+    return '<tr onclick="showCoach('+c.rank+')">'+
+      '<td class="trk">'+c.rank+'</td>'+
+      '<td><div class="tco">'+esc(c.coach)+vipTag(c)+'</div><div class="tte">'+esc(c.team)+'</div></td>'+
+      '<td class="tsc hi">'+c.r1+'</td>'+
+      '<td>'+tb(c.rank,false)+'</td>'+
+      '<td>'+survBadge+'</td>'+
+      '</tr>';
+  }).join('');
+}
+
+function renderOvTop(){
+  document.getElementById('ov-top').innerHTML=COACHES.slice(0,3).map(function(c){
+    return '<tr onclick="showCoach('+c.rank+')">'+
+      '<td class="trk">'+(c.rank<=3?medals[c.rank-1]:c.rank)+'</td>'+
+      '<td><div class="tco">'+esc(c.coach)+vipTag(c)+'</div><div class="tte">'+esc(c.team)+'</div></td>'+
+      '<td class="tsc hi">'+c.r1+'</td>'+
+      '</tr>';
+  }).join('');
+}
+
+function renderOvVip(){
+  document.getElementById('ov-vip') && (document.getElementById('ov-vip').innerHTML=VIP_LIST.slice(0,10).map(function(c,i){
+    return '<tr onclick="showCoach('+c.rank+')">'+
+      '<td class="trk">'+(i<3?medals[i]:i+1)+'</td>'+
+      '<td><div class="tco">'+esc(c.coach)+vipTag(c)+'</div></td>'+
+      '<td><div class="tte">'+esc(c.team)+'</div></td>'+
+      '<td class="tsc hi">'+c.r1+'</td>'+
+      '</tr>';
+  }).join(''));
+  var leader=VIP_LIST[0];
+  if(leader){
+    document.getElementById('vip-leader').textContent=leader.coach;
+    document.getElementById('vip-top').textContent=leader.r1;
+    document.getElementById('vip-top-team').textContent=leader.team;
+  }
+}
+
+// ── SCHED ─────────────────────────────────────────────────────────────────
+function renderSched(){
+  var rem=COACHES.length;
+  // heat intensity by drop size: 0=green, 4=blue-tinge, 5=amber, 10=orange, 15=red-orange, 20=red
+  function heatColor(pct){
+    // pct = % of current field being eliminated this round
+    if(pct===0)   return {bg:'rgba(52,211,153,0.08)', lbl:'Safe',     lc:'var(--green)'};
+    if(pct<5)     return {bg:'rgba(96,165,250,0.08)', lbl:'Low',      lc:'var(--blue)'};
+    if(pct<10)    return {bg:'rgba(240,180,41,0.08)', lbl:'Moderate', lc:'var(--accent)'};
+    if(pct<20)    return {bg:'rgba(251,146,60,0.12)', lbl:'Heavy',    lc:'#fb923c'};
+    if(pct<35)    return {bg:'rgba(248,113,113,0.12)',lbl:'Danger',   lc:'var(--red)'};
+    return               {bg:'rgba(220,38,38,0.18)',  lbl:'Brutal',   lc:'#ef4444'};
+  }
+  // Pre-calculate remaining before each round so pct uses the right denominator
+  var remBefore=COACHES.length; rem=COACHES.length;
+  document.getElementById('sgrid').innerHTML=DROP.map(function(item){
+    var before = remBefore;
+    rem=Math.max(0,rem-item.d);
+    remBefore = rem;
+    var pct = before > 0 ? Math.round((item.d/before)*100) : 0;
+    var cls=item.r===CUR?'cur':item.r<CUR?'past':'';
+    var h=heatColor(pct);
+    var tooltip='R'+item.r+(item.d>0?': -'+item.d+' eliminated ('+pct+'% of field)':': no cuts');
+    var extraClick = item.r===27 ? ' onclick="document.getElementById(\'bunker-modal\').style.display=\'flex\'"' : '';
+    return '<div class="scel '+cls+'"'+extraClick+' title="'+tooltip+'" style="background:'+h.bg+';'+(item.r===27?'cursor:pointer':'')+'">'
+      +'<div class="scr">R'+item.r+'</div>'
+      +'<div class="scd '+(item.d===0?'z':'')+'" style="color:'+h.lc+'">'+( item.d===0?'—':'-'+item.d)+'</div>'
+      +'<div class="scre">'+rem+' left</div>'
+      +'<div style="font-size:.6rem;font-weight:700;color:'+h.lc+'">'+(pct>0?pct+'%':'')+'</div>'
+      +'</div>';
+  }).join('');
+}
+
+// ── PHASE 1 ───────────────────────────────────────────────────────────────
+var p1p=1,P1N=50,p1l=COACHES.slice();
+function fP1(){
+  var q=document.getElementById('p1fi').value.toLowerCase();
+  p1l=COACHES.filter(function(c){return c.coach.toLowerCase().indexOf(q)>=0||c.team.toLowerCase().indexOf(q)>=0;});
+  p1p=1;dP1();
+}
+function dP1(){
+  var pg=p1l.slice((p1p-1)*P1N,p1p*P1N),lt=0,rows='';
+  document.getElementById('p1ct').textContent=p1l.length+' coaches';
+  pg.forEach(function(c){
+    var t=getTier(c.rank);
+    if(t!==lt){
+      rows+='<tr class="tdiv"><td colspan="6">'+['Tier 1 — Premiership (Top 100)','Tier 2 — Championship (101–200)','Tier 3 — State Cup (201+)'][t-1]+'</td></tr>';
+      lt=t;
+    }
+    rows+='<tr onclick="showCoach('+c.rank+')">'+
+      '<td class="trk">'+(c.rank<=3?medals[c.rank-1]:c.rank)+'</td>'+
+      '<td><div class="tco">'+esc(c.coach)+vipTag(c)+'</div><div class="tte">'+esc(c.team)+'</div></td>'+
+      '<td class="tsc">'+c.r1+'</td>'+
+      '<td class="tsc hi">'+c.r1+'</td>'+
+      '<td>'+tb(c.rank,false)+'</td>'+
+      '</tr>';
+  });
+  document.getElementById('p1b').innerHTML=rows;
+  // Easter egg — only shows on the last page, after the final coach
+  var totalPages = Math.ceil(p1l.length/P1N);
+  if(p1p === totalPages){
+    document.getElementById('p1b').innerHTML += '<tr><td colspan="5" style="text-align:center;padding:1.5rem 1rem;border-top:1px dashed var(--border)"><span style="font-size:.78rem;color:var(--border);font-style:italic;opacity:.5">If you\'re reading this… we need to talk about your team. 🏳️</span></td></tr>';
+  }
+  dPager('p1pg',Math.ceil(p1l.length/P1N),p1p,function(p){p1p=p;dP1();});
+}
+
+// ── VIP TABLE ─────────────────────────────────────────────────────────────
+var vipp=1,VIPN=50,vipl=VIP_LIST.slice();
+function fVip(){
+  var q=document.getElementById('vipfi').value.toLowerCase();
+  vipl=VIP_LIST.filter(function(c){return c.coach.toLowerCase().indexOf(q)>=0||c.team.toLowerCase().indexOf(q)>=0;});
+  vipp=1;dVip();
+}
+function dVip(){
+  var pg=vipl.slice((vipp-1)*VIPN,vipp*VIPN),rows='';
+  pg.forEach(function(c,idx){
+    var i=vipl.indexOf(c);
+    rows+='<tr onclick="showCoach('+c.rank+')">'+
+      '<td class="trk">'+(c.vipRankCalc<=3?medals[c.vipRankCalc-1]:c.vipRankCalc)+'</td>'+
+      '<td><div class="tco">'+esc(c.coach)+vipTag(c)+'</div><div class="tte">'+esc(c.team)+'</div></td>'+
+      '<td class="tsc hi">'+c.r1+'</td>'+
+      '<td class="tsc hi">'+c.r1+'</td>'+
+      '<td class="tte">#'+c.rank+' overall</td>'+
+      '</tr>';
+  });
+  document.getElementById('vipb').innerHTML=rows;
+  dPager('vippg',Math.ceil(vipl.length/VIPN),vipp,function(p){vipp=p;dVip();});
+}
+
+// ── C2 ────────────────────────────────────────────────────────────────────
+var c2p=1,C2N=50,c2l=COACHES.slice();
+function fC2(){
+  var q=document.getElementById('c2fi').value.toLowerCase();
+  c2l=COACHES.filter(function(c){return c.coach.toLowerCase().indexOf(q)>=0||c.team.toLowerCase().indexOf(q)>=0;});
+  c2p=1;dC2();
+}
+function dC2(){
+  var pg=c2l.slice((c2p-1)*C2N,c2p*C2N);
+  document.getElementById('c2b').innerHTML=pg.map(function(c){
+    return '<tr onclick="showCoach('+c.rank+')">'+
+      '<td class="trk">'+(c.rank<=3?medals[c.rank-1]:c.rank)+'</td>'+
+      '<td><div class="tco">'+esc(c.coach)+vipTag(c)+'</div><div class="tte">'+esc(c.team)+'</div></td>'+
+      '<td class="tsc">'+c.r1+'</td>'+
+      '<td><span class="badge balive">Alive</span></td>'+
+      '</tr>';
+  }).join('');
+  dPager('c2pg',Math.ceil(c2l.length/C2N),c2p,function(p){c2p=p;dC2();});
+}
+
+// ── PAGER ─────────────────────────────────────────────────────────────────
+function dPager(id,total,cur,cb){
+  var el=document.getElementById(id);
+  if(total<=1){el.innerHTML='';return;}
+  var h='';
+  if(cur>1)h+='<button class="pg" onclick="('+cb+')('+(cur-1)+')">‹</button>';
+  for(var p=1;p<=total;p++){
+    if(p===1||p===total||Math.abs(p-cur)<=1) h+='<button class="pg '+(p===cur?'on':'')+'" onclick="('+cb+')('+p+')">'+p+'</button>';
+    else if(Math.abs(p-cur)===2) h+='<span class="pgd">…</span>';
+  }
+  if(cur<total)h+='<button class="pg" onclick="('+cb+')('+(cur+1)+')">›</button>';
+  el.innerHTML=h;
+}
+
+
+// ── TIER BOUNDARY ─────────────────────────────────────────────────────────
+function tierBoundaryHtml(rank, c){
+  var ROUNDS_LEFT = 8 - CUR;
+  var phase = CUR <= 8 ? 1 : CUR <= 18 ? 2 : 3;
+  if(phase !== 1) return '';
+
+  var t = getTier(rank);
+  var html = '<div class="cvsec"><div class="cvsect">⚠️ Tier Boundary Alert</div>';
+
+  // Helper: get total score for coach at a given rank
+  function scoreAt(r){
+    var cx = COACHES.find(function(x){return x.rank===r;});
+    return cx ? (cx.total||cx.r1||0) : 0;
+  }
+  var myScore = c.total || c.r1 || 0;
+
+  if(t === 1){
+    var buffer = T1 - rank;
+    var cutScore = scoreAt(T1);       // score of the last T1 coach
+    var ptsClear = myScore - cutScore; // how many pts above the cut
+    var barW = Math.min(100, Math.max(5, Math.round(((T1-rank)/T1)*100)));
+    var barCol = buffer > 20 ? 'var(--green)' : buffer > 10 ? 'var(--accent)' : 'var(--red)';
+    var statusCls = buffer > 20 ? 'tb-safe' : buffer > 10 ? 'tb-mid' : 'tb-danger';
+    html += '<div class="tier-boundary">'
+      +'<div class="tb-header"><span class="tb-title">Tier 1 — Premiership</span><span class="badge bt1">Currently Inside</span></div>'
+      +'<div class="tb-bar-wrap"><div class="tb-bar" style="width:'+barW+'%;background:'+barCol+'"></div></div>'
+      +'<div class="tb-stats">'
+      +'<span class="tb-pill" style="color:'+barCol+'"><strong>'+buffer+' place'+(buffer!==1?'s':'')+' clear</strong> of Tier 2</span>'
+      +'<span class="tb-pill" style="color:'+barCol+'"><strong>'+ptsClear+' pt'+(ptsClear!==1?'s':'')+' clear</strong></span>'
+      +'<span class="tb-pill" style="color:var(--muted)">Rank #'+rank+' · T1 cut: #'+T1+'</span>'
+      +'</div>'
+      +'</div>';
+    if(buffer <= 15){
+      html += '<p style="font-size:.8rem;color:var(--red);margin-top:-.5rem;margin-bottom:.75rem;padding:0 .25rem">⚠️ '+ROUNDS_LEFT+' round'+(ROUNDS_LEFT!==1?'s':'')+' left. Only '+buffer+' place'+(buffer!==1?'s':'')+' and '+ptsClear+' pt'+(ptsClear!==1?'s':'')+' inside the Tier 1 cut — stay sharp!</p>';
+    }
+  } else if(t === 2){
+    var toT1 = rank - T1;
+    var bufferT3 = T2 - rank;
+    var t1cutScore = scoreAt(T1);        // score of rank 100 (last T1)
+    var t2cutScore = scoreAt(T2);        // score of rank 200 (last T2)
+    var ptsToT1 = t1cutScore - myScore;  // how many pts needed to reach T1
+    var ptsClearT3 = myScore - t2cutScore; // how many pts above T3 cut
+    var barW2 = Math.min(95, Math.max(5, 100 - Math.round((toT1/100)*100)));
+
+    html += '<div class="tier-boundary">'
+      +'<div class="tb-header"><span class="tb-title">Tier 1 — Premiership</span><span class="badge bt1">'+toT1+' place'+(toT1!==1?'s':'')+' away ↑</span></div>'
+      +'<div class="tb-bar-wrap"><div class="tb-bar" style="width:'+barW2+'%;background:linear-gradient(90deg,var(--t1),rgba(240,180,41,.3))"></div></div>'
+      +'<div class="tb-stats">'
+      +'<span class="tb-pill" style="color:var(--accent)"><strong>'+toT1+' place'+(toT1!==1?'s':'')+' needed</strong></span>'
+      +'<span class="tb-pill" style="color:var(--accent)"><strong>'+ptsToT1+' pt'+(ptsToT1!==1?'s':'')+' needed</strong></span>'
+      +'<span class="tb-pill" style="color:var(--muted)">'+ROUNDS_LEFT+' round'+(ROUNDS_LEFT!==1?'s':'')+' left</span>'
+      +'</div>'
+      +'</div>';
+
+    var bufW3 = Math.min(100, Math.max(5, Math.round((bufferT3/100)*100)));
+    var buf3cls = bufferT3 > 20 ? 'tb-safe' : bufferT3 > 8 ? 'tb-mid' : 'tb-danger';
+    html += '<div class="tier-boundary" style="margin-top:.5rem">'
+      +'<div class="tb-header"><span class="tb-title">Tier 3 — State Cup</span><span class="badge bt3">'+(bufferT3 > 0 ? bufferT3+' place buffer ↓' : 'On the line')+'</span></div>'
+      +'<div class="tb-bar-wrap"><div class="tb-bar" style="width:'+bufW3+'%;background:var(--t3)"></div></div>'
+      +'<div class="tb-stats">'
+      +'<span class="tb-pill" style="color:'+buf3cls.replace('tb-safe','var(--green)').replace('tb-mid','var(--accent)').replace('tb-danger','var(--red)')+'"><strong>'+bufferT3+' place'+(bufferT3!==1?'s':'')+' clear</strong> of Tier 3</span>'
+      +'<span class="tb-pill" style="color:'+buf3cls.replace('tb-safe','var(--green)').replace('tb-mid','var(--accent)').replace('tb-danger','var(--red)')+'"><strong>'+ptsClearT3+' pt'+(ptsClearT3!==1?'s':'')+' clear</strong></span>'
+      +'<span class="tb-pill" style="color:var(--muted)">Rank #'+rank+' · T2 cut: #'+T2+'</span>'
+      +'</div>'
+      +'</div>';
+  } else {
+    var toT2climb = rank - T2;
+    var t2topScore = scoreAt(T2);
+    var ptsToT2 = t2topScore - myScore;
+    html += '<div class="tier-boundary">'
+      +'<div class="tb-header"><span class="tb-title">Tier 2 — Championship</span><span class="badge bt2">'+toT2climb+' place'+(toT2climb!==1?'s':'')+' away ↑</span></div>'
+      +'<div class="tb-bar-wrap"><div class="tb-bar" style="width:'+Math.max(5,100-Math.round((toT2climb/100)*100))+'%;background:linear-gradient(90deg,var(--t2),rgba(96,165,250,.3))"></div></div>'
+      +'<div class="tb-stats">'
+      +'<span class="tb-pill" style="color:var(--blue)"><strong>'+toT2climb+' place'+(toT2climb!==1?'s':'')+' needed</strong></span>'
+      +'<span class="tb-pill" style="color:var(--blue)"><strong>'+ptsToT2+' pt'+(ptsToT2!==1?'s':'')+' needed</strong></span>'
+      +'<span class="tb-pill" style="color:var(--muted)">'+ROUNDS_LEFT+' round'+(ROUNDS_LEFT!==1?'s':'')+' left</span>'
+      +'</div>'
+      +'</div>';
+  }
+
+  html += '</div>';
+  return html;
+}
+
+// ── SPARKLINE ─────────────────────────────────────────────────────────────
+function sparklineHtml(c){
+  var scores = [];
+  // Build score array from available round data
+  if(c.r1) scores.push({r:1,s:c.r1});
+  if(c.r2) scores.push({r:2,s:c.r2});
+  if(c.r3) scores.push({r:3,s:c.r3});
+  if(c.r4) scores.push({r:4,s:c.r4});
+  if(c.r5) scores.push({r:5,s:c.r5});
+  if(c.r6) scores.push({r:6,s:c.r6});
+  if(c.r7) scores.push({r:7,s:c.r7});
+  if(c.r8) scores.push({r:8,s:c.r8});
+  // extend for more rounds as season progresses...
+
+  var html = '<div class="cvsec"><div class="cvsect">Score Trend</div>';
+
+  if(scores.length < 2){
+    // Only one round — just show the score with a note
+    html += '<div class="spark-one">R1 score: <strong>'+( scores.length?scores[0].s:'—')+'</strong><span style="color:var(--muted);font-size:.75rem;margin-left:.5rem">— trend chart available from Round 2</span></div>';
+    html += '</div>';
+    return html;
+  }
+
+  // Multi-round sparkline
+  var vals = scores.map(function(x){return x.s;});
+  var minV = Math.min.apply(null,vals), maxV = Math.max.apply(null,vals);
+  var range = maxV - minV || 1;
+  var barColors = vals.map(function(v,i){
+    var pct = (v-minV)/range;
+    if(pct > 0.66) return 'var(--green)';
+    if(pct > 0.33) return 'var(--accent)';
+    return 'var(--red)';
+  });
+
+  html += '<div class="spark-wrap">';
+  html += '<div class="spark-container">';
+  scores.forEach(function(item,i){
+    var heightPct = 20 + Math.round(((item.s-minV)/range)*75);
+    var isCur = item.r === CUR;
+    html += '<div class="spark-bar-wrap">'
+      +'<div class="spark-score">'+item.s+'</div>'
+      +'<div class="spark-bar'+(isCur?' cur':'')+'" style="height:'+heightPct+'%;background:'+barColors[i]+';opacity:'+(isCur?'1':'0.65')+'"></div>'
+      +'<div class="spark-rlabel">R'+item.r+'</div>'
+      +'</div>';
+  });
+  html += '</div>';
+
+  // Trend summary
+  var first = vals[0], last = vals[vals.length-1];
+  var trend = last - first;
+  var trendStr = trend > 0 ? '<span style="color:var(--green)">↑ +'+trend+' vs R1</span>' : trend < 0 ? '<span style="color:var(--red)">↓ '+trend+' vs R1</span>' : '<span style="color:var(--muted)">→ Flat vs R1</span>';
+  var avgOwn = Math.round(vals.reduce(function(s,v){return s+v;},0)/vals.length);
+  html += '<div style="display:flex;gap:1.5rem;margin-top:.5rem;font-size:.78rem;color:var(--muted);">'
+    +'<span>Best: <strong style="color:var(--green)">'+Math.max.apply(null,vals)+'</strong></span>'
+    +'<span>Worst: <strong style="color:var(--red)">'+Math.min.apply(null,vals)+'</strong></span>'
+    +'<span>Avg: <strong style="color:var(--text)">'+avgOwn+'</strong></span>'
+    +'<span>Trend: '+trendStr+'</span>'
+    +'</div>';
+  html += '</div></div>';
+  return html;
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────
+renderOvTop();renderPodcasters();renderSched();dP1();dVip();dC2();
+// ── DYNAMIC COUNTS ────────────────────────────────────────────────────────
+(function(){
+  var total=COACHES.length, vips=VIP_LIST.length;
+  // stat cards
+  ['sc-total','sc-alive','sc-started','sc-still-alive'].forEach(function(id){
+    var el=document.getElementById(id); if(el) el.textContent=total;
+  });
+  var avgSub=document.getElementById('sc-avg-sub');
+  if(avgSub) avgSub.textContent='across '+total+' coaches';
+  // inline spans
+  document.querySelectorAll('.dyn-total').forEach(function(el){el.textContent=total;});
+  document.querySelectorAll('.dyn-vip-count').forEach(function(el){el.textContent=vips;});
+  document.querySelectorAll('.dyn-vip-badge').forEach(function(el){el.textContent=vips+' Entries';});
+})();
+// Update score column headers dynamically
+document.querySelectorAll('th.scol-hdr').forEach(function(el){el.textContent=SCOL;});
+// Populate VIP stat cards
+(function(){
+  var leader=VIP_LIST[0];
+  if(!leader) return;
+  document.getElementById('vip-leader').textContent=leader.coach;
+  document.getElementById('vip-top').textContent=leader.r1;
+  document.getElementById('vip-top-team').textContent=leader.team;
+})();
+</script>
+<!-- FEEDBACK BUTTON & MODAL -->
+<button id="fbtn" onclick="document.getElementById('fmodal').style.display='flex'" title="Leave feedback">💬</button>
+
+<div id="fmodal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;align-items:center;justify-content:center;padding:1rem;">
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2rem;width:100%;max-width:460px;box-shadow:0 24px 64px rgba(0,0,0,.6);">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;">
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:.06em">Leave Feedback</div>
+        <div style="font-size:.78rem;color:var(--muted);margin-top:.15rem">Can't find your team or name? Got a suggestion or spotted an error? Let us know.</div>
+      </div>
+      <button onclick="closeFeedback()" style="background:none;border:none;color:var(--muted);font-size:1.4rem;cursor:pointer;line-height:1;padding:.25rem;">✕</button>
+    </div>
+    <form id="fform" action="https://formspree.io/f/xlgplwnz" method="POST">
+      <div style="margin-bottom:1rem;">
+        <label style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);display:block;margin-bottom:.4rem;">Your Name <span style="color:var(--muted);font-weight:400">(optional)</span></label>
+        <input name="name" type="text" placeholder="e.g. Ben Hunt" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.6rem .9rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.875rem;outline:none;">
+      </div>
+      <div style="margin-bottom:1.25rem;">
+        <label style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);display:block;margin-bottom:.4rem;">Feedback <span style="color:var(--red)">*</span></label>
+        <textarea name="message" required placeholder="Describe what doesn't look right, or any suggestions…" rows="4" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.6rem .9rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.875rem;outline:none;resize:vertical;"></textarea>
+      </div>
+      <div style="display:flex;gap:.75rem;justify-content:flex-end;">
+        <button type="button" onclick="closeFeedback()" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.55rem 1.1rem;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:.875rem;font-weight:600;cursor:pointer;">Cancel</button>
+        <button type="submit" id="fsubmit" style="background:var(--jb);border:1px solid var(--jbl);border-radius:8px;padding:.55rem 1.25rem;color:#fff;font-family:'DM Sans',sans-serif;font-size:.875rem;font-weight:600;cursor:pointer;">Send Feedback</button>
+      </div>
+      <div id="fok" style="display:none;margin-top:1rem;background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.3);border-radius:8px;padding:.75rem 1rem;font-size:.875rem;color:var(--green);text-align:center;">✓ Thanks — feedback sent!</div>
+    </form>
+  </div>
+</div>
+
+<style>
+#fbtn{position:fixed;bottom:1.5rem;right:1.5rem;width:48px;height:48px;border-radius:50%;background:var(--jb);border:2px solid var(--accent);color:#fff;font-size:1.1rem;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.4);z-index:999;transition:transform .15s,box-shadow .15s;}
+#fbtn:hover{transform:scale(1.1);box-shadow:0 6px 28px rgba(0,0,0,.5);}
+#fform input:focus,#fform textarea:focus{border-color:var(--accent);}
+</style>
+
+<script>
+function closeFeedback(){document.getElementById('fmodal').style.display='none';document.getElementById('fok').style.display='none';document.getElementById('fform').reset();}
+document.getElementById('fmodal').addEventListener('click',function(e){if(e.target===this)closeFeedback();});
+document.getElementById('fform').addEventListener('submit',function(e){
+  e.preventDefault();
+  var btn=document.getElementById('fsubmit');
+  btn.textContent='Sending…';btn.disabled=true;
+  fetch('https://formspree.io/f/xlgplwnz',{method:'POST',body:new FormData(this),headers:{'Accept':'application/json'}})
+    .then(function(r){
+      if(r.ok){document.getElementById('fok').style.display='block';btn.textContent='Sent ✓';setTimeout(closeFeedback,2000);}
+      else{btn.textContent='Send Feedback';btn.disabled=false;alert('Something went wrong — try again.');}
+    }).catch(function(){btn.textContent='Send Feedback';btn.disabled=false;alert('Something went wrong — try again.');});
+});
+</script>
+
+<!-- R27 EASTER EGG MODAL -->
+<div id="bunker-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:2000;align-items:center;justify-content:center;cursor:pointer;" onclick="this.style.display='none'">
+  <div style="text-align:center;padding:2rem;animation:fadeInUp .4s ease;">
+    <div style="font-size:4rem;margin-bottom:1rem;">☠️</div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:3.5rem;letter-spacing:.08em;color:#ef4444;line-height:1;margin-bottom:.5rem;">One.</div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:3.5rem;letter-spacing:.08em;color:#ef4444;line-height:1;margin-bottom:.5rem;">Will.</div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:3.5rem;letter-spacing:.08em;color:#ef4444;line-height:1;margin-bottom:2rem;">Survive.</div>
+    <div style="font-size:.75rem;color:rgba(255,255,255,.2);text-transform:uppercase;letter-spacing:.15em;">click anywhere to close</div>
+  </div>
+</div>
+<style>
+@keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+</style>
+
+<script>
+// ── TAP TOOLTIPS ──────────────────────────────────────────────────────────
+function tipTap(el){
+  el.classList.add('tapped');
+  setTimeout(function(){el.classList.remove('tapped');},2000);
+}
+
+var rpClicks=0;
+document.getElementById('rpill').addEventListener('click',function(){
+  rpClicks++;
+  if(rpClicks>=3){
+    this.textContent='Stop clicking that. It won\'t make the round go faster. 😤';
+    rpClicks=0;
+    var el=this;
+    setTimeout(function(){el.textContent='Round '+CUR+' of 27';},3000);
+  }
+});
+
+</script>
+
+</body>
+</html>
