@@ -332,11 +332,11 @@ td{padding:.6rem 1rem;vertical-align:middle;}
   <!-- OVERVIEW -->
   <div class="panel active" id="panel-ov">
     <div class="sr">
-      <div class="sc"><div class="scl">Coaches</div><div class="scv" id="sc-total">293</div><div class="scs">registered (R1)</div></div>
+      <div class="sc"><div class="scl">Coaches</div><div class="scv" id="sc-total">293</div><div class="scs"></div></div>
       <div class="sc"><div class="scl">Current Round</div><div class="scv" style="color:var(--accent)">1</div><div class="scs">of 27</div></div>
-      <div class="sc"><div class="scl">VIP Entries</div><div class="scv" style="color:var(--vip)">68</div><div class="scs">in VIP comp</div></div>
-      <div class="sc"><div class="scl">Top Score R1</div><div class="scv" style="color:var(--accent)">1079</div><div class="scs">Jeremy Wirth</div></div>
-      <div class="sc"><div class="scl">Field Avg R1</div><div class="scv">926</div><div class="scs" id="sc-avg-sub">across 293 coaches</div></div>
+      <div class="sc"><div class="scl">VIP Entries</div><div class="scv" style="color:var(--vip)">68</div><div class="scs"></div></div>
+      <div class="sc"><div class="scl" id="sc-top-label">Top Score R1</div><div class="scv" style="color:var(--accent)" id="sc-top-val">1079</div><div class="scs" id="sc-top-coach" style="color:var(--text);font-weight:700;font-size:.8rem">Jeremy Wirth</div></div>
+      <div class="sc"><div class="scl" id="sc-avg-label">Field Avg R1</div><div class="scv" id="sc-avg-val">926</div><div class="scs" id="sc-avg-sub"></div></div>
     </div>
     <div class="sh"><div class="sht">Overall Leaders</div><div class="shl"></div><span class="badge bt1">Live</span></div>
     <div class="tw"><div class="tw-scroll"><table>
@@ -349,9 +349,10 @@ td{padding:.6rem 1rem;vertical-align:middle;}
       <tbody id="ov-pod"></tbody>
     </table></div></div>
     <div class="sh"><div class="sht">Survivor</div><div class="shl"></div></div>
-    <div class="sr" style="grid-template-columns:1fr 1fr 1fr;">
+    <div class="sr" style="grid-template-columns:repeat(4,1fr);">
       <div class="sc"><div class="scl">Alive After R1</div><div class="scv" style="color:var(--green)" id="sc-alive">293</div><div class="scs">no eliminations R1</div></div>
       <div class="sc"><div class="scl">Eliminated R1</div><div class="scv" style="color:var(--muted)">0</div><div class="scs">R1 = safe round</div></div>
+      <div class="sc"><div class="scl" id="sc-cut-label-ov">Cut Score R1</div><div class="scv" style="color:var(--red)" id="sc-cut-val-ov">—</div><div class="scs" id="sc-cut-scs-ov">no eliminations R1</div></div>
       <div class="sc"><div class="scl">Next Cull R2</div><div class="scv" style="color:var(--red)">−20</div><div class="scs">lowest 20 scores cut</div></div>
     </div>
   </div>
@@ -423,6 +424,7 @@ td{padding:.6rem 1rem;vertical-align:middle;}
         <div>
           <div class="ht" style="margin-bottom:.5rem">How it works</div>
           <p style="font-size:.875rem;color:var(--muted);line-height:1.65">Runs in parallel with the Main Season Comp across all 27 rounds. Each round the coaches with the <strong style="color:var(--text)">lowest score that week</strong> are eliminated — regardless of how they've performed before. <strong style="color:var(--text)">Weekly score only, never cumulative.</strong></p>
+          <p style="font-size:.72rem;color:var(--muted);line-height:1.6;margin-top:.5rem;opacity:.7">* Tiebreaker: if two coaches finish on the same score at the cut line (one surviving, one eliminated), the coach with the higher score from the <em>previous round</em> is retained. In Round 1 (no prior round), tied coaches at the cut are both kept safe.</p>
         </div>
         <div>
           <div class="ht" style="margin-bottom:.5rem">Key facts</div>
@@ -503,6 +505,7 @@ td{padding:.6rem 1rem;vertical-align:middle;}
       <div class="sc"><div class="scl">Started</div><div class="scv" id="sc-started">293</div><div class="scs">coaches</div></div>
       <div class="sc"><div class="scl">Still Alive</div><div class="scv" style="color:var(--green)" id="sc-still-alive">293</div><div class="scs">after R1</div></div>
       <div class="sc"><div class="scl">Eliminated</div><div class="scv" style="color:var(--muted)">0</div><div class="scs">R1 = safe</div></div>
+      <div class="sc"><div class="scl" id="sc-cut-label">Cut Score R1</div><div class="scv" style="color:var(--red)" id="sc-cut-val">—</div><div class="scs">lowest safe score</div></div>
       <div class="sc"><div class="scl">Next Drop R2</div><div class="scv" style="color:var(--red)">20</div><div class="scs">lowest weekly scores cut</div></div>
     </div>
     <div class="sh"><div class="sht">Eliminated Last Round</div><div class="shl"></div></div>
@@ -1153,7 +1156,6 @@ function showCoach(rank){
       '<div class="cvstat"><div class="cvsl">Proj. Seeding</div><div class="cvsv" style="font-size:.9rem;padding-top:.25rem">'+tb(rank,true)+'</div></div>'+
       '<div class="cvstat"><div class="cvsl">Survivor Status</div><div class="cvsv" style="color:var(--green);font-size:1.1rem">✓ Alive</div></div>'+
     '</div>'+
-    '<div class="cvsec"><div class="cvsect">Round-by-Round Scores</div><div class="schips"><div class="schip">R1: '+c.r1+'</div></div></div>'+
     tierBoundaryHtml(rank, c)+
     sparklineHtml(c)+
     '<div class="cvsec"><div class="cvsect">Main Season — Qualifying</div><p style="font-size:.875rem;color:var(--muted);line-height:1.65">Ranked <strong style="color:var(--text)">#'+rank+'</strong> of '+COACHES.length+'. Projected into <strong style="color:var(--text)">'+tname+'</strong> for Seeding. '+buf+' Qualifying runs until Round 8.</p></div>'+
@@ -1513,7 +1515,43 @@ renderOvTop();renderPodcasters();renderSched();dP1();dVip();dC2();
     var el=document.getElementById(id); if(el) el.textContent=total;
   });
   var avgSub=document.getElementById('sc-avg-sub');
-  if(avgSub) avgSub.textContent='across '+total+' coaches';
+  if(avgSub) avgSub.textContent='';
+  var avgLabel=document.getElementById('sc-avg-label');
+  if(avgLabel) avgLabel.textContent='Field Avg R'+CUR;
+  var avgVal=document.getElementById('sc-avg-val');
+  if(avgVal) avgVal.textContent=AVG;
+  var topLabel=document.getElementById('sc-top-label');
+  if(topLabel) topLabel.textContent='Top Score R'+CUR;
+  var topCoaches=COACHES.slice().sort(function(a,b){return (b.r1||0)-(a.r1||0);});
+  var topC=topCoaches[0];
+  if(topC){
+    var topVal=document.getElementById('sc-top-val');
+    if(topVal) topVal.textContent=topC.r1||'—';
+    var topCoach=document.getElementById('sc-top-coach');
+    if(topCoach) topCoach.textContent=topC.coach;
+  }
+  // Survivor cut score: lowest score among surviving coaches this round
+  var cutLabel=document.getElementById('sc-cut-label');
+  if(cutLabel) cutLabel.textContent='Cut Score R'+CUR;
+  var cutLabelOv=document.getElementById('sc-cut-label-ov');
+  if(cutLabelOv) cutLabelOv.textContent='Cut Score R'+CUR;
+  var DROP_R1=0; // R1 has no eliminations
+  var cutVal=document.getElementById('sc-cut-val');
+  var cutValOv=document.getElementById('sc-cut-val-ov');
+  var cutScsOv=document.getElementById('sc-cut-scs-ov');
+  if(DROP_R1===0){
+    if(cutVal) cutVal.textContent='—';
+    if(cutValOv) cutValOv.textContent='—';
+    var cutScs=cutVal?cutVal.parentElement.querySelector('.scs'):null;
+    if(cutScs) cutScs.textContent='no eliminations R1';
+    if(cutScsOv) cutScsOv.textContent='no eliminations R1';
+  } else {
+    var sorted=COACHES.slice().sort(function(a,b){return (a.r1||0)-(b.r1||0);});
+    var cutScore=sorted[DROP_R1]?sorted[DROP_R1].r1:'—';
+    if(cutVal) cutVal.textContent=cutScore;
+    if(cutValOv) cutValOv.textContent=cutScore;
+    if(cutScsOv) cutScsOv.textContent='lowest safe score';
+  }
   // inline spans
   document.querySelectorAll('.dyn-total').forEach(function(el){el.textContent=total;});
   document.querySelectorAll('.dyn-vip-count').forEach(function(el){el.textContent=vips;});
