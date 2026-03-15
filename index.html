@@ -50,9 +50,10 @@ header{position:sticky;top:0;z-index:200;background:var(--jb);border-bottom:3px 
 /* How It Works active */
 #nb-how.active{background:var(--surface2);border-color:var(--border);color:var(--text);}
 /* Main Comp group */
-.nav-group{display:flex;align-items:center;background:rgba(26,58,143,.3);border:1px solid rgba(58,123,213,.55);border-radius:8px;padding:3px;gap:2px;flex-shrink:0;}
-.nav-group-label{font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#7aaee8;padding:0 .5rem;white-space:nowrap;flex-shrink:0;}
-.nav-group .nb{border-radius:5px;border:none;padding:.38rem .8rem;color:#7aaee8;}
+.nav-group{display:flex;flex-direction:column;align-items:center;background:rgba(26,58,143,.3);border:1px solid rgba(58,123,213,.55);border-radius:8px;padding:4px 4px 3px;gap:3px;flex-shrink:0;}
+.nav-group-label{font-size:.55rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#7aaee8;padding:0 .25rem;white-space:nowrap;flex-shrink:0;line-height:1;}
+.nav-group-buttons{display:flex;gap:2px;}
+.nav-group .nb{border-radius:5px;border:none;padding:.32rem .75rem;color:#7aaee8;}
 .nav-group .nb:hover{background:rgba(58,123,213,.2);color:#fff;}
 .nav-group .nb.active{background:#1e4d8c;border:1px solid #3a7bd5;color:#fff;}
 /* Survival active */
@@ -304,10 +305,12 @@ td{padding:.6rem 1rem;vertical-align:middle;}
     <button class="nb" id="nb-how" onclick="showTab(event,'how')">How It Works</button>
     <div class="nsep"></div>
     <div class="nav-group">
-      <span class="nav-group-label">Main</span>
-      <button class="nb" id="nb-p1" onclick="showTab(event,'p1')">Qualifying</button>
-      <button class="nb" id="nb-p2" onclick="showTab(event,'p2')">Seeding</button>
-      <button class="nb" id="nb-p3" onclick="showTab(event,'p3')">Knockout</button>
+      <span class="nav-group-label">Main Competition</span>
+      <div class="nav-group-buttons">
+        <button class="nb" id="nb-p1" onclick="showTab(event,'p1')">Qualifying</button>
+        <button class="nb" id="nb-p2" onclick="showTab(event,'p2')">Seeding</button>
+        <button class="nb" id="nb-p3" onclick="showTab(event,'p3')">Knockout</button>
+      </div>
     </div>
     <div class="nsep"></div>
     <button class="nb" id="nb-c2" onclick="showTab(event,'c2')">Survivor</button>
