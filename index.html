@@ -474,7 +474,7 @@ td{padding:.6rem 1rem;vertical-align:middle;}
   <!-- PHASE 1 -->
   <div class="panel" id="panel-p1">
     <div class="sh" style="margin-top:0"><div class="sht">Qualifying — Current Rankings</div><div class="shl"></div><span class="badge bt1" style="font-size:.68rem">Rounds 1–8</span></div>
-    <p style="color:var(--muted);font-size:.875rem;margin-bottom:1.25rem;">Standings after Round 1. Field locks after R2. Click any row for coach profile.</p>
+    <p style="color:var(--muted);font-size:.875rem;margin-bottom:1.25rem;">Standings after Round 1. Click any row for coach profile.</p>
     <div class="fr">
       <span class="fil">Filter:</span>
       <input class="fi" id="p1fi" placeholder="Search coach or team…" oninput="fP1()">
@@ -1209,11 +1209,12 @@ function renderPodcasters(){
 }
 
 function renderOvTop(){
-  document.getElementById('ov-top').innerHTML=COACHES.slice(0,3).map(function(c){
+  document.getElementById('ov-top').innerHTML=COACHES.slice(0,5).map(function(c){
+    var score=CUR===1?c.r1:(c.total||c.r1||0);
     return '<tr onclick="showCoach('+c.rank+')">'+
       '<td class="trk">'+(c.rank<=3?medals[c.rank-1]:c.rank)+'</td>'+
       '<td><div class="tco">'+esc(c.coach)+vipTag(c)+'</div><div class="tte">'+esc(c.team)+'</div></td>'+
-      '<td class="tsc hi">'+c.r1+'</td>'+
+      '<td class="tsc hi">'+score+'</td>'+
       '</tr>';
   }).join('');
 }
@@ -1522,7 +1523,11 @@ renderOvTop();renderPodcasters();renderSched();dP1();dVip();dC2();
   if(avgVal) avgVal.textContent=AVG;
   var topLabel=document.getElementById('sc-top-label');
   if(topLabel) topLabel.textContent='Top Score R'+CUR;
-  var topCoaches=COACHES.slice().sort(function(a,b){return (b.r1||0)-(a.r1||0);});
+  var topCoaches=COACHES.slice().sort(function(a,b){
+    var sa=CUR===1?(a.r1||0):(a.total||a.r1||0);
+    var sb=CUR===1?(b.r1||0):(b.total||b.r1||0);
+    return sb-sa;
+  });
   var topC=topCoaches[0];
   if(topC){
     var topVal=document.getElementById('sc-top-val');
@@ -1546,8 +1551,12 @@ renderOvTop();renderPodcasters();renderSched();dP1();dVip();dC2();
     if(cutScs) cutScs.textContent='no eliminations R1';
     if(cutScsOv) cutScsOv.textContent='no eliminations R1';
   } else {
-    var sorted=COACHES.slice().sort(function(a,b){return (a.r1||0)-(b.r1||0);});
-    var cutScore=sorted[DROP_R1]?sorted[DROP_R1].r1:'—';
+    var sorted=COACHES.slice().sort(function(a,b){
+      var sa=CUR===1?(a.r1||0):(a.total||a.r1||0);
+      var sb=CUR===1?(b.r1||0):(b.total||b.r1||0);
+      return sa-sb;
+    });
+    var cutScore=sorted[DROP_R1]?(CUR===1?sorted[DROP_R1].r1:(sorted[DROP_R1].total||sorted[DROP_R1].r1)):'—';
     if(cutVal) cutVal.textContent=cutScore;
     if(cutValOv) cutValOv.textContent=cutScore;
     if(cutScsOv) cutScsOv.textContent='lowest safe score';
