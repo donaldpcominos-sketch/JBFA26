@@ -96,7 +96,7 @@ main{max-width:1400px;margin:0 auto;padding:1.5rem;}
 .admin{display:inline-flex;align-items:center;gap:.2rem;background:rgba(96,165,250,.15);color:var(--blue);border:1px solid rgba(96,165,250,.3);border-radius:4px;padding:.08rem .35rem;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;vertical-align:middle;margin-left:.3rem;white-space:nowrap;}
 
 /* PRIZES */
-.prize-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.5rem;position:relative;overflow:hidden;}
+.prize-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.5rem;position:relative;overflow:hidden;display:flex;flex-direction:column;}
 .prize-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
 .prize-card.gold::before{background:linear-gradient(90deg,var(--accent),#ffd700);}
 .prize-card.blue::before{background:linear-gradient(90deg,var(--blue),var(--purple));}
@@ -106,8 +106,9 @@ main{max-width:1400px;margin:0 auto;padding:1.5rem;}
 .prize-desc{font-size:.8rem;color:var(--muted);margin-bottom:1rem;line-height:1.5;}
 .prize-amount{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--accent);}
 .prize-tbc{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:var(--muted);}
-.prize-winner{margin-top:.5rem;font-size:.82rem;color:var(--muted);}
-.prize-winner strong{color:var(--text);}
+.prize-winner{margin-top:auto;padding-top:.75rem;}
+.prize-pill{display:inline-flex;align-items:center;gap:.35rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;padding:.2rem .6rem;font-size:.72rem;color:var(--muted);font-weight:600;}
+.prize-pill-dot{width:6px;height:6px;border-radius:50%;background:var(--border);flex-shrink:0;}
 .prizes-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-bottom:1.5rem;}
 
 /* STAT CARDS */
@@ -547,6 +548,29 @@ td{padding:.6rem 1rem;vertical-align:middle;}
   <div class="panel" id="panel-prizes">
     <div class="sh" style="margin-top:0"><div class="sht">Prize Pool — 2026 Season</div><div class="shl"></div></div>
 
+    <!-- OVERALL CUMULATIVE -->
+    <div style="border:1px solid rgba(240,180,41,.6);border-radius:16px;overflow:hidden;margin-bottom:2rem;">
+      <div style="background:linear-gradient(135deg,rgba(240,180,41,.3),rgba(240,180,41,.12));padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(240,180,41,.3);">
+        <div style="display:flex;align-items:center;gap:.75rem;">
+          <span style="font-size:1.4rem">🌟</span>
+          <div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.06em;color:#f0b429">Overall Points — Season Total</div>
+            <div style="font-size:.72rem;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.1em">All 295 coaches · Cumulative all 27 rounds</div>
+          </div>
+        </div>
+        <span class="badge bt1" style="font-size:.7rem">Top 5 Paid</span>
+      </div>
+      <div style="padding:1.5rem;">
+        <div class="prizes-grid">
+          <div class="prize-card gold"><div class="prize-title">🥇 1st Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--accent);letter-spacing:.04em;margin:.5rem 0;">$750</div><div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div></div>
+          <div class="prize-card gold"><div class="prize-title">🥈 2nd Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--accent);letter-spacing:.04em;margin:.5rem 0;">$350</div><div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div></div>
+          <div class="prize-card gold"><div class="prize-title">🥉 3rd Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;color:var(--accent);letter-spacing:.04em;margin:.5rem 0;">2027 JBFA<br>VIP Package</div><div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div></div>
+          <div class="prize-card gold"><div class="prize-title">4th Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--accent);letter-spacing:.04em;margin:.5rem 0;">$100 <span style="font-size:.9rem">+ Hat &amp; Shirt</span></div><div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div></div>
+          <div class="prize-card gold"><div class="prize-title">5th Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--accent);letter-spacing:.04em;margin:.5rem 0;">$75</div><div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div></div>
+        </div>
+      </div>
+    </div>
+
     <!-- MAIN SEASON COMP -->
     <div style="border:1px solid rgba(26,58,143,.6);border-radius:16px;overflow:hidden;margin-bottom:2rem;">
       <div style="background:linear-gradient(135deg,rgba(26,58,143,.5),rgba(26,58,143,.25));padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(26,58,143,.4);">
@@ -558,80 +582,75 @@ td{padding:.6rem 1rem;vertical-align:middle;}
           </div>
         </div>
         <div style="display:flex;gap:.4rem;flex-wrap:wrap;justify-content:flex-end">
-          <span class="badge bt1">Tier 1</span>
-          <span class="badge bt2">Tier 2</span>
-          <span class="badge bt3">Tier 3</span>
-          <span class="badge" style="background:rgba(240,180,41,.15);color:var(--accent);border:1px solid rgba(240,180,41,.3)">Knockout</span>
+          <span class="badge bt1">Tier 1</span><span class="badge bt2">Tier 2</span><span class="badge bt3">Tier 3</span>
+          <span class="badge bp3">Knockout</span>
         </div>
       </div>
       <div style="padding:1.5rem;">
+        <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.75rem">Seeding — Tier Prizes (Rounds 9–18)</div>
+        <div class="prizes-grid" style="margin-bottom:1.5rem">
+          <div class="prize-card blue">
+            <div class="prize-title"><span class="badge bt1" style="margin-bottom:.4rem;display:inline-flex">Tier 1</span> Premiership</div>
+            <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-top:.25rem">1st Place</div>
+            <div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--t1);letter-spacing:.04em;margin:.2rem 0">$400</div>
+            <hr style="border:none;border-top:1px solid var(--border);margin:.5rem 0">
+            <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)">Runner-up</div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;color:var(--t1);letter-spacing:.04em;margin:.2rem 0">$150</div>
+            <div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div>
+          </div>
+          <div class="prize-card blue">
+            <div class="prize-title"><span class="badge bt2" style="margin-bottom:.4rem;display:inline-flex">Tier 2</span> Championship</div>
+            <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-top:.25rem">1st Place</div>
+            <div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--t2);letter-spacing:.04em;margin:.2rem 0">$200</div>
+            <hr style="border:none;border-top:1px solid var(--border);margin:.5rem 0">
+            <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)">Runner-up</div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--t2);letter-spacing:.04em;margin:.2rem 0">2027 JBFA Legends Pack</div>
+            <div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div>
+          </div>
+          <div class="prize-card blue">
+            <div class="prize-title"><span class="badge bt3" style="margin-bottom:.4rem;display:inline-flex">Tier 3</span> State Cup</div>
+            <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-top:.25rem">1st Place</div>
+            <div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--t3);letter-spacing:.04em;margin:.2rem 0">$100</div>
+            <hr style="border:none;border-top:1px solid var(--border);margin:.5rem 0">
+            <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)">Runner-up</div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--t3);letter-spacing:.04em;margin:.2rem 0">JBFA Hat &amp; T-Shirt</div>
+            <div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div>
+          </div>
+        </div>
+        <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.75rem">Knockout — Top 4 (Rounds 19–27)</div>
         <div class="prizes-grid">
-          <div class="prize-card blue">
-            <div class="prize-title"><span class="badge bt1" style="margin-bottom:.4rem;display:inline-flex">Tier 1</span> Premiership Winner</div>
-            <div class="prize-desc">Seeding winner among the top 100 coaches. Rounds 9–18.</div>
-            <div class="prize-tbc">TBC</div>
-            <div class="prize-winner">Winner: <strong>To be decided</strong></div>
-          </div>
-          <div class="prize-card blue">
-            <div class="prize-title"><span class="badge bt2" style="margin-bottom:.4rem;display:inline-flex">Tier 2</span> Championship Winner</div>
-            <div class="prize-desc">Seeding winner among ranks 101–200. Rounds 9–18.</div>
-            <div class="prize-tbc">TBC</div>
-            <div class="prize-winner">Winner: <strong>To be decided</strong></div>
-          </div>
-          <div class="prize-card blue">
-            <div class="prize-title"><span class="badge bt3" style="margin-bottom:.4rem;display:inline-flex">Tier 3</span> State Cup Winner</div>
-            <div class="prize-desc">Seeding winner among ranks 201+. Rounds 9–18.</div>
-            <div class="prize-tbc">TBC</div>
-            <div class="prize-winner">Winner: <strong>To be decided</strong></div>
-          </div>
-          <div class="prize-card gold">
-            <div class="prize-title">🏆 Knockout — Overall Winner</div>
-            <div class="prize-desc">Full Knockout bracket winner. Rounds 19–27.</div>
-            <div class="prize-tbc">TBC</div>
-            <div class="prize-winner">Winner: <strong>To be decided</strong></div>
-          </div>
-          <div class="prize-card gold">
-            <div class="prize-title">Knockout — Runner Up</div>
-            <div class="prize-desc">Full Knockout bracket — 2nd place. Rounds 19–27.</div>
-            <div class="prize-tbc">TBC</div>
-            <div class="prize-winner">Winner: <strong>To be decided</strong></div>
-          </div>
-          <div class="prize-card gold">
-            <div class="prize-title">Knockout — 3rd / 4th</div>
-            <div class="prize-desc">Full Knockout bracket — semi-final losers.</div>
-            <div class="prize-tbc">TBC</div>
-            <div class="prize-winner">Winner: <strong>To be decided</strong></div>
-          </div>
+          <div class="prize-card gold"><div class="prize-title">🥇 1st Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--accent);letter-spacing:.04em;margin:.5rem 0;">$350</div><div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div></div>
+          <div class="prize-card gold"><div class="prize-title">🥈 2nd Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--accent);letter-spacing:.04em;margin:.5rem 0;">$250</div><div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div></div>
+          <div class="prize-card gold"><div class="prize-title">🥉 3rd Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--accent);letter-spacing:.04em;margin:.5rem 0;">$150</div><div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div></div>
+          <div class="prize-card gold"><div class="prize-title">4th Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;color:var(--accent);letter-spacing:.04em;margin:.5rem 0;">2027 JBFA<br>Legends Package</div><div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div></div>
         </div>
       </div>
     </div>
 
-    <!-- SURVIVAL KNOCKOUT -->
+    <!-- SURVIVOR -->
     <div style="border:1px solid rgba(248,113,113,.3);border-radius:16px;overflow:hidden;margin-bottom:2rem;">
       <div style="background:linear-gradient(135deg,rgba(220,38,38,.2),rgba(220,38,38,.08));padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(248,113,113,.2);">
         <div style="display:flex;align-items:center;gap:.75rem;">
           <span style="font-size:1.4rem">🎯</span>
           <div>
             <div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.06em;color:#fff">Survivor</div>
-            <div style="font-size:.72rem;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.1em">Last coach standing wins</div>
+            <div style="font-size:.72rem;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.1em">Last coaches standing · Top 4 paid</div>
           </div>
         </div>
-        <span class="badge balive" style="font-size:.7rem">All 27 Rounds</span>
+        <span class="badge balive" style="font-size:.7rem">Weekly Score Only</span>
       </div>
       <div style="padding:1.5rem;">
         <div class="prizes-grid">
-          <div class="prize-card green">
-            <div class="prize-title">🎯 Last Coach Standing</div>
-            <div class="prize-desc">Sole survivor after Round 27. Weekly score, never cumulative.</div>
-            <div class="prize-tbc">TBC</div>
-            <div class="prize-winner">Winner: <strong>To be decided</strong></div>
-          </div>
+          <div class="prize-card green"><div class="prize-title">🥇 1st Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--green);letter-spacing:.04em;margin:.5rem 0;">$400</div><div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div></div>
+          <div class="prize-card green"><div class="prize-title">🥈 2nd Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--green);letter-spacing:.04em;margin:.5rem 0;">$300</div><div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div></div>
+          <div class="prize-card green"><div class="prize-title">🥉 3rd Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--green);letter-spacing:.04em;margin:.5rem 0;">$150</div><div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div></div>
+          <div class="prize-card green"><div class="prize-title">4th Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;color:var(--green);letter-spacing:.04em;margin:.5rem 0;">2027 JBFA<br>Legends Package</div><div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div></div>
         </div>
       </div>
     </div>
 
     <!-- VIP COMP -->
-    <div style="border:1px solid rgba(52,211,153,.3);border-radius:16px;overflow:hidden;margin-bottom:1.5rem;">
+    <div style="border:1px solid rgba(52,211,153,.3);border-radius:16px;overflow:hidden;margin-bottom:2rem;">
       <div style="background:linear-gradient(135deg,rgba(52,211,153,.15),rgba(52,211,153,.05));padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(52,211,153,.2);">
         <div style="display:flex;align-items:center;gap:.75rem;">
           <span style="font-size:1.4rem">⭐</span>
@@ -644,22 +663,61 @@ td{padding:.6rem 1rem;vertical-align:middle;}
       </div>
       <div style="padding:1.5rem;">
         <div class="prizes-grid" style="margin-bottom:1rem">
-          <div class="prize-card purple">
-            <div class="prize-title">⭐ VIP Season Champion</div>
-            <div class="prize-desc">Best cumulative score across all 27 rounds among the <span class="dyn-vip-count">68</span> VIP designated entries.</div>
-            <div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--vip);letter-spacing:.04em;margin:.5rem 0;">$500</div>
-            <div class="prize-winner">Winner: <strong>To be decided</strong></div>
-          </div>
-          <div class="prize-card purple">
-            <div class="prize-title">⭐ VIP Season Runner-Up</div>
-            <div class="prize-desc">Second place in the VIP cumulative standings after 27 rounds.</div>
-            <div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--vip);letter-spacing:.04em;margin:.5rem 0;">$100 <span style="font-size:1rem;color:var(--muted)">JBFA Credit</span></div>
-            <div class="prize-winner">Winner: <strong>To be decided</strong></div>
-          </div>
+          <div class="prize-card purple"><div class="prize-title">⭐ VIP Season Champion</div><div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:.25rem 0">1st Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--vip);letter-spacing:.04em;margin:.2rem 0;">$500</div><div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div></div>
+          <div class="prize-card purple"><div class="prize-title">⭐ VIP Season Runner-Up</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--vip);letter-spacing:.04em;margin:.5rem 0;">$100 <span style="font-size:1rem;color:var(--muted)">JBFA Credit</span></div><div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div></div>
         </div>
         <div style="background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.2);border-radius:10px;padding:.85rem 1.1rem;display:flex;align-items:flex-start;gap:.75rem;">
           <span style="font-size:1.1rem;flex-shrink:0">⭐</span>
           <div style="font-size:.82rem;color:var(--muted);line-height:1.6"><strong style="color:var(--vip)">VIP Jackpot Bonus</strong> — VIP members who win a prize in the <strong style="color:var(--text)">Main Season Comp</strong> or <strong style="color:var(--text)">Survivor</strong> receive a <strong style="color:var(--vip)">25% bonus</strong> on top of their winnings. Does not apply to the VIP Overall Comp prizes.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OTHER COMPS -->
+    <div style="border:1px solid rgba(251,146,60,.35);border-radius:16px;overflow:hidden;margin-bottom:2rem;">
+      <div style="background:linear-gradient(135deg,rgba(251,146,60,.18),rgba(251,146,60,.06));padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(251,146,60,.25);">
+        <div style="display:flex;align-items:center;gap:.75rem;">
+          <span style="font-size:1.4rem">🏉</span>
+          <div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.06em;color:#fb923c">Other Comps</div>
+            <div style="font-size:.72rem;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.1em">SuperCoach · Tipping · Origin · Finals</div>
+          </div>
+        </div>
+      </div>
+      <div style="padding:1.5rem;">
+        <div class="prizes-grid">
+          <!-- SuperCoach -->
+          <div class="prize-card" style="border-top:3px solid #84cc16;">
+            <div class="prize-title" style="display:flex;align-items:center;gap:.5rem"><span style="background:#84cc16;color:#1a2e05;font-size:.65rem;font-weight:700;padding:.15rem .45rem;border-radius:4px;letter-spacing:.05em">SC</span> SuperCoach</div>
+            <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:.25rem 0">1st Place</div>
+            <div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:#84cc16;letter-spacing:.04em;margin:.2rem 0">$200</div>
+            <hr style="border:none;border-top:1px solid var(--border);margin:.5rem 0">
+            <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)">Runner-up</div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:#84cc16;letter-spacing:.04em;margin:.2rem 0">2027 JBFA Legends Pack</div>
+            <div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div>
+          </div>
+          <!-- Tipping -->
+          <div class="prize-card" style="border-top:3px solid #1a1a2e;">
+            <div class="prize-title" style="display:flex;align-items:center;gap:.5rem"><span style="background:#1a1a2e;color:#fff;font-size:.65rem;font-weight:700;padding:.15rem .45rem;border-radius:4px;letter-spacing:.05em;border:1px solid #444">TIP</span> NRL Tipping</div>
+            <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-top:.25rem">1st Place</div>
+            <div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--text);letter-spacing:.04em;margin:.2rem 0">$150</div>
+            <hr style="border:none;border-top:1px solid var(--border);margin:.5rem 0">
+            <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)">Runner-up</div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;color:var(--text);letter-spacing:.04em;margin:.2rem 0">$50</div>
+            <div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div>
+          </div>
+          <!-- Origin Fantasy -->
+          <div class="prize-card" style="border-top:3px solid #003087;">
+            <div class="prize-title" style="display:flex;align-items:center;gap:.5rem"><span style="background:linear-gradient(90deg,#003087,#c8102e);color:#fff;font-size:.65rem;font-weight:700;padding:.15rem .45rem;border-radius:4px;letter-spacing:.05em">SOO</span> Origin Fantasy</div>
+            <div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:#60a5fa;letter-spacing:.04em;margin:.4rem 0">$50 <span style="font-size:.85rem;color:var(--muted)">1st</span></div>
+            <div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div>
+          </div>
+          <!-- Finals Fantasy -->
+          <div class="prize-card" style="border-top:3px solid var(--accent);">
+            <div class="prize-title" style="display:flex;align-items:center;gap:.5rem"><span style="background:var(--accent);color:#000;font-size:.65rem;font-weight:700;padding:.15rem .45rem;border-radius:4px;letter-spacing:.05em">FIN</span> Finals Fantasy</div>
+            <div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--accent);letter-spacing:.04em;margin:.4rem 0">$50 <span style="font-size:.85rem;color:var(--muted)">1st</span></div>
+            <div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div>
+          </div>
         </div>
       </div>
     </div>
@@ -972,7 +1030,7 @@ const COACHES=[
   {rank:295,coach:"Hayden Moore",team:"Stocklands Mooseknuckles",r1:817,isVip:false,isAdmin:false,vipEntry:false,vipRank:null}
 ];
 
-const DROP=[{r:1,d:0},{r:2,d:20},{r:3,d:20},{r:4,d:20},{r:5,d:20},{r:6,d:20},{r:7,d:20},{r:8,d:15},{r:9,d:15},{r:10,d:15},{r:11,d:15},{r:12,d:15},{r:13,d:15},{r:14,d:12},{r:15,d:11},{r:16,d:10},{r:17,d:10},{r:18,d:8},{r:19,d:7},{r:20,d:6},{r:21,d:5},{r:22,d:4},{r:23,d:3},{r:24,d:2},{r:25,d:2},{r:26,d:2},{r:27,d:2}];
+const DROP=[{r:1,d:0},{r:2,d:20},{r:3,d:20},{r:4,d:20},{r:5,d:20},{r:6,d:20},{r:7,d:18},{r:8,d:16},{r:9,d:15},{r:10,d:15},{r:11,d:15},{r:12,d:15},{r:13,d:15},{r:14,d:12},{r:15,d:11},{r:16,d:10},{r:17,d:10},{r:18,d:8},{r:19,d:7},{r:20,d:6},{r:21,d:5},{r:22,d:4},{r:23,d:4},{r:24,d:3},{r:25,d:2},{r:26,d:2},{r:27,d:1}];
 const CUR=1,T1=100,T2=200,AVG=926;
 const SCOL=CUR===1?'R1':'Total';
 // Prize data — update when confirmed
