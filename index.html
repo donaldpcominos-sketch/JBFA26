@@ -46,15 +46,15 @@ header{position:sticky;top:0;z-index:200;background:var(--jb);border-bottom:3px 
 .nb:hover{color:var(--text);background:var(--surface2);border-color:rgba(255,255,255,.3);}
 .nsep{width:1px;height:20px;background:var(--border);flex-shrink:0;margin:0 2px;}
 /* Overview active */
-#nb-ov.active{background:rgba(240,180,41,.15);border-color:rgba(240,180,41,.4);color:var(--accent);}
+#nb-ov.active{background:var(--surface2);border-color:var(--border);color:var(--text);}
 /* How It Works active */
 #nb-how.active{background:var(--surface2);border-color:var(--border);color:var(--text);}
 /* Main Comp group */
-.nav-group{display:flex;align-items:center;background:rgba(26,58,143,.2);border:1px solid rgba(26,58,143,.5);border-radius:8px;padding:3px;gap:2px;flex-shrink:0;}
-.nav-group-label{font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#4a6fa8;padding:0 .5rem;white-space:nowrap;flex-shrink:0;}
-.nav-group .nb{border-radius:5px;border:none;padding:.38rem .8rem;color:var(--muted);}
-.nav-group .nb:hover{background:rgba(255,255,255,.08);color:var(--text);}
-.nav-group .nb.active{background:rgba(26,58,143,.5);border:none;color:#fff;}
+.nav-group{display:flex;align-items:center;background:rgba(26,58,143,.3);border:1px solid rgba(58,123,213,.55);border-radius:8px;padding:3px;gap:2px;flex-shrink:0;}
+.nav-group-label{font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#7aaee8;padding:0 .5rem;white-space:nowrap;flex-shrink:0;}
+.nav-group .nb{border-radius:5px;border:none;padding:.38rem .8rem;color:#7aaee8;}
+.nav-group .nb:hover{background:rgba(58,123,213,.2);color:#fff;}
+.nav-group .nb.active{background:#1e4d8c;border:1px solid #3a7bd5;color:#fff;}
 /* Survival active */
 #nb-c2.active{background:rgba(248,113,113,.12);border-color:rgba(248,113,113,.35);color:var(--red);}
 #nb-c2{color:#f87171;border-color:rgba(248,113,113,.2);}
@@ -64,8 +64,8 @@ header{position:sticky;top:0;z-index:200;background:var(--jb);border-bottom:3px 
 #nb-vip:hover{background:rgba(52,211,153,.15);border-color:rgba(52,211,153,.4);}
 #nb-vip.active{background:rgba(52,211,153,.18);border-color:rgba(52,211,153,.5);color:var(--vip);}
 /* Prizes */
-#nb-prizes{background:rgba(30,77,140,.18);border-color:rgba(58,123,213,.35);color:#7aaee8;}
-#nb-prizes.active{background:#1e4d8c;border-color:#3a7bd5;color:#fff;}
+#nb-prizes{background:rgba(240,180,41,.12);border-color:rgba(240,180,41,.35);color:#f0b429;}
+#nb-prizes.active{background:rgba(240,180,41,.25);border-color:rgba(240,180,41,.7);color:#ffd700;}
 
 /* MAIN */
 main{max-width:1400px;margin:0 auto;padding:1.5rem;}
@@ -313,6 +313,7 @@ td{padding:.6rem 1rem;vertical-align:middle;}
     <button class="nb" id="nb-c2" onclick="showTab(event,'c2')">Survivor</button>
     <div class="nsep"></div>
     <button class="nb" id="nb-vip" onclick="showTab(event,'vip')">⭐ VIP</button>
+    <div class="nsep"></div>
     <button class="nb" id="nb-prizes" onclick="showTab(event,'prizes')">🏆 Prizes</button>
   </div>
 </div>
