@@ -115,6 +115,7 @@ main{max-width:1400px;margin:0 auto;padding:1.5rem;}
 
 /* STAT CARDS */
 .sr{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem;margin-bottom:1.5rem;}
+#sr-surv-ov{grid-template-columns:repeat(4,1fr);}
 .sc{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.1rem 1.25rem;}
 .scl{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:700;}
 .scv{font-family:'Bebas Neue',sans-serif;font-size:2rem;line-height:1.1;margin:.15rem 0;}
@@ -270,6 +271,7 @@ td{padding:.6rem 1rem;vertical-align:middle;}
   .sw input{font-size:1rem;padding:.55rem 1rem .55rem 2.4rem;border-radius:10px;}
   main{padding:1rem;}
   .sr{grid-template-columns:1fr 1fr;}
+  #sr-surv-ov{grid-template-columns:1fr 1fr;}
   .cvhero{flex-direction:column;gap:1rem;}
   .hg{grid-template-columns:1fr;}
   .prizes-grid{grid-template-columns:1fr;}
@@ -334,7 +336,6 @@ td{padding:.6rem 1rem;vertical-align:middle;}
     <div class="sr">
       <div class="sc"><div class="scl">Coaches</div><div class="scv" id="sc-total">293</div><div class="scs"></div></div>
       <div class="sc"><div class="scl">Current Round</div><div class="scv" style="color:var(--accent)">1</div><div class="scs">of 27</div></div>
-      <div class="sc"><div class="scl">VIP Entries</div><div class="scv" style="color:var(--vip)">68</div><div class="scs"></div></div>
       <div class="sc"><div class="scl" id="sc-top-label">Top Score R1</div><div class="scv" style="color:var(--accent)" id="sc-top-val">1079</div><div class="scs" id="sc-top-coach" style="color:var(--text);font-weight:700;font-size:.8rem">Jeremy Wirth</div></div>
       <div class="sc"><div class="scl" id="sc-avg-label">Field Avg R1</div><div class="scv" id="sc-avg-val">926</div><div class="scs" id="sc-avg-sub"></div></div>
     </div>
@@ -349,7 +350,7 @@ td{padding:.6rem 1rem;vertical-align:middle;}
       <tbody id="ov-pod"></tbody>
     </table></div></div>
     <div class="sh"><div class="sht">Survivor</div><div class="shl"></div></div>
-    <div class="sr" style="grid-template-columns:repeat(4,1fr);">
+    <div class="sr" id="sr-surv-ov">
       <div class="sc"><div class="scl">Alive After R1</div><div class="scv" style="color:var(--green)" id="sc-alive">293</div><div class="scs">no eliminations R1</div></div>
       <div class="sc"><div class="scl">Eliminated R1</div><div class="scv" style="color:var(--muted)">0</div><div class="scs">R1 = safe round</div></div>
       <div class="sc"><div class="scl" id="sc-cut-label-ov">Cut Score R1</div><div class="scv" style="color:var(--red)" id="sc-cut-val-ov">—</div><div class="scs" id="sc-cut-scs-ov">no eliminations R1</div></div>
@@ -432,7 +433,6 @@ td{padding:.6rem 1rem;vertical-align:middle;}
             <div style="display:flex;justify-content:space-between;font-size:.82rem;padding:.4rem .6rem;background:var(--surface2);border-radius:6px"><span style="color:var(--muted)">Started</span><strong>293 coaches</strong></div>
             <div style="display:flex;justify-content:space-between;font-size:.82rem;padding:.4rem .6rem;background:var(--surface2);border-radius:6px"><span style="color:var(--muted)">Round 1</span><strong style="color:var(--green)">No eliminations</strong></div>
             <div style="display:flex;justify-content:space-between;font-size:.82rem;padding:.4rem .6rem;background:var(--surface2);border-radius:6px"><span style="color:var(--muted)">Winner</span><strong>Last coach standing (R27)</strong></div>
-            <div style="display:flex;justify-content:space-between;font-size:.82rem;padding:.4rem .6rem;background:var(--surface2);border-radius:6px"><span style="color:var(--muted)">Prize</span><strong style="color:var(--muted)">TBC</strong></div>
           </div>
         </div>
       </div>
@@ -461,9 +461,6 @@ td{padding:.6rem 1rem;vertical-align:middle;}
             <div style="display:flex;justify-content:space-between;font-size:.82rem;padding:.4rem .6rem;background:var(--surface2);border-radius:6px"><span style="color:var(--muted)">Entrants</span><strong style="color:var(--vip)">68 VIP coaches</strong></div>
             <div style="display:flex;justify-content:space-between;font-size:.82rem;padding:.4rem .6rem;background:var(--surface2);border-radius:6px"><span style="color:var(--muted)">Scoring</span><strong>Cumulative — all 27 rounds</strong></div>
             <div style="display:flex;justify-content:space-between;font-size:.82rem;padding:.4rem .6rem;background:var(--surface2);border-radius:6px"><span style="color:var(--muted)">Entries per coach</span><strong>One designated entry only</strong></div>
-            <div style="display:flex;justify-content:space-between;font-size:.82rem;padding:.4rem .6rem;background:var(--surface2);border-radius:6px"><span style="color:var(--muted)">1st Prize</span><strong style="color:var(--vip)">$500 cash</strong></div>
-            <div style="display:flex;justify-content:space-between;font-size:.82rem;padding:.4rem .6rem;background:var(--surface2);border-radius:6px"><span style="color:var(--muted)">2nd Prize</span><strong style="color:var(--vip)">$100 JBFA Credit</strong></div>
-            <div style="display:flex;justify-content:space-between;font-size:.82rem;padding:.4rem .6rem;background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.15);border-radius:6px"><span style="color:var(--muted)">Jackpot bonus</span><strong style="color:var(--vip)">+25% on Main/Survival wins</strong></div>
           </div>
         </div>
       </div>
@@ -539,9 +536,8 @@ td{padding:.6rem 1rem;vertical-align:middle;}
     </div>
     <div class="sr">
       <div class="sc"><div class="scl">VIP Entries</div><div class="scv" style="color:var(--vip)">68</div><div class="scs">competitors</div></div>
-      <div class="sc"><div class="scl">Current Leader</div><div class="scv" style="font-size:1rem;margin-top:.2rem" id="vip-leader">—</div><div class="scs">after R1</div></div>
-      <div class="sc"><div class="scl">Top Score R1</div><div class="scv" style="color:var(--accent)" id="vip-top">—</div><div class="scs" id="vip-top-team">—</div></div>
-      <div class="sc"><div class="scl">1st Prize</div><div class="scv" style="color:var(--vip);font-size:1.3rem;margin-top:.2rem">$500</div><div class="scs">+ $100 credit for 2nd</div></div>
+      <div class="sc"><div class="scl" id="vip-top-label">Top Score R1</div><div class="scv" style="color:var(--accent)" id="vip-top">—</div><div class="scs" id="vip-top-team" style="color:var(--text);font-weight:700;font-size:.8rem">—</div></div>
+      <div class="sc"><div class="scl">1st Prize</div><div class="scv" style="color:var(--vip);font-size:1.6rem;margin-top:.2rem">$500</div><hr style="border:none;border-top:1px solid var(--border);margin:.4rem 0"><div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)">Runner-up</div><div style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--vip);letter-spacing:.04em;margin:.1rem 0">$100 <span style="font-size:.75rem;color:var(--muted)">JBFA Credit</span></div></div>
     </div>
     <div class="sh"><div class="sht">VIP Leaderboard</div><div class="shl"></div></div>
     <div class="fr"><span class="fil">Filter:</span><input class="fi" id="vipfi" placeholder="Search VIP coach or team…" oninput="fVip()"></div>
@@ -676,7 +672,7 @@ td{padding:.6rem 1rem;vertical-align:middle;}
         </div>
         <div style="background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.2);border-radius:10px;padding:.85rem 1.1rem;display:flex;align-items:flex-start;gap:.75rem;">
           <span style="font-size:1.1rem;flex-shrink:0">⭐</span>
-          <div style="font-size:.82rem;color:var(--muted);line-height:1.6"><strong style="color:var(--vip)">VIP Jackpot Bonus</strong> — VIP members who win a prize in the <strong style="color:var(--text)">Main Season Comp</strong> or <strong style="color:var(--text)">Survivor</strong> receive a <strong style="color:var(--vip)">25% bonus</strong> on top of their winnings. Does not apply to the VIP Overall Comp prizes.</div>
+          <div style="font-size:.82rem;color:var(--muted);line-height:1.6"><strong style="color:var(--vip)">VIP Jackpot Bonus</strong> — VIP members who win any cash prize receive a <strong style="color:var(--vip)">25% bonus</strong> on top of their winnings. Does not apply to the VIP Overall Comp prizes.</div>
         </div>
       </div>
     </div>
@@ -1230,9 +1226,8 @@ function renderOvVip(){
   }).join(''));
   var leader=VIP_LIST[0];
   if(leader){
-    document.getElementById('vip-leader').textContent=leader.coach;
     document.getElementById('vip-top').textContent=leader.r1;
-    document.getElementById('vip-top-team').textContent=leader.team;
+    document.getElementById('vip-top-team').textContent=leader.coach;
   }
 }
 
@@ -1572,9 +1567,8 @@ document.querySelectorAll('th.scol-hdr').forEach(function(el){el.textContent=SCO
 (function(){
   var leader=VIP_LIST[0];
   if(!leader) return;
-  document.getElementById('vip-leader').textContent=leader.coach;
   document.getElementById('vip-top').textContent=leader.r1;
-  document.getElementById('vip-top-team').textContent=leader.team;
+  document.getElementById('vip-top-team').textContent=leader.coach;
 })();
 </script>
 <!-- FEEDBACK BUTTON & MODAL -->
