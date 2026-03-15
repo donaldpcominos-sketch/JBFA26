@@ -133,6 +133,7 @@ main{max-width:1400px;margin:0 auto;padding:1.5rem;}
 .bvip{background:rgba(52,211,153,.15);color:var(--vip);border:1px solid rgba(52,211,153,.3);}
 .bchamp{background:linear-gradient(135deg,rgba(240,180,41,.3),rgba(240,180,41,.12));color:#f0b429;border:1px solid rgba(240,180,41,.6);font-weight:700;}
 .bru{background:rgba(192,192,192,.12);color:#b0b8c8;border:1px solid rgba(192,192,192,.3);}
+.btop10{background:rgba(148,163,184,.08);color:#94a3b8;border:1px solid rgba(148,163,184,.2);font-size:.65rem;}
 
 /* TABLE */
 .tw{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:1.5rem;}
@@ -983,6 +984,7 @@ const WINNINGS={};
 function isVip(c){return c.isVip||c.isAdmin;}
 const CHAMP_2025='Andrew Phillipps';
 const RU_2025='Jake Venn';
+const TOP10_2025=['Sam C','Tyson Coles'];
 const PODCASTERS=['Jamie Brown','Mitch Deguara','Nikki Mcintosh','Matt Thompson'];
 const COMMISSIONER='Don Cominos';
 function vipTag(c){
@@ -991,6 +993,7 @@ function vipTag(c){
   else if(c.isVip) tags+='<span class="vip">★ VIP</span>';
   if(c.coach===CHAMP_2025) tags+='<span class="badge bchamp" style="line-height:1.25;text-align:center;padding:.2rem .5rem">✦ 2025 Overall<br>Winner</span>';
   if(c.coach===RU_2025) tags+='<span class="badge bru" style="line-height:1.25;text-align:center;padding:.2rem .5rem">✦ 2025 Overall<br>Runner-Up</span>';
+  if(TOP10_2025.indexOf(c.coach)>=0) tags+='<span class="badge btop10">Top 10 · 2025</span>';
   if(PODCASTERS.indexOf(c.coach)>=0) tags+='<span class="tip" onclick="tipTap(this)"><span class="tiptext">JBFA Podcaster</span><span style="font-size:.85em;opacity:.8;margin-left:1px">🎙️</span></span>';
   if(c.coach===COMMISSIONER) tags+='<span class="tip" onclick="tipTap(this)"><span class="tiptext">League Commissioner</span><span style="font-size:.8em;opacity:.6;margin-left:2px">⚙️</span></span>';
   if(c.coach==='Chris Cook') tags+='<span class="tip" onclick="tipTap(this)"><span class="tiptext">STAMP YA FEET</span><span style="font-size:.8em;opacity:.75;margin-left:2px">🐇</span></span>';
@@ -1073,7 +1076,8 @@ function showCoach(rank){
     '<div class="cvhero">'+
       '<div class="cvav">'+ini(c.coach)+'</div>'+
       '<div style="flex:1">'+
-        '<div class="cvn">'+esc(c.coach)+vipTag(c)+'</div>'+
+        '<div class="cvn">'+esc(c.coach)+'</div>'+
+        '<div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.4rem;align-items:center;">'+vipTag(c)+'</div>'+
         '<div class="cvt">'+esc(c.team)+'</div>'+
         '<div class="cvtags">'+tb(rank,true)+'<span class="badge balive">Survivor: Alive</span><span class="badge" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.2)">#'+rank+' of '+COACHES.length+'</span>'+(c.vipEntry?'<span class="badge bvip">★ VIP Entry</span>':'')+'</div>'+
       '</div>'+
