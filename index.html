@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏉</text></svg>">
 <title>JBFA Fantasy League — 2026</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -542,7 +543,7 @@ td{padding:.6rem 1rem;vertical-align:middle;}
     <div class="sh"><div class="sht">VIP Leaderboard</div><div class="shl"></div></div>
     <div class="fr"><span class="fil">Filter:</span><input class="fi" id="vipfi" placeholder="Search VIP coach or team…" oninput="fVip()"></div>
     <div class="tw"><div class="tw-scroll"><table id="vipt">
-      <thead><tr><th>#</th><th>Coach</th><th class="scol-hdr">R1</th><th>Total</th><th>Overall Rank</th></tr></thead>
+      <thead><tr><th>#</th><th>Coach</th><th class="scol-hdr">R1</th><th>Total</th><th>JBFA Rank</th></tr></thead>
       <tbody id="vipb"></tbody>
     </table></div></div>
     <div class="pager" id="vippg"></div>
@@ -1145,7 +1146,7 @@ function showCoach(rank){
       '</div>'+
     '</div>'+
     '<div class="cvstats">'+
-      '<div class="cvstat"><div class="cvsl">Overall Rank</div><div class="cvsv" style="color:var(--accent)">#'+rank+'</div></div>'+
+      '<div class="cvstat"><div class="cvsl">JBFA Rank</div><div class="cvsv" style="color:var(--accent)">#'+rank+'</div></div>'+
       '<div class="cvstat"><div class="cvsl">R1 Score</div><div class="cvsv">'+c.r1+'</div></div>'+
       '<div class="cvstat"><div class="cvsl">vs Avg ('+AVG+')</div><div class="cvsv" style="color:'+(diff>=0?'var(--green)':'var(--red)')+'">'+( diff>=0?'+':'')+diff+'</div></div>'+
       '<div class="cvstat"><div class="cvsl">Top % Field</div><div class="cvsv">'+pct+'%</div></div>'+
