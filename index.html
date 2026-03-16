@@ -297,10 +297,24 @@ td{padding:.6rem 1rem;vertical-align:middle;}
       <input id="gs" type="text" placeholder="Search coach or team…" autocomplete="off">
       <div class="sdrop" id="sdrop"></div>
     </div>
-    <div class="rpill" id="rpill" style="cursor:pointer">Round 1 of 27</div>
+    <div class="rpill" id="rpill" style="cursor:pointer">Round 2 of 27</div>
     <button onclick="document.getElementById('fmodal').style.display='flex'" style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:.35rem .8rem;color:rgba(255,255,255,.8);font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:background .15s;" onmouseover="this.style.background='rgba(255,255,255,.2)'" onmouseout="this.style.background='rgba(255,255,255,.12)'">💬 Feedback</button>
   </div>
 </header>
+
+
+<!-- COMING SOON BANNER -->
+<div id="cs-banner" style="background:linear-gradient(90deg,rgba(26,58,143,.6),rgba(52,211,153,.2));border-bottom:1px solid rgba(52,211,153,.25);padding:.4rem 1.25rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
+  <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;">
+    <span style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(52,211,153,.9)">Coming Soon</span>
+    <div id="cs-items" style="display:flex;gap:.5rem;flex-wrap:wrap;">
+      <span style="font-size:.75rem;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:5px;padding:.15rem .55rem;color:rgba(255,255,255,.7)">🧠 Player Insights</span>
+      <span style="font-size:.75rem;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:5px;padding:.15rem .55rem;color:rgba(255,255,255,.7)">💰 Team Value</span>
+      <span style="font-size:.75rem;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:5px;padding:.15rem .55rem;color:rgba(255,255,255,.7)">📊 Overall Rankings</span>
+    </div>
+  </div>
+  <button onclick="var b=document.getElementById('cs-banner');b.style.display='none';localStorage&&localStorage.setItem('cs-hidden','1')" style="background:none;border:none;color:rgba(255,255,255,.4);font-size:.85rem;cursor:pointer;padding:.15rem .4rem;line-height:1;flex-shrink:0" title="Dismiss">✕</button>
+</div>
 
 <div class="nav">
   <div class="nav-inner" style="padding:8px 1.25rem;">
@@ -335,26 +349,26 @@ td{padding:.6rem 1rem;vertical-align:middle;}
   <!-- OVERVIEW -->
   <div class="panel active" id="panel-ov">
     <div class="sr">
-      <div class="sc"><div class="scl">Coaches</div><div class="scv" id="sc-total">293</div><div class="scs"></div></div>
-      <div class="sc"><div class="scl">Current Round</div><div class="scv" style="color:var(--accent)">1</div><div class="scs">of 27</div></div>
-      <div class="sc"><div class="scl" id="sc-top-label">Top Score R1</div><div class="scv" style="color:var(--accent)" id="sc-top-val">1079</div><div class="scs" id="sc-top-coach" style="color:var(--text);font-weight:700;font-size:.8rem">Jeremy Wirth</div></div>
-      <div class="sc"><div class="scl" id="sc-avg-label">Field Avg R1</div><div class="scv" id="sc-avg-val">926</div><div class="scs" id="sc-avg-sub"></div></div>
+      <div class="sc"><div class="scl">Coaches</div><div class="scv" id="sc-total">298</div><div class="scs"></div></div>
+      <div class="sc"><div class="scl">Current Round</div><div class="scv" style="color:var(--accent)" id="sc-cur-round">2</div><div class="scs">of 27</div></div>
+      <div class="sc"><div class="scl" id="sc-top-label">Top Score R2</div><div class="scv" style="color:var(--accent)" id="sc-top-val">1163</div><div class="scs" id="sc-top-coach" style="color:var(--text);font-weight:700;font-size:.8rem">Mark Wilson</div></div>
+      <div class="sc"><div class="scl" id="sc-avg-label">Field Avg R2</div><div class="scv" id="sc-avg-val">1034</div><div class="scs" id="sc-avg-sub"></div></div>
     </div>
     <div class="sh"><div class="sht">Overall Leaders</div><div class="shl"></div><span class="badge bt1">Live</span></div>
     <div class="tw"><div class="tw-scroll"><table>
-      <thead><tr><th>#</th><th>Coach</th><th class="scol-hdr">R1</th></tr></thead>
+      <thead><tr><th>#</th><th>Coach</th><th>R2</th><th>Total</th></tr></thead>
       <tbody id="ov-top"></tbody>
     </table></div></div>
     <div class="sh"><div class="sht">🎙️ Podcaster Rankings</div><div class="shl"></div></div>
     <div class="tw"><div class="tw-scroll"><table>
-      <thead><tr><th>#</th><th>Coach</th><th class="scol-hdr">R1</th><th>Tier</th><th>Survivor</th></tr></thead>
+      <thead><tr><th>#</th><th>Coach</th><th>R2</th><th>Total</th><th>Tier</th><th>Survivor</th></tr></thead>
       <tbody id="ov-pod"></tbody>
     </table></div></div>
     <div class="sh"><div class="sht">Survivor</div><div class="shl"></div></div>
     <div class="sr" id="sr-surv-ov">
-      <div class="sc"><div class="scl">Alive After R1</div><div class="scv" style="color:var(--green)" id="sc-alive">293</div><div class="scs">no eliminations R1</div></div>
-      <div class="sc"><div class="scl">Eliminated R1</div><div class="scv" style="color:var(--muted)">0</div><div class="scs">R1 = safe round</div></div>
-      <div class="sc"><div class="scl" id="sc-cut-label-ov">Cut Score R1</div><div class="scv" style="color:var(--red)" id="sc-cut-val-ov">—</div><div class="scs" id="sc-cut-scs-ov">no eliminations R1</div></div>
+      <div class="sc"><div class="scl">Alive After R2</div><div class="scv" style="color:var(--green)" id="sc-alive">278</div><div class="scs">20 cut after R2</div></div>
+      <div class="sc"><div class="scl">Eliminated R2</div><div class="scv" style="color:var(--muted)">20</div><div class="scs">lowest scores cut</div></div>
+      <div class="sc"><div class="scl" id="sc-cut-label-ov">R2 Cut Score</div><div class="scv" style="color:var(--red)" id="sc-cut-val-ov">963</div><div class="scs" id="sc-cut-scs-ov">lowest safe R2 score</div></div>
       <div class="sc"><div class="scl">Next Cull R2</div><div class="scv" style="color:var(--red)">−20</div><div class="scs">lowest 20 scores cut</div></div>
     </div>
   </div>
@@ -389,7 +403,7 @@ td{padding:.6rem 1rem;vertical-align:middle;}
           <div class="hc">
             <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.6rem"><span class="badge bt1" style="font-size:.75rem;padding:.2rem .6rem">Qualifying</span><span style="color:var(--muted);font-size:.8rem">Rounds 1–8</span></div>
             <div class="ht">All In</div>
-            <p>All <span class="dyn-total">293</span> coaches compete together, points accumulate each week. Your <strong>rank after Round 8</strong> determines which tier you enter for Seeding.</p>
+            <p>All <span class="dyn-total">298</span> coaches compete together, points accumulate each week. Your <strong>rank after Round 8</strong> determines which tier you enter for Seeding.</p>
           </div>
           <div class="hc">
             <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.6rem"><span class="badge bt2" style="font-size:.75rem;padding:.2rem .6rem">Seeding</span><span style="color:var(--muted);font-size:.8rem">Rounds 9–18</span></div>
@@ -426,12 +440,12 @@ td{padding:.6rem 1rem;vertical-align:middle;}
         <div>
           <div class="ht" style="margin-bottom:.5rem">How it works</div>
           <p style="font-size:.875rem;color:var(--muted);line-height:1.65">Runs in parallel with the Main Season Comp across all 27 rounds. Each round the coaches with the <strong style="color:var(--text)">lowest score that week</strong> are eliminated — regardless of how they've performed before. <strong style="color:var(--text)">Weekly score only, never cumulative.</strong></p>
-          <p style="font-size:.72rem;color:var(--muted);line-height:1.6;margin-top:.5rem;opacity:.7">* Tiebreaker: if two coaches finish on the same score at the cut line (one surviving, one eliminated), the coach with the higher score from the <em>previous round</em> is retained. In Round 1 (no prior round), tied coaches at the cut are both kept safe.</p>
+          <p style="font-size:.72rem;color:var(--muted);line-height:1.6;margin-top:.5rem;opacity:.7">* Tiebreaker: if coaches finish on the same score at the cut line, the coach with the higher score from the <em>previous round</em> is retained. Ties cascade back further if still equal. In Round 1 (no prior round), tied coaches at the cut are both kept safe.</p>
         </div>
         <div>
           <div class="ht" style="margin-bottom:.5rem">Key facts</div>
           <div style="display:flex;flex-direction:column;gap:.4rem">
-            <div style="display:flex;justify-content:space-between;font-size:.82rem;padding:.4rem .6rem;background:var(--surface2);border-radius:6px"><span style="color:var(--muted)">Started</span><strong>293 coaches</strong></div>
+            <div style="display:flex;justify-content:space-between;font-size:.82rem;padding:.4rem .6rem;background:var(--surface2);border-radius:6px"><span style="color:var(--muted)">Started</span><strong>298 coaches</strong></div>
             <div style="display:flex;justify-content:space-between;font-size:.82rem;padding:.4rem .6rem;background:var(--surface2);border-radius:6px"><span style="color:var(--muted)">Round 1</span><strong style="color:var(--green)">No eliminations</strong></div>
             <div style="display:flex;justify-content:space-between;font-size:.82rem;padding:.4rem .6rem;background:var(--surface2);border-radius:6px"><span style="color:var(--muted)">Winner</span><strong>Last coach standing (R27)</strong></div>
           </div>
@@ -472,14 +486,14 @@ td{padding:.6rem 1rem;vertical-align:middle;}
   <!-- PHASE 1 -->
   <div class="panel" id="panel-p1">
     <div class="sh" style="margin-top:0"><div class="sht">Qualifying — Current Rankings</div><div class="shl"></div><span class="badge bt1" style="font-size:.68rem">Rounds 1–8</span></div>
-    <p style="color:var(--muted);font-size:.875rem;margin-bottom:1.25rem;">Standings after Round 1. Click any row for coach profile.</p>
+    <p style="color:var(--muted);font-size:.875rem;margin-bottom:1.25rem;">Standings after Round 2. Click any row for coach profile.</p>
     <div class="fr">
       <span class="fil">Filter:</span>
       <input class="fi" id="p1fi" placeholder="Search coach or team…" oninput="fP1()">
       <span style="margin-left:auto;font-size:.82rem;color:var(--muted)" id="p1ct"></span>
     </div>
     <div class="tw"><div class="tw-scroll"><table id="p1t">
-      <thead><tr><th>#</th><th>Coach</th><th class="scol-hdr">R1</th><th>Total</th><th>Tier</th></tr></thead>
+      <thead><tr><th>#</th><th>Coach</th><th>R2</th><th>Total</th><th>Tier</th></tr></thead>
       <tbody id="p1b"></tbody>
     </table></div></div>
     <div class="pager" id="p1pg"></div>
@@ -500,15 +514,12 @@ td{padding:.6rem 1rem;vertical-align:middle;}
     <div class="sh" style="margin-top:0"><div class="sht">Survivor</div><div class="shl"></div></div>
     <p style="color:var(--muted);font-size:.875rem;margin-bottom:1.5rem;"><strong style="color:var(--text)">Weekly score only — not cumulative.</strong> Each round the coaches with the lowest <em>that week's score</em> are eliminated, regardless of how they've performed before. Survive each round. Last coach standing after Round 27 wins.</p>
     <div class="sr">
-      <div class="sc"><div class="scl">Started</div><div class="scv" id="sc-started">293</div><div class="scs">coaches</div></div>
-      <div class="sc"><div class="scl">Still Alive</div><div class="scv" style="color:var(--green)" id="sc-still-alive">293</div><div class="scs">after R1</div></div>
-      <div class="sc"><div class="scl">Eliminated</div><div class="scv" style="color:var(--muted)">0</div><div class="scs">R1 = safe</div></div>
-      <div class="sc"><div class="scl" id="sc-cut-label">Cut Score R1</div><div class="scv" style="color:var(--red)" id="sc-cut-val">—</div><div class="scs">lowest safe score</div></div>
-      <div class="sc"><div class="scl">Next Drop R2</div><div class="scv" style="color:var(--red)">20</div><div class="scs">lowest weekly scores cut</div></div>
+      <div class="sc"><div class="scl">Started</div><div class="scv" id="sc-started">298</div><div class="scs">coaches</div></div>
+      <div class="sc"><div class="scl">Still Alive</div><div class="scv" style="color:var(--green)" id="sc-still-alive">278</div><div class="scs">after R2</div></div>
+      <div class="sc"><div class="scl">Eliminated</div><div class="scv" style="color:var(--muted)">20</div><div class="scs">cut after R2</div></div>
+      <div class="sc"><div class="scl" id="sc-cut-label">R2 Cut Score</div><div class="scv" style="color:var(--red)" id="sc-cut-val">963</div><div class="scs">lowest safe R2 score</div></div>
+      <div class="sc"><div class="scl">Next Drop R3</div><div class="scv" style="color:var(--red)">20</div><div class="scs">lowest weekly scores cut</div></div>
     </div>
-    <div class="sh"><div class="sht">Eliminated Last Round</div><div class="shl"></div></div>
-    <div class="tw"><div class="tw-scroll"><table><thead><tr><th>Coach</th><th>Team</th><th>Score</th><th>Round</th></tr></thead>
-    <tbody><tr><td colspan="4" style="text-align:center;color:var(--muted);padding:2rem;font-size:.875rem">No eliminations in Round 1.</td></tr></tbody></table></div></div>
     <div class="sh"><div class="sht">Full Drop Schedule</div><div class="shl"></div></div>
     <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.75rem;align-items:center;">
       <span style="font-size:.7rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.08em">% cut:</span>
@@ -519,10 +530,12 @@ td{padding:.6rem 1rem;vertical-align:middle;}
       <span style="font-size:.72rem;color:var(--red);background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.25);border-radius:4px;padding:.1rem .4rem">&lt;35%</span>
       <span style="font-size:.72rem;color:#ef4444;background:rgba(220,38,38,.1);border:1px solid rgba(220,38,38,.25);border-radius:4px;padding:.1rem .4rem">35%+</span>
     </div>
+    <p style="font-size:.78rem;color:var(--muted);margin-bottom:.5rem;">💡 <strong style="color:var(--text)">Click any round</strong> to see which coaches were eliminated that round.</p>
     <div class="sg" id="sgrid"></div>
+    <div id="elim-popup" style="display:none;margin-top:.75rem;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:1rem;"></div>
     <div class="sh"><div class="sht">All Coaches — Survivor Status</div><div class="shl"></div></div>
     <div class="fr"><span class="fil">Filter:</span><input class="fi" id="c2fi" placeholder="Search…" oninput="fC2()"></div>
-    <div class="tw"><div class="tw-scroll"><table><thead><tr><th>#</th><th>Coach</th><th class="scol-hdr">R1</th><th>Status</th></tr></thead><tbody id="c2b"></tbody></table></div></div>
+    <div class="tw"><div class="tw-scroll"><table><thead><tr><th>R2 Score</th><th>Coach</th><th>Status</th></tr></thead><tbody id="c2b"></tbody></table></div></div>
     <div class="pager" id="c2pg"></div>
   </div>
 
@@ -537,13 +550,13 @@ td{padding:.6rem 1rem;vertical-align:middle;}
     </div>
     <div class="sr">
       <div class="sc"><div class="scl">VIP Entries</div><div class="scv" style="color:var(--vip)">68</div><div class="scs">competitors</div></div>
-      <div class="sc"><div class="scl" id="vip-top-label">Top Score R1</div><div class="scv" style="color:var(--accent)" id="vip-top">—</div><div class="scs" id="vip-top-team" style="color:var(--text);font-weight:700;font-size:.8rem">—</div></div>
+      <div class="sc"><div class="scl" id="vip-top-label">Top Score R2</div><div class="scv" style="color:var(--accent)" id="vip-top">—</div><div class="scs" id="vip-top-team" style="color:var(--text);font-weight:700;font-size:.8rem">—</div></div>
       <div class="sc"><div class="scl">1st Prize</div><div class="scv" style="color:var(--vip);font-size:1.6rem;margin-top:.2rem">$500</div><hr style="border:none;border-top:1px solid var(--border);margin:.4rem 0"><div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)">Runner-up</div><div style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--vip);letter-spacing:.04em;margin:.1rem 0">$100 <span style="font-size:.75rem;color:var(--muted)">JBFA Credit</span></div></div>
     </div>
     <div class="sh"><div class="sht">VIP Leaderboard</div><div class="shl"></div></div>
     <div class="fr"><span class="fil">Filter:</span><input class="fi" id="vipfi" placeholder="Search VIP coach or team…" oninput="fVip()"></div>
     <div class="tw"><div class="tw-scroll"><table id="vipt">
-      <thead><tr><th>#</th><th>Coach</th><th class="scol-hdr">R1</th><th>Total</th><th>JBFA Rank</th></tr></thead>
+      <thead><tr><th>#</th><th>Coach</th><th>R2</th><th>Total</th><th>JBFA Rank</th></tr></thead>
       <tbody id="vipb"></tbody>
     </table></div></div>
     <div class="pager" id="vippg"></div>
@@ -560,7 +573,7 @@ td{padding:.6rem 1rem;vertical-align:middle;}
           <span style="font-size:1.4rem">🌟</span>
           <div>
             <div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.06em;color:#f0b429">Overall Points — Season Total</div>
-            <div style="font-size:.72rem;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.1em">All 295 coaches · Cumulative all 27 rounds</div>
+            <div style="font-size:.72rem;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.1em">All 298 coaches · Cumulative all 27 rounds</div>
           </div>
         </div>
         <span class="badge bt1" style="font-size:.7rem">Top 5 Paid</span>
@@ -737,306 +750,10 @@ td{padding:.6rem 1rem;vertical-align:middle;}
 </main>
 
 <script>
-const COACHES=[
-  {rank:1,coach:"Jeremy Wirth",team:"Weststigers1",r1:1079,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:2,coach:"Joseph Cradock",team:"JosephCradock",r1:1029,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:3,coach:"Blake Whitaker",team:"Never Got The Late Mail",r1:1023,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:4,coach:"David Conlon",team:"Horrifically Gorgeous",r1:1004,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:5,coach:"Aaron Henderson",team:"Hendos Warriors",r1:1003,isVip:true,isAdmin:false,vipEntry:true,vipRank:1},
-  {rank:6,coach:"Jeremy Hubbard",team:"But I'm a Stallion",r1:1001,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:7,coach:"Isaac Wiremu Borell-Hunt",team:"Api- Salute Dud",r1:1000,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:8,coach:"Jesse Lentini",team:"Thinkin Cleary",r1:995,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:9,coach:"Geordie Hardcastle",team:"The UnbeClearybles",r1:990,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:10,coach:"Liam Corson",team:"CASUAL BALLER",r1:990,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:11,coach:"James Phillips",team:"JPDRAGONS JBFA",r1:989,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:12,coach:"Richard Lane",team:"BUSLANE",r1:988,isVip:true,isAdmin:false,vipEntry:true,vipRank:2},
-  {rank:13,coach:"Woc Smith",team:"JBFA HOOKED NEK WEEK",r1:986,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:14,coach:"Stephen Stelmach",team:"stelmarky",r1:983,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:15,coach:"Brent Compton",team:"The Parkwood Pork Swords",r1:983,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:16,coach:"Will Taylor",team:"Bens Barber",r1:983,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:17,coach:"Finbarr Reynolds",team:"Triumph & Disaster",r1:982,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:18,coach:"Oli White",team:"Revilo's Raptors",r1:982,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:19,coach:"Sam Murray",team:"Brad Arthur 40-20",r1:979,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:20,coach:"Darrin Booth",team:"Daza11",r1:978,isVip:true,isAdmin:false,vipEntry:true,vipRank:3},
-  {rank:21,coach:"Sam C",team:"Carsonious",r1:978,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:22,coach:"Stuart Cane",team:"Cockatoo Stu",r1:977,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:23,coach:"Tyler Kendall",team:"Ruben Thiccy",r1:977,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:24,coach:"Callum Ferguson",team:"Fizzays Raskals",r1:977,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:25,coach:"Geordie Hardcastle",team:"Liam’s Martinis",r1:975,isVip:true,isAdmin:false,vipEntry:true,vipRank:4},
-  {rank:26,coach:"Caleb Greene",team:"Yeo win some Yeo lose some",r1:975,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:27,coach:"John Herrera",team:"Jacked Eagles",r1:975,isVip:true,isAdmin:false,vipEntry:true,vipRank:5},
-  {rank:28,coach:"Liam Doyle",team:"JBFA Elbanditos",r1:974,isVip:true,isAdmin:false,vipEntry:true,vipRank:6},
-  {rank:29,coach:"Manuel Poteri",team:"Rumble in tha Bronx",r1:974,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:30,coach:"Patrick Brennan",team:"PaddyB02",r1:974,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:31,coach:"Jason Swain",team:"Up tha boys",r1:969,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:32,coach:"Killian Slevin",team:"JBFA Slevdog",r1:969,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:33,coach:"Dave Lang",team:"Gravies",r1:968,isVip:true,isAdmin:false,vipEntry:true,vipRank:7},
-  {rank:34,coach:"Lee Stinson",team:"Pee Wee's Raiders",r1:965,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:35,coach:"Jeremy  Jones",team:"Jerome’s Homies",r1:964,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:36,coach:"Sean James",team:"Scrubcats",r1:964,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:37,coach:"Jared Kroeger",team:"Hellman’s Hornets",r1:963,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:38,coach:"Liam Trumble",team:"Freckle Wreckers",r1:963,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:39,coach:"Kyle Whittle",team:"JBFA Hectic 8-Ball",r1:963,isVip:true,isAdmin:false,vipEntry:true,vipRank:8},
-  {rank:40,coach:"Debbie Dixon",team:"JBFA Love the Sharks",r1:962,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:41,coach:"Glenn Wykes",team:"Guru Central",r1:962,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:42,coach:"David Moody",team:"Newcastle Eels - 2019 Winner",r1:962,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:43,coach:"Jay See Ess",team:"JBFA Jordan’s Mojo",r1:962,isVip:true,isAdmin:false,vipEntry:true,vipRank:9},
-  {rank:44,coach:"Adam Grant",team:"Grant's Giants",r1:961,isVip:true,isAdmin:false,vipEntry:true,vipRank:10},
-  {rank:45,coach:"Tony Martin",team:"Tozza Hammers",r1:961,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:46,coach:"Zarin Tuhua",team:"Amaiden",r1:961,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:47,coach:"Sam Motu",team:"SAMJNR77",r1:960,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:48,coach:"Jackie Ou",team:"Jingling Joes",r1:959,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:49,coach:"Jake Wood",team:"Check Out My Sombrero",r1:959,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:50,coach:"Joseph Smith",team:"SMITTYS LADS AND LEGENDS",r1:959,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:51,coach:"David Moody",team:"Singleton Bulldogs",r1:958,isVip:true,isAdmin:false,vipEntry:true,vipRank:11},
-  {rank:52,coach:"Harry Keir",team:"Savage Opress",r1:958,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:53,coach:"Jodeci Pene",team:"The Reall Warriors",r1:958,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:54,coach:"Kevin Maxted",team:"Fucksmithfield2nd",r1:958,isVip:true,isAdmin:false,vipEntry:true,vipRank:12},
-  {rank:55,coach:"Liam Weber",team:"Benny Barba's Bulldogs",r1:958,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:56,coach:"Caleb Metz",team:"Metz's",r1:957,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:57,coach:"David Bade",team:"Snake Point Wekas",r1:957,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:58,coach:"Adam Grant",team:"Adam’s Warriors88",r1:955,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:59,coach:"Peter Framhein",team:"Cleary Not Fair",r1:955,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:60,coach:"Will Morrison",team:"Setu & Forget",r1:955,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:61,coach:"Charlie Rowe",team:"darcy’s fat",r1:954,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:62,coach:"Jake Mullen",team:"Skibidii",r1:954,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:63,coach:"Amon Broadhurst",team:"TopBinsFC",r1:953,isVip:true,isAdmin:false,vipEntry:true,vipRank:13},
-  {rank:64,coach:"Eli Johannessen",team:"NSW DONT GET ORIGIN",r1:953,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:65,coach:"Ethan Jeong",team:"FIVELINES",r1:953,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:66,coach:"Soren Moon",team:"Sozsta",r1:953,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:67,coach:"Don Cominos",team:"TwoSeasonWonder",r1:953,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:68,coach:"Darryl Kereopa",team:"The Mattress Room",r1:952,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:69,coach:"Jake Vincent",team:"JBFA YeoBeauty",r1:952,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:70,coach:"Rory Diver",team:"ICU2 Jerry Jerry",r1:952,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:71,coach:"Jayden Addei",team:"yrnjay",r1:951,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:72,coach:"Chris Cook",team:"Bunny boy brothers LMC",r1:949,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:73,coach:"James Jackson",team:"Cristian",r1:949,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:74,coach:"Matthew Sylvander",team:"Deardon2Drinkwater JBFA",r1:949,isVip:true,isAdmin:false,vipEntry:true,vipRank:14},
-  {rank:75,coach:"Dylan Martin",team:"The Tongan Fisherman",r1:948,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:76,coach:"Paul Steele",team:"JBFA Sound the Alarm",r1:948,isVip:true,isAdmin:false,vipEntry:true,vipRank:15},
-  {rank:77,coach:"Don Cominos",team:"OneSeasonWonder",r1:947,isVip:true,isAdmin:false,vipEntry:true,vipRank:16},
-  {rank:78,coach:"Sam Owen",team:"Sam Owen",r1:947,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:79,coach:"William Hall",team:"Probly Popd Aneky",r1:947,isVip:true,isAdmin:false,vipEntry:true,vipRank:17},
-  {rank:80,coach:"Brandon Trpezanovski",team:"Brandon’s lil Whores",r1:946,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:81,coach:"Andrew Rumball",team:"JBFA KickAss Boys",r1:945,isVip:true,isAdmin:false,vipEntry:true,vipRank:18},
-  {rank:82,coach:"Benjamin Wright",team:"Wrighty’s Golden Team",r1:945,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:83,coach:"Jesse Lockyer",team:"MADHATTER’S",r1:945,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:84,coach:"Matty Van Loon",team:"Loonatics",r1:945,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:85,coach:"Shane Vos",team:"its Vossy",r1:945,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:86,coach:"Simon Jones",team:"Bondi Spy",r1:945,isVip:true,isAdmin:false,vipEntry:true,vipRank:19},
-  {rank:87,coach:"Jakeb Brown",team:"TuiWahsa-Sheck",r1:944,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:88,coach:"Kyle Ryland",team:"Woolston War Pigs",r1:944,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:89,coach:"Sam Kennedy",team:"Chan Kum Bong",r1:944,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:90,coach:"Selwynn Kraus",team:"Flagstone Flannies",r1:944,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:91,coach:"Blake Fowke",team:"Kotoni Baggs",r1:943,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:92,coach:"Brad Malone",team:"Bugsy's Brawlers",r1:943,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:93,coach:"Jamie Vooght",team:"Evilda",r1:943,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:94,coach:"Jarrod Etherington",team:"Frosty Mangoes",r1:943,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:95,coach:"Joey Braund",team:"Dennis Burgess Enthusiast",r1:943,isVip:true,isAdmin:false,vipEntry:true,vipRank:20},
-  {rank:96,coach:"Joshua Windsor",team:"Money8all",r1:943,isVip:true,isAdmin:false,vipEntry:true,vipRank:21},
-  {rank:97,coach:"Kyle Goldsack",team:"Trell-yeah",r1:943,isVip:true,isAdmin:false,vipEntry:true,vipRank:22},
-  {rank:98,coach:"Riley Connor",team:"Vossy for PM - Talking League",r1:943,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:99,coach:"Craig Sloane",team:"Crack12",r1:942,isVip:true,isAdmin:false,vipEntry:true,vipRank:23},
-  {rank:100,coach:"Brendan Riche",team:"Sukkar May Penisini To'a Knight",r1:941,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:101,coach:"Jake Christie",team:"Doggies 13 Plus’s",r1:941,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:102,coach:"Joe Auimatagi",team:"Kainga dat shi cuzz",r1:941,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:103,coach:"Jacques Millichamp",team:"Murray Me Cam",r1:940,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:104,coach:"Ryan Heathcote",team:"Charging Rhinos",r1:940,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:105,coach:"Stephen Beatty",team:"JBFA BEATO83",r1:940,isVip:true,isAdmin:false,vipEntry:true,vipRank:24},
-  {rank:106,coach:"Jack Ferguson",team:"Dreamteam253",r1:940,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:107,coach:"Michael Doig",team:"Resting Mitch Face XVII",r1:939,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:108,coach:"John Herrera",team:"68th is Back",r1:938,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:109,coach:"Evan Cook",team:"metzgerhund",r1:937,isVip:true,isAdmin:false,vipEntry:true,vipRank:25},
-  {rank:110,coach:"Jay See Ess",team:"Kobe’s Mojo",r1:937,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:111,coach:"Jack Feeney",team:"The Bear Necessities",r1:936,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:112,coach:"Joshua Forrest-White",team:"The Savvy Davvys",r1:936,isVip:true,isAdmin:false,vipEntry:true,vipRank:26},
-  {rank:113,coach:"Abdul Jabado",team:"WEAK KIRAZY SALMON",r1:935,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:114,coach:"Hayden Hunter",team:"JBFA Superstorm",r1:935,isVip:true,isAdmin:false,vipEntry:true,vipRank:27},
-  {rank:115,coach:"Henry Budd",team:"Henrys Hobos",r1:935,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:116,coach:"Isobel Saccaro",team:"IS6300",r1:935,isVip:true,isAdmin:false,vipEntry:true,vipRank:28},
-  {rank:117,coach:"Les Farah",team:"Nathan Ramjet",r1:935,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:118,coach:"JP",team:"80Mint",r1:934,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:119,coach:"Jason Wathall",team:"Duplex",r1:934,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:120,coach:"Shane Krautz",team:"Skrautz",r1:934,isVip:true,isAdmin:false,vipEntry:true,vipRank:29},
-  {rank:121,coach:"Bailey Bajic",team:"TurkeyNugget18",r1:933,isVip:true,isAdmin:false,vipEntry:true,vipRank:30},
-  {rank:122,coach:"Chris Breese",team:"Oldirty",r1:933,isVip:true,isAdmin:false,vipEntry:true,vipRank:31},
-  {rank:123,coach:"Jayden Brown",team:"JBFA Fruitbat",r1:933,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:124,coach:"Paul Steele",team:"Dinner 4 Tu",r1:933,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:125,coach:"Kingi Kamariera",team:"KINGZWORLD",r1:933,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:126,coach:"Scott Fulcher",team:"trell mit dally m",r1:932,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:127,coach:"Tom Hore",team:"Deeply Closeted Storm Fan",r1:932,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:128,coach:"Tyson Hullena",team:"Masterton Magpies",r1:932,isVip:true,isAdmin:false,vipEntry:true,vipRank:32},
-  {rank:129,coach:"Christian Iodice",team:"REEDZ TEEM 6",r1:931,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:130,coach:"Dan Keen",team:"FuqBuk",r1:931,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:131,coach:"Jamie Brown",team:"JB Fantasy Analysis",r1:931,isVip:false,isAdmin:true,vipEntry:true,vipRank:33},
-  {rank:132,coach:"Mathew Belyea",team:"MangroveMatty",r1:931,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:133,coach:"Matt Henderson",team:"Mrhenderson",r1:931,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:134,coach:"Matthew Jackson",team:"Wackos Warriors",r1:931,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:135,coach:"Mitch Deguara",team:"This Time Hunt Held It",r1:931,isVip:true,isAdmin:false,vipEntry:true,vipRank:34},
-  {rank:136,coach:"Zac Cohen",team:"Choamps",r1:931,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:137,coach:"Johnny Zibara",team:"Turbomann",r1:931,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:138,coach:"Jake Venn",team:"JBFA jv724",r1:930,isVip:true,isAdmin:false,vipEntry:true,vipRank:35},
-  {rank:139,coach:"Martin Dalton",team:"KAMAEMCO",r1:930,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:140,coach:"Cameron Jennings",team:"Ben Hunt’s Hands",r1:929,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:141,coach:"Elijah Moors",team:"Big Bundas",r1:929,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:142,coach:"Jack Cranston",team:"Cranno69",r1:929,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:143,coach:"Johno Fitch",team:"JBFA Football Factory",r1:929,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:144,coach:"Liam King",team:"Wong Option",r1:928,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:145,coach:"Pedro Harding",team:"Pistols Panthers",r1:928,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:146,coach:"Pvrko Prk",team:"Danikaring My Mason",r1:927,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:147,coach:"Cam Mackellar",team:"Kamoshika",r1:926,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:148,coach:"Kent Somerville",team:"Cleary Haas a Plan",r1:926,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:149,coach:"Kye Beck",team:"Kyeskillersss",r1:926,isVip:true,isAdmin:false,vipEntry:true,vipRank:36},
-  {rank:150,coach:"Matthew Sylvander",team:"RednoseReindeer",r1:926,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:151,coach:"Sam Mcalister",team:"Ohoka oranges",r1:926,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:152,coach:"Adam Thomas",team:"NFE",r1:925,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:153,coach:"Brodee Barrett",team:"DonkRylesDynasty",r1:925,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:154,coach:"James Peters",team:"Schiller's List",r1:925,isVip:true,isAdmin:false,vipEntry:true,vipRank:37},
-  {rank:155,coach:"Lloyd Mitchell",team:"QLD49",r1:925,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:156,coach:"Matt Lyons",team:"Chicken Winging It",r1:925,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:157,coach:"Nick Bowring",team:"Fasi your Mulitalo",r1:925,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:158,coach:"Theo Veeren",team:"Threat Level Midnight NRL",r1:925,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:159,coach:"James Brooking",team:"Bye round lover",r1:925,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:160,coach:"Caleb Williams",team:"To’o Sexy For This Shirt",r1:924,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:161,coach:"Gregory Simon",team:"Channel4 News Team",r1:923,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:162,coach:"Lazar Bodiroza",team:"Get Tuivasa Shrektttt",r1:923,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:163,coach:"Imran Ayoubi",team:"Arab Fantasy",r1:922,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:164,coach:"Kim Clayton",team:"JBFA SkrumBags",r1:922,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:165,coach:"Matt Thompson",team:"JBFA HaasNoTrades",r1:922,isVip:true,isAdmin:false,vipEntry:true,vipRank:38},
-  {rank:166,coach:"Zakk Patterson",team:"Nick Politis Budget",r1:922,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:167,coach:"Samuel Hooper",team:"Hoopers365",r1:922,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:168,coach:"Anthony Kidd",team:"JBFA Aurum",r1:921,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:169,coach:"Marcus Callander",team:"Marcus Callander",r1:921,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:170,coach:"Sam Wilson",team:"Squirrel Gripperz",r1:921,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:171,coach:"Andrew Luu",team:"Rage Trade Mondays",r1:920,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:172,coach:"Dane Taleni",team:"Bad News Browns",r1:920,isVip:true,isAdmin:false,vipEntry:true,vipRank:39},
-  {rank:173,coach:"Justin Daly",team:"Knee Capped",r1:920,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:174,coach:"Krik Turnre",team:"selgae aes hagnirraw ylnam",r1:920,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:175,coach:"Michael Maung",team:"The Burman Mongoose",r1:920,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:176,coach:"Brodie Monaghan",team:"Up the Bois",r1:919,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:177,coach:"Ian Webster",team:"Canberra isol",r1:919,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:178,coach:"Gary Vogel",team:"Garysboys",r1:918,isVip:true,isAdmin:false,vipEntry:true,vipRank:40},
-  {rank:179,coach:"Robin Smith",team:"BobsBigBadBlueBulguruBulldogs",r1:918,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:180,coach:"Lj Andrews",team:"LeBronco James",r1:918,isVip:true,isAdmin:false,vipEntry:true,vipRank:41},
-  {rank:181,coach:"Andrew Phillipps",team:"Can’t Stop Trading",r1:917,isVip:true,isAdmin:false,vipEntry:true,vipRank:42},
-  {rank:182,coach:"Blake Whipp",team:"Whippys Fantasy",r1:917,isVip:true,isAdmin:false,vipEntry:true,vipRank:43},
-  {rank:183,coach:"David Bugler",team:"Hopper",r1:917,isVip:true,isAdmin:false,vipEntry:true,vipRank:44},
-  {rank:184,coach:"Hamish Callander",team:"Bray park bandaids",r1:917,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:185,coach:"Heath Fitzgerald",team:"JBFA Roundtheleggzzz",r1:917,isVip:true,isAdmin:false,vipEntry:true,vipRank:45},
-  {rank:186,coach:"James Hoggett",team:"Jim’s Dream 13",r1:917,isVip:true,isAdmin:false,vipEntry:true,vipRank:46},
-  {rank:187,coach:"Heath Fitzgerald",team:"JBFA Heath's Blackbookers",r1:916,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:188,coach:"Kingi Kamariera",team:"Stacked az Bro",r1:916,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:189,coach:"Raymond Timbery",team:"TimberyJuice",r1:916,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:190,coach:"William Walter Geary",team:"dids team",r1:916,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:191,coach:"Joseph Coutts",team:"JBFA Payne in the Haaas",r1:915,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:192,coach:"Callum Ferguson",team:"Random As Funk",r1:914,isVip:true,isAdmin:false,vipEntry:true,vipRank:47},
-  {rank:193,coach:"Liam Trumble",team:"Trumble",r1:914,isVip:true,isAdmin:false,vipEntry:true,vipRank:48},
-  {rank:194,coach:"Mark Wilson",team:"BigBunnyHass",r1:914,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:195,coach:"Hayden Niehus",team:"JBFA Johnathan Hit You On The Burston's",r1:913,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:196,coach:"Jacob Pang",team:"PangJs Pandas",r1:913,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:197,coach:"Nigel Bowling",team:"Boozecluez",r1:913,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:198,coach:"Bevan Hoĺzheimer",team:"Rogue Don't know newcomers",r1:912,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:199,coach:"David Papponetti",team:"Pappa Dogs",r1:912,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:200,coach:"Gianni Bouzoukis",team:"Barba Blak Sheep",r1:912,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:201,coach:"Jamie Sisley",team:"White Zombies",r1:912,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:202,coach:"Harry Fuller",team:"Fuller Fantasy",r1:911,isVip:true,isAdmin:false,vipEntry:true,vipRank:49},
-  {rank:203,coach:"Mark Johnston",team:"johnohardyards",r1:910,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:204,coach:"Nash B",team:"Pumba’s Pigs",r1:910,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:205,coach:"Hayden Pewhairangi",team:"BIG PUMP",r1:910,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:206,coach:"Craig Ingram",team:"JBFA Scorchers",r1:910,isVip:true,isAdmin:false,vipEntry:true,vipRank:50},
-  {rank:207,coach:"Andy Ryan",team:"WWJTD",r1:909,isVip:true,isAdmin:false,vipEntry:true,vipRank:51},
-  {rank:208,coach:"Jaz Brady",team:"jazman84",r1:908,isVip:true,isAdmin:false,vipEntry:true,vipRank:52},
-  {rank:209,coach:"Logan Flutey",team:"Marty 5711",r1:908,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:210,coach:"Mike Washington",team:"INJURY MAGNET",r1:908,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:211,coach:"Tyson Coles",team:"Bennett Stole My Haas",r1:908,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:212,coach:"Anthony L",team:"Blocker ROACHES",r1:907,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:213,coach:"Jae Starling",team:"JPSTAR",r1:907,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:214,coach:"Lj Andrews",team:"Minor Prem Madhouse",r1:907,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:215,coach:"Luke Saragozza",team:"Saragozza Raptors",r1:907,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:216,coach:"Liam Prichard",team:"Hass to the Rabbitohs 2027",r1:906,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:217,coach:"Jarrad Knight",team:"Blk Mumba",r1:905,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:218,coach:"Kyle Whittle",team:"JBFA Hectic 8-ball 2",r1:905,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:219,coach:"Qio Tavanavanua",team:"team big vudi",r1:905,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:220,coach:"Josh Malouf",team:"Malo’s Dogs",r1:904,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:221,coach:"Ayden Cashman",team:"Shower Slipper",r1:903,isVip:true,isAdmin:false,vipEntry:true,vipRank:53},
-  {rank:222,coach:"Cameron Bridge",team:"DGCS 2",r1:903,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:223,coach:"Jessie Hammond",team:"Woorabindies",r1:903,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:224,coach:"Lachlan Smythe",team:"Smythe05",r1:903,isVip:true,isAdmin:false,vipEntry:true,vipRank:54},
-  {rank:225,coach:"Mark Lawless",team:"LA Knight",r1:903,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:226,coach:"Max Cockrem",team:"LickMyCockrem",r1:903,isVip:true,isAdmin:false,vipEntry:true,vipRank:55},
-  {rank:227,coach:"Greg Peters",team:"To'o Good For Yeo",r1:901,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:228,coach:"Liam Connelly",team:"LiamC",r1:901,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:229,coach:"Oskar Morrison",team:"HughRooChu",r1:901,isVip:true,isAdmin:false,vipEntry:true,vipRank:56},
-  {rank:230,coach:"Xavier Cook",team:"Waiharara Worriers",r1:900,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:231,coach:"Aaron Johnson",team:"Eagles - Nest",r1:899,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:232,coach:"David Hindson",team:"Fatter pigs",r1:899,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:233,coach:"Dion Willcocks",team:"Green Schist Hooligans",r1:899,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:234,coach:"Bevan Stratton",team:"JBFA Bevs Mungo Team",r1:898,isVip:true,isAdmin:false,vipEntry:true,vipRank:57},
-  {rank:235,coach:"Matthew Sahota",team:"Sahota’s Benchwarmers",r1:898,isVip:true,isAdmin:false,vipEntry:true,vipRank:58},
-  {rank:236,coach:"Nikki Mcintosh",team:"Pretendy Chasers",r1:898,isVip:true,isAdmin:false,vipEntry:true,vipRank:59},
-  {rank:237,coach:"Wayne Ritchie",team:"BIG black DOG",r1:898,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:238,coach:"James Taylor",team:"Six2Go",r1:897,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:239,coach:"Mark Coleman",team:"EzraGramm",r1:897,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:240,coach:"Jayme Waka Hemi",team:"Waka571p",r1:897,isVip:true,isAdmin:false,vipEntry:true,vipRank:60},
-  {rank:241,coach:"Dean Smith",team:"Jenna Talia WTA",r1:896,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:242,coach:"Jayme Waka Hemi",team:"JBFA Hemi",r1:895,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:243,coach:"Ryan Bailey",team:"Stealthracing",r1:895,isVip:true,isAdmin:false,vipEntry:true,vipRank:61},
-  {rank:244,coach:"Aleki Morris-Lome",team:"Leki’s Boys",r1:894,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:245,coach:"Thomas Condon",team:"BenSickHunt",r1:894,isVip:true,isAdmin:false,vipEntry:true,vipRank:62},
-  {rank:246,coach:"Kane Flemming",team:"Coochiemen",r1:892,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:247,coach:"Kieran Mckay",team:"Back to Back Wooden Spooners",r1:892,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:248,coach:"James Craig",team:"Whangaehu Wizards",r1:892,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:249,coach:"Jordan Visser",team:"VissA's Vikings",r1:891,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:250,coach:"Bowen Refalo",team:"Doueihing Yeo Mam",r1:890,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:251,coach:"Dylan Lawson",team:"DBagzz",r1:889,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:252,coach:"Alex Jennings",team:"Kalyns Ponga",r1:888,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:253,coach:"Andrew Hobbs",team:"Bone Crushing Ballerina",r1:887,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:254,coach:"Cole De Git",team:"Haas Been",r1:887,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:255,coach:"Marcus Burst",team:"Yeooo Boyyy",r1:887,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:256,coach:"Matthew Keyworth",team:"JBFA FC",r1:887,isVip:true,isAdmin:false,vipEntry:true,vipRank:63},
-  {rank:257,coach:"Chris Smith",team:"Sharkies uk",r1:886,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:258,coach:"John Curtin",team:"Jockey's Jokers",r1:886,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:259,coach:"Max Ennis",team:"Max’s Magic Monkeys",r1:886,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:260,coach:"Thomas Procter",team:"Dark Arts",r1:886,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:261,coach:"Brock Haidle",team:"Truckin Useless",r1:885,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:262,coach:"Matthew Robbins",team:"Just a Stormchaser",r1:885,isVip:true,isAdmin:false,vipEntry:true,vipRank:64},
-  {rank:263,coach:"Sally Carter",team:"Cicada",r1:885,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:264,coach:"Benji Leonard",team:"Ben's Bois",r1:884,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:265,coach:"Kalem Bidois",team:"TUMZ88",r1:883,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:266,coach:"Nate Schreurs",team:"Ooo Long Johnson",r1:883,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:267,coach:"Joel Despea",team:"Typsy Gypsy",r1:882,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:268,coach:"Mohamad Sibassi",team:"Bench Warmer Sibassi",r1:882,isVip:true,isAdmin:false,vipEntry:true,vipRank:65},
-  {rank:269,coach:"Michael Whitford",team:"Whitson Warriors",r1:879,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:270,coach:"Glen Surjadinata",team:"Le Tryads",r1:878,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:271,coach:"Andrew Wilson",team:"TheCracker",r1:875,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:272,coach:"Braithan Collins",team:"364mafia",r1:874,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:273,coach:"Bradley Horne",team:"Hornedogs",r1:872,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:274,coach:"Austin Murphy",team:"NRLFA heilum luki’s my pookie",r1:871,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:275,coach:"Kyle Goldsack",team:"Cleary Out Of Options",r1:869,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:276,coach:"Hayden Pewhairangi",team:"Haydz Dog Pound",r1:869,isVip:true,isAdmin:false,vipEntry:true,vipRank:66},
-  {rank:277,coach:"Reece Hughes",team:"Hughesy3939",r1:868,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:278,coach:"Skye Brooks",team:"Scrum And Coke 98",r1:868,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:279,coach:"Jeffrey Topping",team:"Devils Donkeys",r1:865,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:280,coach:"Kelvin Danielson",team:"The WAH-Tang Clan",r1:864,isVip:true,isAdmin:false,vipEntry:true,vipRank:67},
-  {rank:281,coach:"William Anasi",team:"WDA DOO",r1:862,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:282,coach:"Jake Mo",team:"Manu Chiefs",r1:859,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:283,coach:"Katie Jane",team:"K80s",r1:856,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:284,coach:"Tye Sheather",team:"Bonnie Blue and Gold Eels",r1:856,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:285,coach:"Martin Griffiths",team:"Griffs Greats 26",r1:848,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:286,coach:"Paul Humphries",team:"TRASH GORDON",r1:848,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:287,coach:"Russell Metge",team:"Up the Wahs 95",r1:847,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:288,coach:"Hayden Wise",team:"Wise23",r1:845,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:289,coach:"Toby Mccaw",team:"Filled To The Brim Son",r1:845,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:290,coach:"James Peters",team:"JBFA What about Capewell",r1:842,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:291,coach:"Steve Toyer",team:"JBFA Mybestteam",r1:841,isVip:true,isAdmin:false,vipEntry:true,vipRank:68},
-  {rank:292,coach:"Sam Eaton",team:"Sam's Meatheads",r1:840,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:293,coach:"Craig Ingram",team:"JBFA The Scorchers",r1:835,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:294,coach:"David Mckenzie",team:"DMack Entertainers",r1:826,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},
-  {rank:295,coach:"Hayden Moore",team:"Stocklands Mooseknuckles",r1:817,isVip:false,isAdmin:false,vipEntry:false,vipRank:null}
-];
+const COACHES=[{rank:1,coach:"Jeremy Wirth",team:"Weststigers1",r1:1079,r2:1042,total:2121,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:2,coach:"Joseph Cradock",team:"JosephCradock",r1:1029,r2:1078,total:2107,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:3,coach:"John Herrera",team:"Jacked Eagles",r1:975,r2:1111,total:2086,isVip:true,isAdmin:false,vipEntry:true,vipRank:1},{rank:4,coach:"Brendon McCormack",team:"Nrloosers",r1:952,r2:1126,total:2078,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:5,coach:"Debbie Dixon",team:"JBFA Love the Sharks",r1:962,r2:1116,total:2078,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:6,coach:"Mark Wilson",team:"BigBunnyHass",r1:914,r2:1163,total:2077,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:7,coach:"Sam Kennedy",team:"Chan Kum Bong",r1:944,r2:1132,total:2076,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:8,coach:"Killian Slevin",team:"JBFA Slevdog",r1:969,r2:1106,total:2075,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:9,coach:"Aaron Henderson",team:"Hendos Warriors",r1:1003,r2:1069,total:2072,isVip:true,isAdmin:false,vipEntry:true,vipRank:2},{rank:10,coach:"Liam Corson",team:"CASUAL BALLER",r1:990,r2:1081,total:2071,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:11,coach:"David Moody",team:"Newcastle Eels - 2019 Winner",r1:962,r2:1108,total:2070,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},{rank:12,coach:"Blake Whitaker",team:"Never Got The Late Mail",r1:1023,r2:1042,total:2065,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:13,coach:"James Jackson",team:"Cristian",r1:949,r2:1115,total:2064,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:14,coach:"Sam C",team:"Carsonious",r1:978,r2:1086,total:2064,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:15,coach:"Evan Cook",team:"metzgerhund",r1:937,r2:1123,total:2060,isVip:true,isAdmin:false,vipEntry:true,vipRank:3},{rank:16,coach:"Jay See Ess",team:"JBFA Jordan’s Mojo",r1:962,r2:1096,total:2058,isVip:true,isAdmin:false,vipEntry:true,vipRank:4},{rank:17,coach:"Michael Doig",team:"Resting Mitch Face XVII",r1:939,r2:1117,total:2056,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:18,coach:"Oli White",team:"Revilo's Raptors",r1:982,r2:1072,total:2054,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:19,coach:"Caleb Metz",team:"Metz's",r1:957,r2:1096,total:2053,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:20,coach:"Stuart Cane",team:"Cockatoo Stu",r1:977,r2:1074,total:2051,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:21,coach:"Dylan Martin",team:"The Tongan Fisherman",r1:948,r2:1099,total:2047,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:22,coach:"Jesse Lentini",team:"Thinkin Cleary",r1:995,r2:1050,total:2045,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:23,coach:"David Moody",team:"Singleton Bulldogs",r1:958,r2:1085,total:2043,isVip:true,isAdmin:false,vipEntry:true,vipRank:5},{rank:24,coach:"Harry Keir",team:"Savage Opress",r1:958,r2:1085,total:2043,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:25,coach:"Charlie Rowe",team:"darcy’s fat",r1:954,r2:1087,total:2041,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:26,coach:"Geordie Hardcastle",team:"Liam’s Martinis",r1:975,r2:1065,total:2040,isVip:true,isAdmin:false,vipEntry:true,vipRank:6},{rank:27,coach:"Chris Cook",team:"Bunny boy brothers LMC",r1:949,r2:1090,total:2039,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:28,coach:"Joshua Forrest-White",team:"The Savvy Davvys",r1:936,r2:1102,total:2038,isVip:true,isAdmin:false,vipEntry:true,vipRank:7},{rank:29,coach:"Zakk Patterson",team:"Nick Politis Budget",r1:922,r2:1114,total:2036,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:30,coach:"Riley Connor",team:"Vossy for PM - Talking League",r1:943,r2:1092,total:2035,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:31,coach:"Dane Taleni",team:"Bad News Browns",r1:920,r2:1114,total:2034,isVip:true,isAdmin:false,vipEntry:true,vipRank:8},{rank:32,coach:"Jarrod Etherington",team:"Frosty Mangoes",r1:943,r2:1090,total:2033,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:33,coach:"Stephen Stelmach",team:"stelmarky",r1:983,r2:1050,total:2033,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:34,coach:"Jake Wood",team:"Check Out My Sombrero",r1:959,r2:1073,total:2032,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:35,coach:"Brandon Trpezanovski",team:"Brandon’s lil Whores",r1:946,r2:1085,total:2031,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:36,coach:"Jeremy  Jones",team:"Jerome’s Homies",r1:964,r2:1067,total:2031,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:37,coach:"Matty Van Loon",team:"Loonatics",r1:945,r2:1086,total:2031,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:38,coach:"Craig Sloane",team:"Crack12",r1:942,r2:1088,total:2030,isVip:true,isAdmin:false,vipEntry:true,vipRank:9},{rank:39,coach:"Kyle Whittle",team:"JBFA Hectic 8-Ball",r1:963,r2:1066,total:2029,isVip:true,isAdmin:false,vipEntry:true,vipRank:10},{rank:40,coach:"Craig Ingram",team:"JBFA Scorchers",r1:910,r2:1118,total:2028,isVip:true,isAdmin:false,vipEntry:true,vipRank:11},{rank:41,coach:"David Bade",team:"Snake Point Wekas",r1:957,r2:1070,total:2027,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:42,coach:"Elijah Moors",team:"Big Bundas",r1:929,r2:1098,total:2027,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:43,coach:"Abdul Jabado",team:"WEAK KIRAZY SALMON",r1:935,r2:1090,total:2025,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:44,coach:"Henry Budd",team:"Henrys Hobos",r1:935,r2:1090,total:2025,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:45,coach:"Jason Wathall",team:"Duplex",r1:934,r2:1091,total:2025,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:46,coach:"Sam Murray",team:"Brad Arthur 40-20",r1:979,r2:1046,total:2025,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:47,coach:"Cameron Jennings",team:"Ben Hunt’s Hands",r1:929,r2:1095,total:2024,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:48,coach:"Simon Jones",team:"Bondi Spy",r1:945,r2:1079,total:2024,isVip:true,isAdmin:false,vipEntry:true,vipRank:12},{rank:49,coach:"John Herrera",team:"68th is Back",r1:938,r2:1085,total:2023,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},{rank:50,coach:"Scott Fulcher",team:"trell mit dally m",r1:932,r2:1090,total:2022,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:51,coach:"Sam Motu",team:"SAMJNR77",r1:960,r2:1061,total:2021,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:52,coach:"James Phillips",team:"JPDRAGONS JBFA",r1:989,r2:1031,total:2020,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:53,coach:"Liam Weber",team:"Benny Barba's Bulldogs",r1:958,r2:1062,total:2020,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:54,coach:"Don Cominos",team:"TwoSeasonWonder",r1:953,r2:1066,total:2019,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},{rank:55,coach:"Isaac Wiremu Borell-Hunt",team:"Api- Salute Dud",r1:1000,r2:1019,total:2019,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:56,coach:"Liam Doyle",team:"JBFA Elbanditos",r1:974,r2:1045,total:2019,isVip:true,isAdmin:false,vipEntry:true,vipRank:13},{rank:57,coach:"Rory Diver",team:"ICU2 Jerry Jerry",r1:952,r2:1067,total:2019,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:58,coach:"Darrin Booth",team:"Daza11",r1:978,r2:1039,total:2017,isVip:true,isAdmin:false,vipEntry:true,vipRank:14},{rank:59,coach:"Jeremy Hubbard",team:"But I'm a Stallion",r1:1001,r2:1015,total:2016,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:60,coach:"Lazar Bodiroza",team:"Get Tuivasa Shrektttt",r1:923,r2:1092,total:2015,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:61,coach:"Manuel Poteri",team:"Rumble in tha Bronx",r1:974,r2:1040,total:2014,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:62,coach:"Tom Hore",team:"Deeply Closeted Storm Fan",r1:932,r2:1082,total:2014,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:63,coach:"Benjamin Wright",team:"Wrighty’s Golden Team",r1:945,r2:1068,total:2013,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:64,coach:"Jack Cranston",team:"Cranno69",r1:929,r2:1084,total:2013,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:65,coach:"Liam Trumble",team:"Freckle Wreckers",r1:963,r2:1050,total:2013,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},{rank:66,coach:"Finbarr Reynolds",team:"Triumph & Disaster",r1:982,r2:1030,total:2012,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:67,coach:"Caleb Greene",team:"Yeo win some Yeo lose some",r1:975,r2:1036,total:2011,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:68,coach:"Dave Lang",team:"Gravies",r1:968,r2:1043,total:2011,isVip:true,isAdmin:false,vipEntry:true,vipRank:15},{rank:69,coach:"Hayden Pewhairangi",team:"BIG PUMP",r1:910,r2:1101,total:2011,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},{rank:70,coach:"Jason Swain",team:"Up tha boys",r1:969,r2:1042,total:2011,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:71,coach:"Kevin Maxted",team:"Fucksmithfield2nd",r1:958,r2:1053,total:2011,isVip:true,isAdmin:false,vipEntry:true,vipRank:16},{rank:72,coach:"Tyler Kendall",team:"Ruben Thiccy",r1:977,r2:1034,total:2011,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:73,coach:"Andrew Luu",team:"Rage Trade Mondays",r1:920,r2:1090,total:2010,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:74,coach:"Caleb Williams",team:"To’o Sexy For This Shirt",r1:924,r2:1086,total:2010,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:75,coach:"Sam Owen",team:"Sam Owen",r1:947,r2:1063,total:2010,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:76,coach:"Jayme Waka Hemi",team:"Waka571p",r1:897,r2:1112,total:2009,isVip:true,isAdmin:false,vipEntry:true,vipRank:17},{rank:77,coach:"Bailey Bajic",team:"TurkeyNugget18",r1:933,r2:1075,total:2008,isVip:true,isAdmin:false,vipEntry:true,vipRank:18},{rank:78,coach:"James Hoggett",team:"Jim’s Dream 13",r1:917,r2:1091,total:2008,isVip:true,isAdmin:false,vipEntry:true,vipRank:19},{rank:79,coach:"Jamie Vooght",team:"Evilda",r1:943,r2:1063,total:2006,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:80,coach:"David Conlon",team:"Horrifically Gorgeous",r1:1004,r2:1000,total:2004,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:81,coach:"Jacques Millichamp",team:"Murray Me Cam",r1:940,r2:1063,total:2003,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:82,coach:"Adam Grant",team:"Grant's Giants",r1:961,r2:1041,total:2002,isVip:true,isAdmin:false,vipEntry:true,vipRank:20},{rank:83,coach:"Imran Ayoubi",team:"Arab Fantasy",r1:922,r2:1080,total:2002,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:84,coach:"Zarin Tuhua",team:"Amaiden",r1:961,r2:1041,total:2002,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:85,coach:"Peter Framhein",team:"Cleary Not Fair",r1:955,r2:1046,total:2001,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:86,coach:"Tony Martin",team:"Tozza Hammers",r1:961,r2:1040,total:2001,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:87,coach:"Jackie Ou",team:"Jingling Joes",r1:959,r2:1041,total:2000,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:88,coach:"Jake Mullen",team:"Skibidii",r1:954,r2:1046,total:2000,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:89,coach:"Will Morrison",team:"Setu & Forget",r1:955,r2:1045,total:2000,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:90,coach:"Callum Ferguson",team:"Fizzays Raskals",r1:977,r2:1021,total:1998,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},{rank:91,coach:"Lachlan Smythe",team:"Smythe05",r1:903,r2:1095,total:1998,isVip:true,isAdmin:false,vipEntry:true,vipRank:21},{rank:92,coach:"Patrick Brennan",team:"PaddyB02",r1:974,r2:1024,total:1998,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:93,coach:"Adam Grant",team:"Adam’s Warriors88",r1:955,r2:1041,total:1996,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},{rank:94,coach:"Brad Malone",team:"Bugsy's Brawlers",r1:943,r2:1053,total:1996,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:95,coach:"Jarrad Knight",team:"Blk Mumba",r1:905,r2:1091,total:1996,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:96,coach:"Mike Washington",team:"INJURY MAGNET",r1:908,r2:1085,total:1993,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:97,coach:"Glenn Wykes",team:"Guru Central",r1:962,r2:1030,total:1992,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:98,coach:"Hayden Hunter",team:"JBFA Superstorm",r1:935,r2:1057,total:1992,isVip:true,isAdmin:false,vipEntry:true,vipRank:22},{rank:99,coach:"Liam Trumble",team:"Trumble",r1:914,r2:1078,total:1992,isVip:true,isAdmin:false,vipEntry:true,vipRank:23},{rank:100,coach:"Matthew Sylvander",team:"Deardon2Drinkwater JBFA",r1:949,r2:1043,total:1992,isVip:true,isAdmin:false,vipEntry:true,vipRank:24},{rank:101,coach:"Eli Johannessen",team:"NSW DONT GET ORIGIN",r1:953,r2:1038,total:1991,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:102,coach:"Jodeci Pene",team:"The Reall Warriors",r1:958,r2:1032,total:1990,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:103,coach:"Isobel Saccaro",team:"IS6300",r1:935,r2:1054,total:1989,isVip:true,isAdmin:false,vipEntry:true,vipRank:25},{rank:104,coach:"Brodie Monaghan",team:"Up the Bois",r1:919,r2:1069,total:1988,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:105,coach:"Don Cominos",team:"OneSeasonWonder",r1:947,r2:1041,total:1988,isVip:true,isAdmin:false,vipEntry:true,vipRank:26},{rank:106,coach:"Gianni Bouzoukis",team:"Barba Blak Sheep",r1:912,r2:1076,total:1988,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:107,coach:"James Peters",team:"Schiller's List",r1:925,r2:1063,total:1988,isVip:true,isAdmin:false,vipEntry:true,vipRank:27},{rank:108,coach:"Jayden Brown",team:"JBFA Fruitbat",r1:933,r2:1054,total:1987,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:109,coach:"Jesse Lockyer",team:"MADHATTER’S",r1:945,r2:1042,total:1987,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:110,coach:"Kane Flemming",team:"Coochiemen",r1:892,r2:1095,total:1987,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:111,coach:"Andrew Phillipps",team:"Can’t Stop Trading",r1:917,r2:1069,total:1986,isVip:true,isAdmin:false,vipEntry:true,vipRank:28},{rank:112,coach:"Geordie Hardcastle",team:"The UnbeClearybles",r1:990,r2:995,total:1985,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},{rank:113,coach:"Jhonte M",team:"Wigan My Warrior",r1:920,r2:1065,total:1985,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:114,coach:"Gary Vogel",team:"Garysboys",r1:918,r2:1066,total:1984,isVip:true,isAdmin:false,vipEntry:true,vipRank:29},{rank:115,coach:"Logan Flutey",team:"Marty 5711",r1:908,r2:1076,total:1984,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:116,coach:"Shane Krautz",team:"Skrautz",r1:934,r2:1050,total:1984,isVip:true,isAdmin:false,vipEntry:true,vipRank:30},{rank:117,coach:"Anthony L",team:"Blocker ROACHES",r1:907,r2:1076,total:1983,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:118,coach:"Hayden Niehus",team:"JBFA Johnathan Hit You On The Burston's",r1:913,r2:1070,total:1983,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:119,coach:"Mark Lawless",team:"LA Knight",r1:903,r2:1080,total:1983,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:120,coach:"Michael Maung",team:"The Burman Mongoose",r1:920,r2:1063,total:1983,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:121,coach:"Xavier Cook",team:"Waiharara Worriers",r1:900,r2:1083,total:1983,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:122,coach:"Kalem Bidois",team:"TUMZ88",r1:883,r2:1099,total:1982,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:123,coach:"Kyle Ryland",team:"Woolston War Pigs",r1:944,r2:1038,total:1982,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:124,coach:"Ryan Heathcote",team:"Charging Rhinos",r1:940,r2:1042,total:1982,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:125,coach:"Brent Compton",team:"The Parkwood Pork Swords",r1:983,r2:998,total:1981,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:126,coach:"Gregory Simon",team:"Channel4 News Team",r1:923,r2:1057,total:1980,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:127,coach:"Joseph Smith",team:"SMITTYS LADS AND LEGENDS",r1:959,r2:1021,total:1980,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:128,coach:"Sean James",team:"Scrubcats",r1:964,r2:1016,total:1980,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:129,coach:"Jake Venn",team:"JBFA jv724",r1:930,r2:1049,total:1979,isVip:true,isAdmin:false,vipEntry:true,vipRank:31},{rank:130,coach:"Will Taylor",team:"Bens Barber",r1:983,r2:996,total:1979,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:131,coach:"Sam Wilson",team:"Squirrel Gripperz",r1:921,r2:1057,total:1978,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:132,coach:"David Bugler",team:"Hopper",r1:917,r2:1060,total:1977,isVip:true,isAdmin:false,vipEntry:true,vipRank:32},{rank:133,coach:"Shane Vos",team:"its Vossy",r1:945,r2:1030,total:1975,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:134,coach:"Andy Ryan",team:"WWJTD",r1:909,r2:1065,total:1974,isVip:true,isAdmin:false,vipEntry:true,vipRank:33},{rank:135,coach:"Liam Connelly",team:"LiamC",r1:901,r2:1072,total:1973,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:136,coach:"Dean Smith",team:"Jenna Talia WTA",r1:896,r2:1076,total:1972,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:137,coach:"Woc Smith",team:"JBFA HOOKED NEK WEEK",r1:986,r2:986,total:1972,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:138,coach:"James Craig",team:"Whangaehu Wizards",r1:892,r2:1078,total:1970,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:139,coach:"Jacob Pang",team:"PangJs Pandas",r1:913,r2:1056,total:1969,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:140,coach:"Jayden Addei",team:"yrnjay",r1:951,r2:1018,total:1969,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:141,coach:"Justin Daly",team:"Knee Capped",r1:920,r2:1049,total:1969,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:142,coach:"Liam King",team:"Wong Option",r1:928,r2:1041,total:1969,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:143,coach:"Mathew Belyea",team:"MangroveMatty",r1:931,r2:1038,total:1969,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:144,coach:"Mitch Deguara",team:"This Time Hunt Held It",r1:931,r2:1038,total:1969,isVip:true,isAdmin:false,vipEntry:true,vipRank:34},{rank:145,coach:"Blake Fowke",team:"Kotoni Baggs",r1:943,r2:1024,total:1967,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:146,coach:"Katie Jane",team:"K80s",r1:856,r2:1111,total:1967,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:147,coach:"Stephen Beatty",team:"JBFA BEATO83",r1:940,r2:1027,total:1967,isVip:true,isAdmin:false,vipEntry:true,vipRank:35},{rank:148,coach:"Kyle Whittle",team:"JBFA Hectic 8-ball 2",r1:905,r2:1061,total:1966,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},{rank:149,coach:"Selwynn Kraus",team:"Flagstone Flannies",r1:944,r2:1021,total:1965,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:150,coach:"Joshua Windsor",team:"Money8all",r1:943,r2:1021,total:1964,isVip:true,isAdmin:false,vipEntry:true,vipRank:36},{rank:151,coach:"Andrew Rumball",team:"JBFA KickAss Boys",r1:945,r2:1018,total:1963,isVip:true,isAdmin:false,vipEntry:true,vipRank:37},{rank:152,coach:"Kent Somerville",team:"Cleary Haas a Plan",r1:926,r2:1035,total:1961,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:153,coach:"Sam Mcalister",team:"Ohoka oranges",r1:926,r2:1034,total:1960,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:154,coach:"Jay See Ess",team:"Kobe’s Mojo",r1:937,r2:1021,total:1958,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},{rank:155,coach:"Lj Andrews",team:"LeBronco James",r1:918,r2:1039,total:1957,isVip:true,isAdmin:false,vipEntry:true,vipRank:38},{rank:156,coach:"Marcus Burst",team:"Yeooo Boyyy",r1:887,r2:1070,total:1957,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:157,coach:"Tyson Hullena",team:"Masterton Magpies",r1:932,r2:1025,total:1957,isVip:true,isAdmin:false,vipEntry:true,vipRank:39},{rank:158,coach:"Brendan Riche",team:"Sukkar May Penisini To'a Knight",r1:941,r2:1015,total:1956,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:159,coach:"Christian Iodice",team:"REEDZ TEEM 6",r1:931,r2:1024,total:1955,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:160,coach:"Jamie Brown",team:"JB Fantasy Analysis",r1:931,r2:1024,total:1955,isVip:false,isAdmin:true,vipEntry:true,vipRank:40},{rank:161,coach:"Mark Johnston",team:"johnohardyards",r1:910,r2:1045,total:1955,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:162,coach:"Matt Henderson",team:"Mrhenderson",r1:931,r2:1024,total:1955,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:163,coach:"Nick Bowring",team:"Fasi your Mulitalo",r1:925,r2:1029,total:1954,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:164,coach:"Paul Steele",team:"JBFA Sound the Alarm",r1:948,r2:1006,total:1954,isVip:true,isAdmin:false,vipEntry:true,vipRank:41},{rank:165,coach:"Cole De Git",team:"Haas Been",r1:887,r2:1066,total:1953,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:166,coach:"Matthew Sahota",team:"Sahota’s Benchwarmers",r1:898,r2:1055,total:1953,isVip:true,isAdmin:false,vipEntry:true,vipRank:42},{rank:167,coach:"Robin Smith",team:"BobsBigBadBlueBulguruBulldogs",r1:918,r2:1035,total:1953,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:168,coach:"Blake Whipp",team:"Whippys Fantasy",r1:917,r2:1034,total:1951,isVip:true,isAdmin:false,vipEntry:true,vipRank:43},{rank:169,coach:"Dan Keen",team:"FuqBuk",r1:931,r2:1020,total:1951,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:170,coach:"Raymond Timbery",team:"TimberyJuice",r1:916,r2:1034,total:1950,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:171,coach:"James Brooking",team:"Bye round lover",r1:925,r2:1024,total:1949,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:172,coach:"Joe Auimatagi",team:"Kainga dat shi cuzz",r1:941,r2:1008,total:1949,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:173,coach:"Matt Thompson",team:"JBFA HaasNoTrades",r1:922,r2:1027,total:1949,isVip:true,isAdmin:false,vipEntry:true,vipRank:44},{rank:174,coach:"Brock Haidle",team:"Truckin Useless",r1:885,r2:1063,total:1948,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:175,coach:"Joseph Coutts",team:"JBFA Payne in the Haaas",r1:915,r2:1033,total:1948,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:176,coach:"Kieran Mckay",team:"Back to Back Wooden Spooners",r1:892,r2:1056,total:1948,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:177,coach:"Richard Lane",team:"BUSLANE",r1:988,r2:960,total:1948,isVip:true,isAdmin:false,vipEntry:true,vipRank:45},{rank:178,coach:"Ethan Jeong",team:"FIVELINES",r1:953,r2:994,total:1947,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:179,coach:"Les Farah",team:"Nathan Ramjet",r1:935,r2:1011,total:1946,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:180,coach:"Zac Cohen",team:"Choamps",r1:931,r2:1015,total:1946,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:181,coach:"Marcus Callander",team:"Marcus Callander",r1:921,r2:1024,total:1945,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:182,coach:"Chris Breese",team:"Oldirty",r1:933,r2:1011,total:1944,isVip:true,isAdmin:false,vipEntry:true,vipRank:46},{rank:183,coach:"Harry Fuller",team:"Fuller Fantasy",r1:911,r2:1033,total:1944,isVip:true,isAdmin:false,vipEntry:true,vipRank:47},{rank:184,coach:"David Papponetti",team:"Pappa Dogs",r1:912,r2:1031,total:1943,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:185,coach:"Jared Kroeger",team:"Hellman’s Hornets",r1:963,r2:980,total:1943,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:186,coach:"Nikki Mcintosh",team:"Pretendy Chasers",r1:898,r2:1045,total:1943,isVip:true,isAdmin:false,vipEntry:true,vipRank:48},{rank:187,coach:"Braithan Collins",team:"364mafia",r1:874,r2:1068,total:1942,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:188,coach:"Jakeb Brown",team:"TuiWahsa-Sheck",r1:944,r2:998,total:1942,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:189,coach:"Lee Stinson",team:"Pee Wee's Raiders",r1:965,r2:977,total:1942,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:190,coach:"William Hall",team:"Probly Popd Aneky",r1:947,r2:995,total:1942,isVip:true,isAdmin:false,vipEntry:true,vipRank:49},{rank:191,coach:"JP",team:"80Mint",r1:934,r2:1007,total:1941,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:192,coach:"Max Cockrem",team:"LickMyCockrem",r1:903,r2:1038,total:1941,isVip:true,isAdmin:false,vipEntry:true,vipRank:50},{rank:193,coach:"William Walter Geary",team:"dids team",r1:916,r2:1025,total:1941,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:194,coach:"Brodee Barrett",team:"DonkRylesDynasty",r1:925,r2:1015,total:1940,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:195,coach:"Jake Vincent",team:"JBFA YeoBeauty",r1:952,r2:988,total:1940,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:196,coach:"Pedro Harding",team:"Pistols Panthers",r1:928,r2:1012,total:1940,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:197,coach:"Andrew Hobbs",team:"Bone Crushing Ballerina",r1:887,r2:1052,total:1939,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:198,coach:"Kyle Goldsack",team:"Trell-yeah",r1:943,r2:996,total:1939,isVip:true,isAdmin:false,vipEntry:true,vipRank:51},{rank:199,coach:"Cam Mackellar",team:"Kamoshika",r1:926,r2:1012,total:1938,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:200,coach:"Dylan Lawson",team:"DBagzz",r1:889,r2:1048,total:1937,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:201,coach:"James Taylor",team:"Six2Go",r1:897,r2:1039,total:1936,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:202,coach:"Kye Beck",team:"Kyeskillersss",r1:926,r2:1010,total:1936,isVip:true,isAdmin:false,vipEntry:true,vipRank:52},{rank:203,coach:"Luke Saragozza",team:"Saragozza Raptors",r1:907,r2:1029,total:1936,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:204,coach:"Qio Tavanavanua",team:"team big vudi",r1:905,r2:1030,total:1935,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:205,coach:"Bevan Hoĺzheimer",team:"Rogue Don't know newcomers",r1:912,r2:1022,total:1934,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:206,coach:"Matt Lyons",team:"Chicken Winging It",r1:925,r2:1008,total:1933,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:207,coach:"Nate Schreurs",team:"Ooo Long Johnson",r1:883,r2:1050,total:1933,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:208,coach:"Nigel Bowling",team:"Boozecluez",r1:913,r2:1020,total:1933,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:209,coach:"Aaron Johnson",team:"Eagles - Nest",r1:899,r2:1033,total:1932,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:210,coach:"Amon Broadhurst",team:"TopBinsFC",r1:953,r2:979,total:1932,isVip:true,isAdmin:false,vipEntry:true,vipRank:53},{rank:211,coach:"Cameron Bridge",team:"DGCS 2",r1:903,r2:1029,total:1932,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:212,coach:"Martin Dalton",team:"KAMAEMCO",r1:930,r2:1002,total:1932,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:213,coach:"Johno Fitch",team:"JBFA Football Factory",r1:929,r2:1002,total:1931,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:214,coach:"Theo Veeren",team:"Threat Level Midnight NRL",r1:925,r2:1006,total:1931,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:215,coach:"Soren Moon",team:"Sozsta",r1:953,r2:976,total:1929,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:216,coach:"Jamie Sisley",team:"White Zombies",r1:912,r2:1015,total:1927,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:217,coach:"Jessie Hammond",team:"Woorabindies",r1:903,r2:1024,total:1927,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:218,coach:"Matthew Sylvander",team:"RednoseReindeer",r1:926,r2:1001,total:1927,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},{rank:219,coach:"Joey Braund",team:"Dennis Burgess Enthusiast",r1:943,r2:982,total:1925,isVip:true,isAdmin:false,vipEntry:true,vipRank:54},{rank:220,coach:"Matthew Jackson",team:"Wackos Warriors",r1:931,r2:994,total:1925,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:221,coach:"Lj Andrews",team:"Minor Prem Madhouse",r1:907,r2:1017,total:1924,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},{rank:222,coach:"Lloyd Mitchell",team:"QLD49",r1:925,r2:999,total:1924,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:223,coach:"Pvrko Prk",team:"Danikaring My Mason",r1:927,r2:997,total:1924,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:224,coach:"Greg Peters",team:"To'o Good For Yeo",r1:901,r2:1019,total:1920,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:225,coach:"Matthew Robbins",team:"Just a Stormchaser",r1:885,r2:1035,total:1920,isVip:true,isAdmin:false,vipEntry:true,vipRank:55},{rank:226,coach:"Tye Sheather",team:"Bonnie Blue and Gold Eels",r1:856,r2:1064,total:1920,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:227,coach:"Adam Thomas",team:"NFE",r1:925,r2:992,total:1917,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:228,coach:"Benji Leonard",team:"Ben's Bois",r1:884,r2:1032,total:1916,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:229,coach:"Heath Fitzgerald",team:"JBFA Roundtheleggzzz",r1:917,r2:998,total:1915,isVip:true,isAdmin:false,vipEntry:true,vipRank:56},{rank:230,coach:"Jeffrey Topping",team:"Devils Donkeys",r1:865,r2:1050,total:1915,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:231,coach:"Skye Brooks",team:"Scrum And Coke 98",r1:868,r2:1045,total:1913,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:232,coach:"Jordan Visser",team:"VissA's Vikings",r1:891,r2:1021,total:1912,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:233,coach:"Liam Prichard",team:"Hass to the Rabbitohs 2027",r1:906,r2:1005,total:1911,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:234,coach:"Samuel Hooper",team:"Hoopers365",r1:922,r2:989,total:1911,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:235,coach:"Johnny Zibara",team:"Turbomann",r1:931,r2:979,total:1910,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:236,coach:"Kingi Kamariera",team:"KINGZWORLD",r1:933,r2:976,total:1909,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:237,coach:"Jake Mo",team:"Manu Chiefs",r1:859,r2:1047,total:1906,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:238,coach:"Hamish Callander",team:"Bray park bandaids",r1:917,r2:987,total:1904,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:239,coach:"Jake Christie",team:"Doggies 13 Plus’s",r1:941,r2:963,total:1904,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:240,coach:"Jaz Brady",team:"jazman84",r1:908,r2:996,total:1904,isVip:true,isAdmin:false,vipEntry:true,vipRank:57},{rank:241,coach:"Ayden Cashman",team:"Shower Slipper",r1:903,r2:999,total:1902,isVip:true,isAdmin:false,vipEntry:true,vipRank:58},{rank:242,coach:"Chris Smith",team:"Sharkies uk",r1:886,r2:1015,total:1901,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:243,coach:"Hayden Pewhairangi",team:"Haydz Dog Pound",r1:869,r2:1032,total:1901,isVip:true,isAdmin:false,vipEntry:true,vipRank:59},{rank:244,coach:"Dion Willcocks",team:"Green Schist Hooligans",r1:899,r2:1001,total:1900,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:245,coach:"John Curtin",team:"Jockey's Jokers",r1:886,r2:1014,total:1900,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:246,coach:"Callum Ferguson",team:"Random As Funk",r1:914,r2:984,total:1898,isVip:true,isAdmin:false,vipEntry:true,vipRank:60},{rank:247,coach:"Joel Despea",team:"Typsy Gypsy",r1:882,r2:1016,total:1898,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:248,coach:"Josh Malouf",team:"Malo’s Dogs",r1:904,r2:994,total:1898,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:249,coach:"Ian Webster",team:"Canberra isol",r1:919,r2:978,total:1897,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:250,coach:"Jack Ferguson",team:"Dreamteam253",r1:940,r2:957,total:1897,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:251,coach:"Thomas Condon",team:"BenSickHunt",r1:894,r2:1001,total:1895,isVip:true,isAdmin:false,vipEntry:true,vipRank:61},{rank:252,coach:"Michael Whitford",team:"Whitson Warriors",r1:879,r2:1015,total:1894,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:253,coach:"Jayme Waka Hemi",team:"JBFA Hemi",r1:895,r2:997,total:1892,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},{rank:254,coach:"Kim Clayton",team:"JBFA SkrumBags",r1:922,r2:970,total:1892,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:255,coach:"Jae Starling",team:"JPSTAR",r1:907,r2:980,total:1887,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:256,coach:"Mark Coleman",team:"EzraGramm",r1:897,r2:990,total:1887,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:257,coach:"Anthony Kidd",team:"JBFA Aurum",r1:921,r2:965,total:1886,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:258,coach:"Ryan Bailey",team:"Stealthracing",r1:895,r2:990,total:1885,isVip:true,isAdmin:false,vipEntry:true,vipRank:62},{rank:259,coach:"Tyson Coles",team:"Bennett Stole My Haas",r1:908,r2:976,total:1884,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:260,coach:"Oskar Morrison",team:"HughRooChu",r1:901,r2:980,total:1881,isVip:true,isAdmin:false,vipEntry:true,vipRank:63},{rank:261,coach:"Hayden Wise",team:"Wise23",r1:845,r2:1034,total:1879,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:262,coach:"Max Ennis",team:"Max’s Magic Monkeys",r1:886,r2:993,total:1879,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:263,coach:"Mohamad Sibassi",team:"Bench Warmer Sibassi",r1:882,r2:996,total:1878,isVip:true,isAdmin:false,vipEntry:true,vipRank:64},{rank:264,coach:"Krik Turnre",team:"selgae aes hagnirraw ylnam",r1:920,r2:955,total:1875,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:265,coach:"Chris W",team:"The Corey Pickers",r1:860,r2:1015,total:1875,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:266,coach:"Sally Carter",team:"Cicada",r1:885,r2:989,total:1874,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:267,coach:"Kyle Goldsack",team:"Cleary Out Of Options",r1:869,r2:1003,total:1872,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},{rank:268,coach:"Russell Metge",team:"Up the Wahs 95",r1:847,r2:1025,total:1872,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:269,coach:"Heath Fitzgerald",team:"JBFA Heath's Blackbookers",r1:916,r2:955,total:1871,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},{rank:270,coach:"Andrew Wilson",team:"TheCracker",r1:875,r2:993,total:1868,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:271,coach:"Bowen Refalo",team:"Doueihing Yeo Mam",r1:890,r2:977,total:1867,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:272,coach:"Jack Feeney",team:"The Bear Necessities",r1:936,r2:927,total:1863,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:273,coach:"Glen Surjadinata",team:"Le Tryads",r1:878,r2:983,total:1861,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:274,coach:"James Peters",team:"JBFA What about Capewell",r1:842,r2:1019,total:1861,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},{rank:275,coach:"Reece Hughes",team:"Hughesy3939",r1:868,r2:993,total:1861,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:276,coach:"Alex Jennings",team:"Kalyns Ponga",r1:888,r2:970,total:1858,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:277,coach:"Sam Eaton",team:"Sam's Meatheads",r1:840,r2:1018,total:1858,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:278,coach:"Wayne Ritchie",team:"BIG black DOG",r1:898,r2:960,total:1858,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:279,coach:"Paul Steele",team:"Dinner 4 Tu",r1:933,r2:923,total:1856,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:280,coach:"Steve Toyer",team:"JBFA Mybestteam",r1:841,r2:1009,total:1850,isVip:true,isAdmin:false,vipEntry:true,vipRank:65},{rank:281,coach:"Aleki Morris-Lome",team:"Leki’s Boys",r1:894,r2:955,total:1849,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:282,coach:"Darryl Kereopa",team:"The Mattress Room",r1:952,r2:894,total:1846,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:283,coach:"Kingi Kamariera",team:"Stacked az Bro",r1:916,r2:928,total:1844,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:284,coach:"Thomas Procter",team:"Dark Arts",r1:886,r2:958,total:1844,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:285,coach:"Bradley Horne",team:"Hornedogs",r1:872,r2:967,total:1839,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:286,coach:"Martin Griffiths",team:"Griffs Greats 26",r1:848,r2:990,total:1838,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:287,coach:"Matthew Keyworth",team:"JBFA FC",r1:887,r2:946,total:1833,isVip:true,isAdmin:false,vipEntry:true,vipRank:66},{rank:288,coach:"David Hindson",team:"Fatter pigs",r1:899,r2:930,total:1829,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:289,coach:"Paul Humphries",team:"TRASH GORDON",r1:848,r2:978,total:1826,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:290,coach:"William Anasi",team:"WDA DOO",r1:862,r2:962,total:1824,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:291,coach:"Craig Ingram",team:"JBFA The Scorchers",r1:835,r2:978,total:1813,isVip:true,isAdmin:false,vipEntry:false,vipRank:null},{rank:292,coach:"Hayden Moore",team:"Stocklands Mooseknuckles",r1:817,r2:988,total:1805,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:293,coach:"Austin Murphy",team:"NRLFA heilum luki’s my pookie",r1:871,r2:933,total:1804,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:294,coach:"Kelvin Danielson",team:"The WAH-Tang Clan",r1:864,r2:936,total:1800,isVip:true,isAdmin:false,vipEntry:true,vipRank:67},{rank:295,coach:"Bevan Stratton",team:"JBFA Bevs Mungo Team",r1:898,r2:901,total:1799,isVip:true,isAdmin:false,vipEntry:true,vipRank:68},{rank:296,coach:"Nash B",team:"Busuuuuuu",r1:910,r2:889,total:1799,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:297,coach:"David Mckenzie",team:"DMack Entertainers",r1:826,r2:968,total:1794,isVip:false,isAdmin:false,vipEntry:false,vipRank:null},{rank:298,coach:"Toby Mccaw",team:"Filled To The Brim Son",r1:845,r2:888,total:1733,isVip:false,isAdmin:false,vipEntry:false,vipRank:null}];
 
-const DROP=[{r:1,d:0},{r:2,d:20},{r:3,d:20},{r:4,d:20},{r:5,d:20},{r:6,d:20},{r:7,d:18},{r:8,d:16},{r:9,d:15},{r:10,d:15},{r:11,d:15},{r:12,d:15},{r:13,d:15},{r:14,d:12},{r:15,d:11},{r:16,d:10},{r:17,d:10},{r:18,d:8},{r:19,d:7},{r:20,d:6},{r:21,d:5},{r:22,d:4},{r:23,d:4},{r:24,d:3},{r:25,d:2},{r:26,d:2},{r:27,d:1}];
-const CUR=1,T1=100,T2=200,AVG=926;
+const DROP=[{r:1,d:0},{r:2,d:20},{r:3,d:20},{r:4,d:20},{r:5,d:20},{r:6,d:20},{r:7,d:18},{r:8,d:16},{r:9,d:16},{r:10,d:16},{r:11,d:16},{r:12,d:15},{r:13,d:15},{r:14,d:12},{r:15,d:11},{r:16,d:10},{r:17,d:10},{r:18,d:8},{r:19,d:7},{r:20,d:6},{r:21,d:5},{r:22,d:4},{r:23,d:4},{r:24,d:3},{r:25,d:2},{r:26,d:2},{r:27,d:1}];
+const CUR=2,T1=100,T2=200,AVG=1034;
 const SCOL=CUR===1?'R1':'Total';
 // Prize data — update when confirmed
 const PRIZES={p3winner:null,p3runner:null,p3third:null,tier1:null,tier2:null,tier3:null,survival:null,vip:null};
@@ -1091,7 +808,7 @@ function showTab(e,id){
 function goHome(){showTab(null,'ov');}
 
 // ── VIP SORTED LIST ───────────────────────────────────────────────────────
-var VIP_LIST = COACHES.filter(function(c){return c.vipEntry;}).sort(function(a,b){return b.r1-a.r1;});
+var VIP_LIST = COACHES.filter(function(c){return c.vipEntry;}).sort(function(a,b){return (b.total||b.r1)-(a.total||a.r1);});
 VIP_LIST.forEach(function(c,i){c.vipRankCalc=i+1;});
 
 // ── COACH VIEW ────────────────────────────────────────────────────────────
@@ -1099,7 +816,7 @@ function showCoach(rank){
   var c=COACHES.find(function(x){return x.rank===rank;});
   if(!c) return;
   var t=getTier(rank),tname=['Tier 1 — Premiership','Tier 2 — Championship','Tier 3 — State Cup'][t-1];
-  var diff=c.r1-AVG,pct=Math.round((rank/COACHES.length)*100);
+  var diff2=(c.r2||c.r1)-AVG,pct=Math.round((rank/COACHES.length)*100);
   var allE=COACHES.filter(function(x){return x.coach===c.coach;});
   var vipE=VIP_LIST.find(function(x){return x.coach===c.coach;});
   var w=winnings(c.coach);
@@ -1107,10 +824,15 @@ function showCoach(rank){
   // multi-entry table
   var multiH='';
   if(allE.length>1){
-    multiH='<div class="cvsec"><div class="cvsect">All Entries for '+esc(c.coach)+'</div><table style="width:100%;border-collapse:collapse;font-size:.85rem"><thead><tr style="border-bottom:1px solid var(--border)"><th style="padding:.4rem .5rem;text-align:left;color:var(--muted);font-size:.7rem;text-transform:uppercase">Team</th><th style="padding:.4rem .5rem;text-align:left;color:var(--muted);font-size:.7rem;text-transform:uppercase">R1</th><th style="padding:.4rem .5rem;text-align:left;color:var(--muted);font-size:.7rem;text-transform:uppercase">Rank</th><th style="padding:.4rem .5rem;text-align:left;color:var(--muted);font-size:.7rem;text-transform:uppercase">VIP Entry</th></tr></thead><tbody>';
+    var elimListM=[["Toby Mccaw", "Filled To The Brim Son"], ["Nash B", "Pumba\u2019s Pigs"], ["Darryl Kereopa", "The Mattress Room"], ["Bevan Stratton", "JBFA Bevs Mungo Team"], ["Paul Steele", "Dinner 4 Tu"], ["Jack Feeney", "The Bear Necessities"], ["Kingi Kamariera", "Stacked az Bro"], ["David Hindson", "Fatter pigs"], ["Austin Murphy", "NRLFA heilum luki\u2019s my pookie"], ["Kelvin Danielson", "The WAH-Tang Clan"], ["Matthew Keyworth", "JBFA FC"], ["Krik Turnre", "selgae aes hagnirraw ylnam"], ["Heath Fitzgerald", "JBFA Heath's Blackbookers"], ["Aleki Morris-Lome", "Leki\u2019s Boys"], ["Jack Ferguson", "Dreamteam253"], ["Thomas Procter", "Dark Arts"], ["Richard Lane", "BUSLANE"], ["Wayne Ritchie", "BIG black DOG"], ["William Anasi", "WDA DOO"], ["Jake Christie", "Doggies 13 Plus\u2019s"]];
+    multiH='<div class="cvsec"><div class="cvsect">All Entries for '+esc(c.coach)+'</div><table style="width:100%;border-collapse:collapse;font-size:.85rem"><thead><tr style="border-bottom:1px solid var(--border)"><th style="padding:.4rem .5rem;text-align:left;color:var(--muted);font-size:.7rem;text-transform:uppercase">Team</th><th style="padding:.4rem .5rem;text-align:left;color:var(--muted);font-size:.7rem;text-transform:uppercase">R2</th><th style="padding:.4rem .5rem;text-align:left;color:var(--muted);font-size:.7rem;text-transform:uppercase">Total</th><th style="padding:.4rem .5rem;text-align:left;color:var(--muted);font-size:.7rem;text-transform:uppercase">Rank</th><th style="padding:.4rem .5rem;text-align:left;color:var(--muted);font-size:.7rem;text-transform:uppercase">Survivor</th></tr></thead><tbody>';
     allE.forEach(function(e2){
       var hi=e2.rank===rank;
-      multiH+='<tr style="border-bottom:1px solid var(--border);'+(hi?'background:rgba(240,180,41,.06)':'')+'"><td style="padding:.5rem;font-weight:'+(hi?'700':'400')+'">'+esc(e2.team)+(hi?' ◀':'')+'</td><td style="padding:.5rem;font-family:Bebas Neue,sans-serif">'+e2.r1+'</td><td style="padding:.5rem;font-family:Bebas Neue,sans-serif">#'+e2.rank+'</td><td style="padding:.5rem">'+(e2.vipEntry?'<span class="vip">★ VIP Entry</span>':'—')+'</td></tr>';
+      var isE=elimListM.some(function(e){return e[0]===e2.coach&&e[1]===e2.team;});
+      var survBadge=isE
+        ?'<span style="font-size:.7rem;background:rgba(248,113,113,.15);color:var(--red);border:1px solid rgba(248,113,113,.3);border-radius:4px;padding:.1rem .4rem">✗ Out R2</span>'
+        :'<span style="font-size:.7rem;background:rgba(52,211,153,.1);color:var(--green);border:1px solid rgba(52,211,153,.3);border-radius:4px;padding:.1rem .4rem">✓ Alive</span>';
+      multiH+='<tr style="border-bottom:1px solid var(--border);'+(hi?'background:rgba(240,180,41,.06)':'')+'"><td style="padding:.5rem;font-weight:'+(hi?'700':'400')+'">'+esc(e2.team)+(hi?' ◀':'')+'</td><td style="padding:.5rem">'+e2.r2+'</td><td style="padding:.5rem">'+(e2.total||e2.r1)+'</td><td style="padding:.5rem">#'+e2.rank+'</td><td style="padding:.5rem">'+survBadge+'</td></tr>';
     });
     multiH+='</tbody></table></div>';
   }
@@ -1125,7 +847,7 @@ function showCoach(rank){
   var vipH='';
   if(isVip(c)){
     if(c.vipEntry){
-      vipH='<div class="cvsec"><div class="cvsect">⭐ VIP Overall Comp</div><p style="font-size:.875rem;color:var(--muted);line-height:1.65">This is your <strong style="color:var(--text)">VIP designated entry</strong>. Currently ranked <strong style="color:var(--vip)">#'+(vipE?vipE.vipRankCalc:'—')+'</strong> of '+VIP_LIST.length+' in the VIP comp with '+c.r1+' points.</p></div>';
+      vipH='<div class="cvsec"><div class="cvsect">⭐ VIP Overall Comp</div><p style="font-size:.875rem;color:var(--muted);line-height:1.65">This is your <strong style="color:var(--text)">VIP designated entry</strong>. Currently ranked <strong style="color:var(--vip)">#'+(vipE?vipE.vipRankCalc:'—')+'</strong> of '+VIP_LIST.length+' in the VIP comp with '+(c.total||c.r1)+' points cumulative.</p></div>';
     } else {
       var vE=VIP_LIST.find(function(x){return x.coach===c.coach;});
       vipH='<div class="cvsec"><div class="cvsect">⭐ VIP Overall Comp</div><p style="font-size:.875rem;color:var(--muted);line-height:1.65">You are a VIP but this is not your VIP designated entry.'+(vE?' Your VIP entry is <strong style="color:var(--text)">'+esc(vE.team)+'</strong> ranked #'+vE.vipRankCalc+' of '+VIP_LIST.length+' in the VIP comp.':'')+'</p></div>';
@@ -1142,21 +864,37 @@ function showCoach(rank){
         '<div class="cvn">'+esc(c.coach)+'</div>'+
         '<div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.4rem;align-items:center;">'+vipTag(c)+'</div>'+
         '<div class="cvt">'+esc(c.team)+'</div>'+
-        '<div class="cvtags">'+tb(rank,true)+'<span class="badge balive">Survivor: Alive</span><span class="badge" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.2)">#'+rank+' of '+COACHES.length+'</span>'+(c.vipEntry?'<span class="badge bvip">★ VIP Entry</span>':'')+'</div>'+
+        (function(){
+    var eH=[["Toby Mccaw", "Filled To The Brim Son"], ["Nash B", "Pumba\u2019s Pigs"], ["Darryl Kereopa", "The Mattress Room"], ["Bevan Stratton", "JBFA Bevs Mungo Team"], ["Paul Steele", "Dinner 4 Tu"], ["Jack Feeney", "The Bear Necessities"], ["Kingi Kamariera", "Stacked az Bro"], ["David Hindson", "Fatter pigs"], ["Austin Murphy", "NRLFA heilum luki\u2019s my pookie"], ["Kelvin Danielson", "The WAH-Tang Clan"], ["Matthew Keyworth", "JBFA FC"], ["Krik Turnre", "selgae aes hagnirraw ylnam"], ["Heath Fitzgerald", "JBFA Heath's Blackbookers"], ["Aleki Morris-Lome", "Leki\u2019s Boys"], ["Jack Ferguson", "Dreamteam253"], ["Thomas Procter", "Dark Arts"], ["Richard Lane", "BUSLANE"], ["Wayne Ritchie", "BIG black DOG"], ["William Anasi", "WDA DOO"], ["Jake Christie", "Doggies 13 Plus\u2019s"]];
+    var isEH=eH.some(function(e){return e[0]===c.coach&&e[1]===c.team;});
+    var survH=isEH
+      ?'<span class="badge" style="background:rgba(248,113,113,.15);color:var(--red);border:1px solid rgba(248,113,113,.3)">✗ Eliminated R2</span>'
+      :'<span class="badge balive">✓ Survivor: Alive</span>';
+    return '<div class="cvtags">'+tb(rank,true)+survH+'<span class="badge" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.2)">#'+rank+' of '+COACHES.length+'</span>'+(c.vipEntry?'<span class="badge bvip">★ VIP Entry</span>':'')+'</div>';
+  })()+
       '</div>'+
     '</div>'+
     '<div class="cvstats">'+
       '<div class="cvstat"><div class="cvsl">JBFA Rank</div><div class="cvsv" style="color:var(--accent)">#'+rank+'</div></div>'+
-      '<div class="cvstat"><div class="cvsl">R1 Score</div><div class="cvsv">'+c.r1+'</div></div>'+
-      '<div class="cvstat"><div class="cvsl">vs Avg ('+AVG+')</div><div class="cvsv" style="color:'+(diff>=0?'var(--green)':'var(--red)')+'">'+( diff>=0?'+':'')+diff+'</div></div>'+
+      '<div class="cvstat"><div class="cvsl">R2 Score</div><div class="cvsv" style="color:var(--accent)">'+c.r2+'</div></div>'+
+      '<div class="cvstat"><div class="cvsl">vs R2 Avg ('+AVG+')</div><div class="cvsv" style="color:'+(diff2>=0?'var(--green)':'var(--red)')+'">'+(diff2>=0?'+':'')+diff2+'</div></div>'+
       '<div class="cvstat"><div class="cvsl">Top % Field</div><div class="cvsv">'+pct+'%</div></div>'+
       '<div class="cvstat"><div class="cvsl">Proj. Seeding</div><div class="cvsv" style="font-size:.9rem;padding-top:.25rem">'+tb(rank,true)+'</div></div>'+
-      '<div class="cvstat"><div class="cvsl">Survivor Status</div><div class="cvsv" style="color:var(--green);font-size:1.1rem">✓ Alive</div></div>'+
+      (function(){
+    var elimList2=[["Toby Mccaw", "Filled To The Brim Son"], ["Nash B", "Pumba\u2019s Pigs"], ["Darryl Kereopa", "The Mattress Room"], ["Bevan Stratton", "JBFA Bevs Mungo Team"], ["Paul Steele", "Dinner 4 Tu"], ["Jack Feeney", "The Bear Necessities"], ["Kingi Kamariera", "Stacked az Bro"], ["David Hindson", "Fatter pigs"], ["Austin Murphy", "NRLFA heilum luki\u2019s my pookie"], ["Kelvin Danielson", "The WAH-Tang Clan"], ["Matthew Keyworth", "JBFA FC"], ["Krik Turnre", "selgae aes hagnirraw ylnam"], ["Heath Fitzgerald", "JBFA Heath's Blackbookers"], ["Aleki Morris-Lome", "Leki\u2019s Boys"], ["Jack Ferguson", "Dreamteam253"], ["Thomas Procter", "Dark Arts"], ["Richard Lane", "BUSLANE"], ["Wayne Ritchie", "BIG black DOG"], ["William Anasi", "WDA DOO"], ["Jake Christie", "Doggies 13 Plus\u2019s"]];
+    var isElim2=elimList2.some(function(e){return e[0]===c.coach&&e[1]===c.team;});
+    return '<div class="cvstat"><div class="cvsl">Survivor Status</div><div class="cvsv" style="color:'+(isElim2?'var(--red)':'var(--green)')+';font-size:1.1rem">'+(isElim2?'✗ Out R2':'✓ Alive')+'</div></div>';
+  })()+
     '</div>'+
     tierBoundaryHtml(rank, c)+
     sparklineHtml(c)+
     '<div class="cvsec"><div class="cvsect">Main Season — Qualifying</div><p style="font-size:.875rem;color:var(--muted);line-height:1.65">Ranked <strong style="color:var(--text)">#'+rank+'</strong> of '+COACHES.length+'. Projected into <strong style="color:var(--text)">'+tname+'</strong> for Seeding. '+buf+' Qualifying runs until Round 8.</p></div>'+
-    '<div class="cvsec"><div class="cvsect">Survivor</div><p style="font-size:.875rem;color:var(--muted);line-height:1.65"><strong style="color:var(--green)">✓ Alive.</strong> R1 had no eliminations. First knockouts after R2 — lowest 20 cut. Your R1 score: <strong style="color:var(--text)">'+c.r1+'</strong>.</p></div>'+
+    (function(){
+    var elimList3=[["Toby Mccaw", "Filled To The Brim Son"], ["Nash B", "Pumba\u2019s Pigs"], ["Darryl Kereopa", "The Mattress Room"], ["Bevan Stratton", "JBFA Bevs Mungo Team"], ["Paul Steele", "Dinner 4 Tu"], ["Jack Feeney", "The Bear Necessities"], ["Kingi Kamariera", "Stacked az Bro"], ["David Hindson", "Fatter pigs"], ["Austin Murphy", "NRLFA heilum luki\u2019s my pookie"], ["Kelvin Danielson", "The WAH-Tang Clan"], ["Matthew Keyworth", "JBFA FC"], ["Krik Turnre", "selgae aes hagnirraw ylnam"], ["Heath Fitzgerald", "JBFA Heath's Blackbookers"], ["Aleki Morris-Lome", "Leki\u2019s Boys"], ["Jack Ferguson", "Dreamteam253"], ["Thomas Procter", "Dark Arts"], ["Richard Lane", "BUSLANE"], ["Wayne Ritchie", "BIG black DOG"], ["William Anasi", "WDA DOO"], ["Jake Christie", "Doggies 13 Plus\u2019s"]];
+    var isElim3=elimList3.some(function(e){return e[0]===c.coach&&e[1]===c.team;});
+    if(isElim3) return '<div class="cvsec"><div class="cvsect">Survivor</div><p style="font-size:.875rem;color:var(--muted);line-height:1.65"><strong style="color:var(--red)">✗ Eliminated after R2.</strong> Your R2 score of <strong style="color:var(--text)">'+c.r2+'</strong> was in the bottom 20 this round (cut: 963).</p></div>';
+    return '<div class="cvsec"><div class="cvsect">Survivor</div><p style="font-size:.875rem;color:var(--muted);line-height:1.65"><strong style="color:var(--green)">✓ Still alive.</strong> Your R2 score: <strong style="color:var(--text)">'+c.r2+'</strong>. The R2 cut was 963 — you were safe.</p></div>';
+  })()+
     vipH+multiH+winH;
 
   document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
@@ -1198,7 +936,8 @@ function renderPodcasters(){
     return '<tr onclick="showCoach('+c.rank+')">'+
       '<td class="trk">'+c.rank+'</td>'+
       '<td><div class="tco">'+esc(c.coach)+vipTag(c)+'</div><div class="tte">'+esc(c.team)+'</div></td>'+
-      '<td class="tsc hi">'+c.r1+'</td>'+
+      '<td class="tsc">'+c.r2+'</td>'+
+      '<td class="tsc hi">'+(c.total||c.r1)+'</td>'+
       '<td>'+tb(c.rank,false)+'</td>'+
       '<td>'+survBadge+'</td>'+
       '</tr>';
@@ -1211,6 +950,7 @@ function renderOvTop(){
     return '<tr onclick="showCoach('+c.rank+')">'+
       '<td class="trk">'+(c.rank<=3?medals[c.rank-1]:c.rank)+'</td>'+
       '<td><div class="tco">'+esc(c.coach)+vipTag(c)+'</div><div class="tte">'+esc(c.team)+'</div></td>'+
+      '<td class="tsc" style="color:#fff">'+c.r2+'</td>'+
       '<td class="tsc hi">'+score+'</td>'+
       '</tr>';
   }).join('');
@@ -1222,13 +962,14 @@ function renderOvVip(){
       '<td class="trk">'+(i<3?medals[i]:i+1)+'</td>'+
       '<td><div class="tco">'+esc(c.coach)+vipTag(c)+'</div></td>'+
       '<td><div class="tte">'+esc(c.team)+'</div></td>'+
-      '<td class="tsc hi">'+c.r1+'</td>'+
+      '<td class="tsc">'+c.r2+'</td>'+
+      '<td class="tsc hi">'+(c.total||c.r1)+'</td>'+
       '</tr>';
   }).join(''));
-  var leader=VIP_LIST[0];
-  if(leader){
-    document.getElementById('vip-top').textContent=leader.r1;
-    document.getElementById('vip-top-team').textContent=leader.coach;
+  var vipTopR2=VIP_LIST.slice().sort(function(a,b){return (b.r2||0)-(a.r2||0);})[0];
+  if(vipTopR2){
+    document.getElementById('vip-top').textContent=vipTopR2.r2||vipTopR2.r1;
+    document.getElementById('vip-top-team').textContent=vipTopR2.coach;
   }
 }
 
@@ -1255,8 +996,15 @@ function renderSched(){
     var cls=item.r===CUR?'cur':item.r<CUR?'past':'';
     var h=heatColor(pct);
     var tooltip='R'+item.r+(item.d>0?': -'+item.d+' eliminated ('+pct+'% of field)':': no cuts');
-    var extraClick = item.r===27 ? ' onclick="document.getElementById(\'bunker-modal\').style.display=\'flex\'"' : '';
-    return '<div class="scel '+cls+'"'+extraClick+' title="'+tooltip+'" style="background:'+h.bg+';'+(item.r===27?'cursor:pointer':'')+'">'
+    var extraClick;
+    if(item.r===27){
+      extraClick=' onclick="document.getElementById(\'bunker-modal\').style.display=\'flex\'"';
+    } else if(item.d>0){
+      extraClick=' onclick="showElimForRound('+item.r+')"';
+    } else {
+      extraClick='';
+    }
+    return '<div class="scel '+cls+'"'+extraClick+' title="'+tooltip+'" style="background:'+h.bg+';'+(item.d>0||item.r===27?'cursor:pointer':'')+'">'
       +'<div class="scr">R'+item.r+'</div>'
       +'<div class="scd '+(item.d===0?'z':'')+'" style="color:'+h.lc+'">'+( item.d===0?'—':'-'+item.d)+'</div>'
       +'<div class="scre">'+rem+' left</div>'
@@ -1278,14 +1026,14 @@ function dP1(){
   pg.forEach(function(c){
     var t=getTier(c.rank);
     if(t!==lt){
-      rows+='<tr class="tdiv"><td colspan="6">'+['Tier 1 — Premiership (Top 100)','Tier 2 — Championship (101–200)','Tier 3 — State Cup (201+)'][t-1]+'</td></tr>';
+      rows+='<tr class="tdiv"><td colspan="5">'+['Tier 1 — Premiership (Top 100)','Tier 2 — Championship (101–200)','Tier 3 — State Cup (201+)'][t-1]+'</td></tr>';
       lt=t;
     }
     rows+='<tr onclick="showCoach('+c.rank+')">'+
       '<td class="trk">'+(c.rank<=3?medals[c.rank-1]:c.rank)+'</td>'+
       '<td><div class="tco">'+esc(c.coach)+vipTag(c)+'</div><div class="tte">'+esc(c.team)+'</div></td>'+
-      '<td class="tsc">'+c.r1+'</td>'+
-      '<td class="tsc hi">'+c.r1+'</td>'+
+      '<td class="tsc">'+c.r2+'</td>'+
+      '<td class="tsc hi">'+(c.total||c.r1)+'</td>'+
       '<td>'+tb(c.rank,false)+'</td>'+
       '</tr>';
   });
@@ -1312,8 +1060,8 @@ function dVip(){
     rows+='<tr onclick="showCoach('+c.rank+')">'+
       '<td class="trk">'+(c.vipRankCalc<=3?medals[c.vipRankCalc-1]:c.vipRankCalc)+'</td>'+
       '<td><div class="tco">'+esc(c.coach)+vipTag(c)+'</div><div class="tte">'+esc(c.team)+'</div></td>'+
-      '<td class="tsc hi">'+c.r1+'</td>'+
-      '<td class="tsc hi">'+c.r1+'</td>'+
+      '<td class="tsc">'+c.r2+'</td>'+
+      '<td class="tsc hi">'+(c.total||c.r1)+'</td>'+
       '<td class="tte">#'+c.rank+' overall</td>'+
       '</tr>';
   });
@@ -1322,22 +1070,37 @@ function dVip(){
 }
 
 // ── C2 ────────────────────────────────────────────────────────────────────
-var c2p=1,C2N=50,c2l=COACHES.slice();
+var c2p=1,C2N=50,c2l=COACHES.slice().sort(function(a,b){return (a.r2||0)-(b.r2||0);});
 function fC2(){
   var q=document.getElementById('c2fi').value.toLowerCase();
-  c2l=COACHES.filter(function(c){return c.coach.toLowerCase().indexOf(q)>=0||c.team.toLowerCase().indexOf(q)>=0;});
+  c2l=COACHES.filter(function(c){return c.coach.toLowerCase().indexOf(q)>=0||c.team.toLowerCase().indexOf(q)>=0;}).sort(function(a,b){return (a.r2||0)-(b.r2||0);});
   c2p=1;dC2();
 }
 function dC2(){
-  var pg=c2l.slice((c2p-1)*C2N,c2p*C2N);
-  document.getElementById('c2b').innerHTML=pg.map(function(c){
-    return '<tr onclick="showCoach('+c.rank+')">'+
-      '<td class="trk">'+(c.rank<=3?medals[c.rank-1]:c.rank)+'</td>'+
+  var allSorted=c2l;
+  var totalElim=20;
+  var cutScore=allSorted[totalElim-1]?allSorted[totalElim-1].r2:0;
+  var pg=allSorted.slice((c2p-1)*C2N,c2p*C2N);
+  var rows='',shownDiv=false;
+  var pageStart=(c2p-1)*C2N;
+  pg.forEach(function(c,i){
+    var globalIdx=pageStart+i;
+    var isDead=globalIdx<totalElim;
+    if(!isDead && !shownDiv){
+      shownDiv=true;
+      rows+='<tr><td colspan="4" style="text-align:center;padding:.5rem 1rem;background:rgba(52,211,153,.06);border-top:2px solid rgba(52,211,153,.3);border-bottom:1px solid rgba(52,211,153,.2);font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--green)">✓ Safe — 278 Coaches Alive</td></tr>';
+    }
+    var badge=isDead
+      ?'<span class="badge" style="background:rgba(248,113,113,.15);color:var(--red);border:1px solid rgba(248,113,113,.3)">✗ Eliminated R2</span>'
+      :'<span class="badge balive">✓ Alive</span>';
+    var rowStyle=isDead?'opacity:.7;':'';
+    rows+='<tr onclick="showCoach('+c.rank+')" style="'+rowStyle+'">'+
+      '<td class="tsc" style="color:'+(isDead?'var(--red)':'var(--text)')+'">'+c.r2+'</td>'+
       '<td><div class="tco">'+esc(c.coach)+vipTag(c)+'</div><div class="tte">'+esc(c.team)+'</div></td>'+
-      '<td class="tsc">'+c.r1+'</td>'+
-      '<td><span class="badge balive">Alive</span></td>'+
+      '<td>'+badge+'</td>'+
       '</tr>';
-  }).join('');
+  });
+  document.getElementById('c2b').innerHTML=rows;
   dPager('c2pg',Math.ceil(c2l.length/C2N),c2p,function(p){c2p=p;dC2();});
 }
 
@@ -1442,173 +1205,45 @@ function tierBoundaryHtml(rank, c){
 
 // ── SPARKLINE ─────────────────────────────────────────────────────────────
 function sparklineHtml(c){
+  // Round averages - update each week
+  var ROUND_AVGS = {1: 926, 2: 1034};
   var scores = [];
-  // Build score array from available round data
-  if(c.r1) scores.push({r:1,s:c.r1});
-  if(c.r2) scores.push({r:2,s:c.r2});
-  if(c.r3) scores.push({r:3,s:c.r3});
-  if(c.r4) scores.push({r:4,s:c.r4});
-  if(c.r5) scores.push({r:5,s:c.r5});
-  if(c.r6) scores.push({r:6,s:c.r6});
-  if(c.r7) scores.push({r:7,s:c.r7});
-  if(c.r8) scores.push({r:8,s:c.r8});
-  // extend for more rounds as season progresses...
+  if(c.r1) scores.push({r:1, s:c.r1, avg: ROUND_AVGS[1]||926});
+  if(c.r2) scores.push({r:2, s:c.r2, avg: ROUND_AVGS[2]||1034});
+  if(c.r3) scores.push({r:3, s:c.r3, avg: ROUND_AVGS[3]||0});
+  if(c.r4) scores.push({r:4, s:c.r4, avg: ROUND_AVGS[4]||0});
+  if(c.r5) scores.push({r:5, s:c.r5, avg: ROUND_AVGS[5]||0});
+  if(c.r6) scores.push({r:6, s:c.r6, avg: ROUND_AVGS[6]||0});
+  if(c.r7) scores.push({r:7, s:c.r7, avg: ROUND_AVGS[7]||0});
+  if(c.r8) scores.push({r:8, s:c.r8, avg: ROUND_AVGS[8]||0});
 
   var html = '<div class="cvsec"><div class="cvsect">Score Trend</div>';
 
-  if(scores.length < 2){
-    // Only one round — just show the score with a note
-    html += '<div class="spark-one">R1 score: <strong>'+( scores.length?scores[0].s:'—')+'</strong><span style="color:var(--muted);font-size:.75rem;margin-left:.5rem">— trend chart available from Round 2</span></div>';
-    html += '</div>';
+  if(scores.length === 0){
+    html += '<div class="spark-one"><span style="color:var(--muted)">No scores yet.</span></div></div>';
     return html;
   }
 
-  // Multi-round sparkline
-  var vals = scores.map(function(x){return x.s;});
-  var minV = Math.min.apply(null,vals), maxV = Math.max.apply(null,vals);
-  var range = maxV - minV || 1;
-  var barColors = vals.map(function(v,i){
-    var pct = (v-minV)/range;
-    if(pct > 0.66) return 'var(--green)';
-    if(pct > 0.33) return 'var(--accent)';
-    return 'var(--red)';
-  });
-
-  html += '<div class="spark-wrap">';
-  html += '<div class="spark-container">';
-  scores.forEach(function(item,i){
-    var heightPct = 20 + Math.round(((item.s-minV)/range)*75);
-    var isCur = item.r === CUR;
-    html += '<div class="spark-bar-wrap">'
-      +'<div class="spark-score">'+item.s+'</div>'
-      +'<div class="spark-bar'+(isCur?' cur':'')+'" style="height:'+heightPct+'%;background:'+barColors[i]+';opacity:'+(isCur?'1':'0.65')+'"></div>'
-      +'<div class="spark-rlabel">R'+item.r+'</div>'
-      +'</div>';
+  // Score boxes: one per round, coloured green/red vs that round's avg
+  html += '<div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.75rem;">';
+  scores.forEach(function(item){
+    var diff = item.avg ? item.s - item.avg : 0;
+    var isGreen = diff >= 0;
+    var color = isGreen ? 'var(--green)' : 'var(--red)';
+    var bgColor = isGreen ? 'rgba(52,211,153,.1)' : 'rgba(248,113,113,.1)';
+    var borderColor = isGreen ? 'rgba(52,211,153,.3)' : 'rgba(248,113,113,.3)';
+    var sign = isGreen ? '+' : '';
+    html += '<div style="background:'+bgColor+';border:1px solid '+borderColor+';border-radius:8px;padding:.5rem .75rem;min-width:80px;text-align:center;">'
+      + '<div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.2rem">R'+item.r+'</div>'
+      + '<div style="font-family:Bebas Neue,sans-serif;font-size:1.4rem;color:'+color+';letter-spacing:.04em;line-height:1">'+item.s+'</div>'
+      + (item.avg ? '<div style="font-size:.7rem;color:'+color+';margin-top:.15rem">'+sign+diff+' vs avg</div>' : '')
+      + '</div>';
   });
   html += '</div>';
-
-  // Trend summary
-  var first = vals[0], last = vals[vals.length-1];
-  var trend = last - first;
-  var trendStr = trend > 0 ? '<span style="color:var(--green)">↑ +'+trend+' vs R1</span>' : trend < 0 ? '<span style="color:var(--red)">↓ '+trend+' vs R1</span>' : '<span style="color:var(--muted)">→ Flat vs R1</span>';
-  var avgOwn = Math.round(vals.reduce(function(s,v){return s+v;},0)/vals.length);
-  html += '<div style="display:flex;gap:1.5rem;margin-top:.5rem;font-size:.78rem;color:var(--muted);">'
-    +'<span>Best: <strong style="color:var(--green)">'+Math.max.apply(null,vals)+'</strong></span>'
-    +'<span>Worst: <strong style="color:var(--red)">'+Math.min.apply(null,vals)+'</strong></span>'
-    +'<span>Avg: <strong style="color:var(--text)">'+avgOwn+'</strong></span>'
-    +'<span>Trend: '+trendStr+'</span>'
-    +'</div>';
-  html += '</div></div>';
+  html += '</div>';
   return html;
 }
 
-// ── INIT ──────────────────────────────────────────────────────────────────
-renderOvTop();renderPodcasters();renderSched();dP1();dVip();dC2();
-// ── DYNAMIC COUNTS ────────────────────────────────────────────────────────
-(function(){
-  var total=COACHES.length, vips=VIP_LIST.length;
-  // stat cards
-  ['sc-total','sc-alive','sc-started','sc-still-alive'].forEach(function(id){
-    var el=document.getElementById(id); if(el) el.textContent=total;
-  });
-  var avgSub=document.getElementById('sc-avg-sub');
-  if(avgSub) avgSub.textContent='';
-  var avgLabel=document.getElementById('sc-avg-label');
-  if(avgLabel) avgLabel.textContent='Field Avg R'+CUR;
-  var avgVal=document.getElementById('sc-avg-val');
-  if(avgVal) avgVal.textContent=AVG;
-  var topLabel=document.getElementById('sc-top-label');
-  if(topLabel) topLabel.textContent='Top Score R'+CUR;
-  var topCoaches=COACHES.slice().sort(function(a,b){
-    var sa=CUR===1?(a.r1||0):(a.total||a.r1||0);
-    var sb=CUR===1?(b.r1||0):(b.total||b.r1||0);
-    return sb-sa;
-  });
-  var topC=topCoaches[0];
-  if(topC){
-    var topVal=document.getElementById('sc-top-val');
-    if(topVal) topVal.textContent=topC.r1||'—';
-    var topCoach=document.getElementById('sc-top-coach');
-    if(topCoach) topCoach.textContent=topC.coach;
-  }
-  // Survivor cut score: lowest score among surviving coaches this round
-  var cutLabel=document.getElementById('sc-cut-label');
-  if(cutLabel) cutLabel.textContent='Cut Score R'+CUR;
-  var cutLabelOv=document.getElementById('sc-cut-label-ov');
-  if(cutLabelOv) cutLabelOv.textContent='Cut Score R'+CUR;
-  var DROP_R1=0; // R1 has no eliminations
-  var cutVal=document.getElementById('sc-cut-val');
-  var cutValOv=document.getElementById('sc-cut-val-ov');
-  var cutScsOv=document.getElementById('sc-cut-scs-ov');
-  if(DROP_R1===0){
-    if(cutVal) cutVal.textContent='—';
-    if(cutValOv) cutValOv.textContent='—';
-    var cutScs=cutVal?cutVal.parentElement.querySelector('.scs'):null;
-    if(cutScs) cutScs.textContent='no eliminations R1';
-    if(cutScsOv) cutScsOv.textContent='no eliminations R1';
-  } else {
-    var sorted=COACHES.slice().sort(function(a,b){
-      var sa=CUR===1?(a.r1||0):(a.total||a.r1||0);
-      var sb=CUR===1?(b.r1||0):(b.total||b.r1||0);
-      return sa-sb;
-    });
-    var cutScore=sorted[DROP_R1]?(CUR===1?sorted[DROP_R1].r1:(sorted[DROP_R1].total||sorted[DROP_R1].r1)):'—';
-    if(cutVal) cutVal.textContent=cutScore;
-    if(cutValOv) cutValOv.textContent=cutScore;
-    if(cutScsOv) cutScsOv.textContent='lowest safe score';
-  }
-  // inline spans
-  document.querySelectorAll('.dyn-total').forEach(function(el){el.textContent=total;});
-  document.querySelectorAll('.dyn-vip-count').forEach(function(el){el.textContent=vips;});
-  document.querySelectorAll('.dyn-vip-badge').forEach(function(el){el.textContent=vips+' Entries';});
-})();
-// Update score column headers dynamically
-document.querySelectorAll('th.scol-hdr').forEach(function(el){el.textContent=SCOL;});
-// Populate VIP stat cards
-(function(){
-  var leader=VIP_LIST[0];
-  if(!leader) return;
-  document.getElementById('vip-top').textContent=leader.r1;
-  document.getElementById('vip-top-team').textContent=leader.coach;
-})();
-</script>
-<!-- FEEDBACK BUTTON & MODAL -->
-<button id="fbtn" onclick="document.getElementById('fmodal').style.display='flex'" title="Leave feedback">💬</button>
-
-<div id="fmodal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;align-items:center;justify-content:center;padding:1rem;">
-  <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2rem;width:100%;max-width:460px;box-shadow:0 24px 64px rgba(0,0,0,.6);">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;">
-      <div>
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:.06em">Leave Feedback</div>
-        <div style="font-size:.78rem;color:var(--muted);margin-top:.15rem">Can't find your team or name? Got a suggestion or spotted an error? Let us know.</div>
-      </div>
-      <button onclick="closeFeedback()" style="background:none;border:none;color:var(--muted);font-size:1.4rem;cursor:pointer;line-height:1;padding:.25rem;">✕</button>
-    </div>
-    <form id="fform" action="https://formspree.io/f/xlgplwnz" method="POST">
-      <div style="margin-bottom:1rem;">
-        <label style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);display:block;margin-bottom:.4rem;">Your Name <span style="color:var(--muted);font-weight:400">(optional)</span></label>
-        <input name="name" type="text" placeholder="e.g. Ben Hunt" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.6rem .9rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.875rem;outline:none;">
-      </div>
-      <div style="margin-bottom:1.25rem;">
-        <label style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);display:block;margin-bottom:.4rem;">Feedback <span style="color:var(--red)">*</span></label>
-        <textarea name="message" required placeholder="Describe what doesn't look right, or any suggestions…" rows="4" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.6rem .9rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.875rem;outline:none;resize:vertical;"></textarea>
-      </div>
-      <div style="display:flex;gap:.75rem;justify-content:flex-end;">
-        <button type="button" onclick="closeFeedback()" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.55rem 1.1rem;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:.875rem;font-weight:600;cursor:pointer;">Cancel</button>
-        <button type="submit" id="fsubmit" style="background:var(--jb);border:1px solid var(--jbl);border-radius:8px;padding:.55rem 1.25rem;color:#fff;font-family:'DM Sans',sans-serif;font-size:.875rem;font-weight:600;cursor:pointer;">Send Feedback</button>
-      </div>
-      <div id="fok" style="display:none;margin-top:1rem;background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.3);border-radius:8px;padding:.75rem 1rem;font-size:.875rem;color:var(--green);text-align:center;">✓ Thanks — feedback sent!</div>
-    </form>
-  </div>
-</div>
-
-<style>
-#fbtn{position:fixed;bottom:1.5rem;right:1.5rem;width:48px;height:48px;border-radius:50%;background:var(--jb);border:2px solid var(--accent);color:#fff;font-size:1.1rem;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.4);z-index:999;transition:transform .15s,box-shadow .15s;}
-#fbtn:hover{transform:scale(1.1);box-shadow:0 6px 28px rgba(0,0,0,.5);}
-#fform input:focus,#fform textarea:focus{border-color:var(--accent);}
-</style>
-
-<script>
 function closeFeedback(){document.getElementById('fmodal').style.display='none';document.getElementById('fok').style.display='none';document.getElementById('fform').reset();}
 document.getElementById('fmodal').addEventListener('click',function(e){if(e.target===this)closeFeedback();});
 document.getElementById('fform').addEventListener('submit',function(e){
@@ -1638,6 +1273,112 @@ document.getElementById('fform').addEventListener('submit',function(e){
 </style>
 
 <script>
+
+var ELIM_DATA={"2": [{"coach": "Toby Mccaw", "team": "Filled To The Brim Son", "score": 888}, {"coach": "Nash B", "team": "Pumba\u2019s Pigs", "score": 889}, {"coach": "Darryl Kereopa", "team": "The Mattress Room", "score": 894}, {"coach": "Bevan Stratton", "team": "JBFA Bevs Mungo Team", "score": 901}, {"coach": "Paul Steele", "team": "Dinner 4 Tu", "score": 923}, {"coach": "Jack Feeney", "team": "The Bear Necessities", "score": 927}, {"coach": "Kingi Kamariera", "team": "Stacked az Bro", "score": 928}, {"coach": "David Hindson", "team": "Fatter pigs", "score": 930}, {"coach": "Austin Murphy", "team": "NRLFA heilum luki\u2019s my pookie", "score": 933}, {"coach": "Kelvin Danielson", "team": "The WAH-Tang Clan", "score": 936}, {"coach": "Matthew Keyworth", "team": "JBFA FC", "score": 946}, {"coach": "Krik Turnre", "team": "selgae aes hagnirraw ylnam", "score": 955}, {"coach": "Heath Fitzgerald", "team": "JBFA Heath's Blackbookers", "score": 955}, {"coach": "Aleki Morris-Lome", "team": "Leki\u2019s Boys", "score": 955}, {"coach": "Jack Ferguson", "team": "Dreamteam253", "score": 957}, {"coach": "Thomas Procter", "team": "Dark Arts", "score": 958}, {"coach": "Richard Lane", "team": "BUSLANE", "score": 960}, {"coach": "Wayne Ritchie", "team": "BIG black DOG", "score": 960}, {"coach": "William Anasi", "team": "WDA DOO", "score": 962}, {"coach": "Jake Christie", "team": "Doggies 13 Plus\u2019s", "score": 963}]};
+function showElimForRound(r){
+  var popup=document.getElementById('elim-popup');
+  var data=ELIM_DATA[String(r)];
+  if(!data||data.length===0){
+    popup.innerHTML='<p style="color:var(--muted);font-size:.85rem">No elimination data for Round '+r+' yet.</p>';
+    popup.style.display='block';
+    popup.scrollIntoView({behavior:'smooth',block:'nearest'});
+    return;
+  }
+  var sorted=data.slice().sort(function(a,b){return a.score-b.score;});
+  var rows=sorted.map(function(e,i){
+    return '<tr style="border-bottom:1px solid var(--border)">'
+      +'<td style="padding:.4rem .6rem;font-size:.8rem;color:var(--muted)">'+(i+1)+'</td>'
+      +'<td style="padding:.4rem .6rem;font-size:.85rem">'+esc(e.coach)+'</td>'
+      +'<td style="padding:.4rem .6rem;font-size:.8rem;color:var(--muted)">'+esc(e.team)+'</td>'
+      +'<td style="padding:.4rem .6rem;font-size:1.1rem;color:var(--red)">'+e.score+'</td>'
+      +'</tr>';
+  }).join('');
+  popup.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem">'
+    +'<strong style="font-size:.9rem">Round '+r+' — '+sorted.length+' Eliminated</strong>'
+    +'<button onclick="document.getElementById(\'elim-popup\').style.display=\'none\'" style="background:none;border:none;color:var(--muted);font-size:1rem;cursor:pointer">✕</button>'
+    +'</div>'
+    +'<table style="width:100%;border-collapse:collapse">'
+    +'<thead><tr style="border-bottom:1px solid var(--border)">'
+    +'<th style="padding:.3rem .6rem;text-align:left;font-size:.7rem;color:var(--muted);text-transform:uppercase">#</th>'
+    +'<th style="padding:.3rem .6rem;text-align:left;font-size:.7rem;color:var(--muted);text-transform:uppercase">Coach</th>'
+    +'<th style="padding:.3rem .6rem;text-align:left;font-size:.7rem;color:var(--muted);text-transform:uppercase">Team</th>'
+    +'<th style="padding:.3rem .6rem;text-align:left;font-size:.7rem;color:var(--muted);text-transform:uppercase">Score</th>'
+    +'</tr></thead><tbody>'+rows+'</tbody></table>';
+  popup.style.display='block';
+  popup.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────
+renderOvTop();renderOvVip();renderPodcasters();renderSched();dP1();dVip();dC2();
+
+// Dynamic counts
+(function(){
+  var total=COACHES.length, vips=VIP_LIST.length;
+  ['sc-total','sc-started'].forEach(function(id){
+    var el=document.getElementById(id); if(el) el.textContent=total;
+  });
+  var aliveFixEl=document.getElementById('sc-alive'); if(aliveFixEl) aliveFixEl.textContent=278;
+  var stillFixEl=document.getElementById('sc-still-alive'); if(stillFixEl) stillFixEl.textContent=278;
+  document.querySelectorAll('.dyn-total').forEach(function(el){el.textContent=total;});
+  document.querySelectorAll('.dyn-vip-count').forEach(function(el){el.textContent=vips;});
+  document.querySelectorAll('.dyn-vip-badge').forEach(function(el){el.textContent=vips+' Entries';});
+
+  // Top score tile — sort by R2
+  var topCoaches=COACHES.slice().sort(function(a,b){return (b.r2||b.r1||0)-(a.r2||a.r1||0);});
+  var topC=topCoaches[0];
+  if(topC){
+    var topLabel=document.getElementById('sc-top-label');
+    if(topLabel) topLabel.textContent='Top Score R'+CUR;
+    var topVal=document.getElementById('sc-top-val');
+    if(topVal) topVal.textContent=topC.r2||topC.r1||'—';
+    var topCoach=document.getElementById('sc-top-coach');
+    if(topCoach) topCoach.textContent=topC.coach;
+  }
+
+  // Avg tile
+  var avgLabel=document.getElementById('sc-avg-label');
+  if(avgLabel) avgLabel.textContent='Field Avg R'+CUR;
+  var avgVal=document.getElementById('sc-avg-val');
+  if(avgVal) avgVal.textContent=AVG;
+
+  // Cut score tile — based on R2
+  var cutLabel=document.getElementById('sc-cut-label');
+  if(cutLabel) cutLabel.textContent='R2 Cut Score';
+  var cutLabelOv=document.getElementById('sc-cut-label-ov');
+  if(cutLabelOv) cutLabelOv.textContent='R2 Cut Score';
+  var sortedR2=COACHES.slice().sort(function(a,b){return (a.r2||a.r1||0)-(b.r2||b.r1||0);});
+  var cutScore=sortedR2[DROP_R2-1]?(sortedR2[DROP_R2-1].r2||sortedR2[DROP_R2-1].r1):'—';
+  var cutVal=document.getElementById('sc-cut-val');
+  if(cutVal) cutVal.textContent=cutScore;
+  var cutValOv=document.getElementById('sc-cut-val-ov');
+  if(cutValOv) cutValOv.textContent=cutScore;
+  var cutScsOv=document.getElementById('sc-cut-scs-ov');
+  if(cutScsOv) cutScsOv.textContent='lowest safe R2 score';
+
+  // Alive count — 278 after R2
+  var aliveEl=document.getElementById('sc-alive');
+  if(aliveEl) aliveEl.textContent=278;
+  var stillEl=document.getElementById('sc-still-alive');
+  if(stillEl) stillEl.textContent=278;
+
+  // VIP top score tile -- top R2 among VIP entries
+  var vipByR2=VIP_LIST.slice().sort(function(a,b){return (b.r2||0)-(a.r2||0);});
+  var vipR2Leader=vipByR2[0];
+  if(vipR2Leader){
+    var vipTopEl=document.getElementById('vip-top');
+    if(vipTopEl) vipTopEl.textContent=vipR2Leader.r2||'--';
+    var vipTeamEl=document.getElementById('vip-top-team');
+    if(vipTeamEl) vipTeamEl.textContent=vipR2Leader.coach;
+  }
+
+  // Current round tile
+  var curRndEl=document.getElementById('sc-cur-round');
+  if(curRndEl) curRndEl.textContent=CUR;
+
+  // Column headers
+  document.querySelectorAll('th.scol-hdr').forEach(function(el){el.textContent=SCOL;});
+})();
+
 // ── TAP TOOLTIPS ──────────────────────────────────────────────────────────
 function tipTap(el){
   el.classList.add('tapped');
