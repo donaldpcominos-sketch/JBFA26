@@ -170,9 +170,13 @@ td{padding:.6rem 1rem;vertical-align:middle;}
   /* P1 table: hide Value and Tier on mobile */
   #p1b tr td:nth-child(5),#p1b tr td:nth-child(6),
   #p1t thead tr th:nth-child(5),#p1t thead tr th:nth-child(6){display:none;}
-  /* Players table: hide extra cols on mobile */
-  #plb tr td:nth-child(5),#plb tr td:nth-child(6),#plb tr td:nth-child(7),#plb tr td:nth-child(8),#plb tr td:nth-child(9),#plb tr td:nth-child(10),#plb tr td:nth-child(11),
-  #plt thead tr th:nth-child(5),#plt thead tr th:nth-child(6),#plt thead tr th:nth-child(7),#plt thead tr th:nth-child(8),#plt thead tr th:nth-child(9),#plt thead tr th:nth-child(10),#plt thead tr th:nth-child(11){display:none;}
+  /* Players table: on mobile show card list, hide table */
+  #pl-table-wrap{display:block;}
+  #pl-card-list{display:none;}
+  @media(max-width:600px){
+    #pl-table-wrap{display:none;}
+    #pl-card-list{display:block;}
+  }
   /* c2 survival: nothing to hide - already compact */
   /* overview: nothing to hide - already has coach+team combined */
 }
@@ -582,7 +586,7 @@ td{padding:.6rem 1rem;vertical-align:middle;}
       <span style="margin-left:auto;font-size:.82rem;color:var(--muted)" id="plct"></span>
     </div>
     <p style="font-size:.72rem;color:var(--muted);margin-bottom:.5rem;font-style:italic">⚠️ Player prices reflect last round's data — updated prices appear in next week's export.</p>
-    <div class="tw"><div class="tw-scroll"><table id="plt">
+    <div id="pl-table-wrap"><div class="tw"><div class="tw-scroll"><table id="plt">
       <thead><tr><th>#</th><th>Player</th><th>Price</th><th>Ownership</th><th id="topn-header" style="background:rgba(240,180,41,.12);color:var(--accent);border-left:2px solid rgba(240,180,41,.3);border-right:2px solid rgba(240,180,41,.3);">Top 100</th><th>Traded In ↑</th><th style="font-size:.65rem">% of field</th><th style="font-size:.65rem">% eligible</th><th>Traded Out ↓</th><th style="font-size:.65rem">% of field</th><th style="font-size:.65rem">% eligible</th></tr></thead>
       <tbody id="plb"></tbody>
     </table></div></div>
@@ -1274,6 +1278,40 @@ function fPlayers(){
   });
   var plb=document.getElementById('plb');
   if(plb) plb.innerHTML=rows||'<tr><td colspan="11" style="text-align:center;padding:2rem;color:var(--muted)">No players found.</td></tr>';
+
+  // Mobile card list
+  var cards='';
+  filtered.forEach(function(p,i){
+    var col=p.ownedPct>=90?'var(--red)':p.ownedPct>=70?'var(--accent)':p.ownedPct>=40?'var(--text)':'var(--green)';
+    var colN=p.topNPct>=90?'var(--red)':p.topNPct>=70?'var(--accent)':p.topNPct>=40?'var(--text)':'var(--green)';
+    var bar=Math.max(2,Math.round(p.ownedPct));
+    cards+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.75rem 1rem;margin-bottom:.5rem;">'
+      // Player name + price row
+      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;">'
+        +'<div style="font-weight:700;font-size:.95rem">'+esc(p.name)+'</div>'
+        +'<div style="font-family:Bebas Neue,sans-serif;color:var(--muted);font-size:.9rem">$'+(p.cost/1000).toFixed(0)+'K</div>'
+      +'</div>'
+      // Ownership bar + % row
+      +'<div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.5rem;">'
+        +'<div style="flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden;"><div style="width:'+bar+'%;height:100%;background:'+col+';border-radius:3px;"></div></div>'
+        +'<span style="font-weight:700;color:'+col+';font-size:.85rem;min-width:38px">'+p.ownedPct+'%</span>'
+        +'<span style="font-size:.75rem;color:var(--muted)">all 298</span>'
+        +'<span style="font-size:.82rem;font-weight:700;color:'+colN+';background:rgba(240,180,41,.08);border:1px solid rgba(240,180,41,.2);border-radius:4px;padding:.1rem .35rem;">'+p.topNPct+'% top '+N+'</span>'
+      +'</div>'
+      // Trades row
+      +'<div style="display:flex;gap:.5rem;flex-wrap:wrap;">'
+        +(p.tradedIn>0
+          ?'<span style="font-size:.75rem;background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.25);border-radius:5px;padding:.15rem .5rem;color:var(--green)">+'+p.tradedIn+' in'+(p.tradedInPct?' ('+p.tradedInPct+'%'+( p.eligInPct?' / '+p.eligInPct+'% elig':'')+')'  :'')+'</span>'
+          :'')
+        +(p.tradedOut>0
+          ?'<span style="font-size:.75rem;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.25);border-radius:5px;padding:.15rem .5rem;color:var(--red)">-'+p.tradedOut+' out'+(p.tradedOutPct?' ('+p.tradedOutPct+'%'+(p.eligOutPct?' / '+p.eligOutPct+'% elig':'')+')'  :'')+'</span>'
+          :'')
+        +(!p.tradedIn&&!p.tradedOut?'<span style="font-size:.75rem;color:var(--muted)">No trades this round</span>':'')
+      +'</div>'
+      +'</div>';
+  });
+  var plCards=document.getElementById('pl-card-list');
+  if(plCards) plCards.innerHTML=cards||'<p style="text-align:center;padding:2rem;color:var(--muted);font-size:.875rem">No players found.</p>';
 }
 
 function renderTradeSummary(){
