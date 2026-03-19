@@ -907,8 +907,10 @@ function showCoach(rank){
     allE.forEach(function(e2){
       var hi=e2.rank===rank;
       var isE=elimListM.some(function(e){return e[0]===e2.coach&&e[1]===e2.team;});
-      var survBadge=isE
-        ?'<span style="font-size:.7rem;background:rgba(248,113,113,.15);color:var(--red);border:1px solid rgba(248,113,113,.3);border-radius:4px;padding:.1rem .4rem">✗ Out R2</span>'
+      var survBadge=e2.survivorStatus==='ineligible'
+        ?'<span style="font-size:.7rem;background:rgba(148,163,184,.12);color:#94a3b8;border:1px solid rgba(148,163,184,.3);border-radius:4px;padding:.1rem .4rem">— Late Entry</span>'
+        :isE
+        ?'<span style="font-size:.7rem;background:rgba(248,113,113,.15);color:var(--red);border:1px solid rgba(248,113,113,.3);border-radius:4px;padding:.1rem .4rem">✗ Out R'+e2.eliminatedRound+'</span>'
         :'<span style="font-size:.7rem;background:rgba(52,211,153,.1);color:var(--green);border:1px solid rgba(52,211,153,.3);border-radius:4px;padding:.1rem .4rem">✓ Alive</span>';
       multiH+='<tr style="border-bottom:1px solid var(--border);'+(hi?'background:rgba(240,180,41,.06)':'')+'"><td style="padding:.5rem;font-weight:'+(hi?'700':'400')+'">'+esc(e2.team)+(hi?' ◀':'')+'</td><td style="padding:.5rem">'+e2.r2+'</td><td style="padding:.5rem">'+(e2.total||e2.r1)+'</td><td style="padding:.5rem">#'+e2.rank+'</td><td style="padding:.5rem">'+survBadge+'</td></tr>';
     });
@@ -947,8 +949,11 @@ function showCoach(rank){
         '<div class="cvt">'+esc(c.team)+'</div>'+
         (function(){
     var isEH = c.survivorStatus === 'eliminated';
-    var survH=isEH
-      ?'<span class="badge" style="background:rgba(248,113,113,.15);color:var(--red);border:1px solid rgba(248,113,113,.3)">✗ Eliminated R2</span>'
+    var isInelig = c.survivorStatus === 'ineligible';
+    var survH=isInelig
+      ?'<span class="badge" style="background:rgba(148,163,184,.12);color:#94a3b8;border:1px solid rgba(148,163,184,.3)">— Late Entry</span>'
+      :isEH
+      ?'<span class="badge" style="background:rgba(248,113,113,.15);color:var(--red);border:1px solid rgba(248,113,113,.3)">✗ Eliminated R'+(c.eliminatedRound||'')+'</span>'
       :'<span class="badge balive">✓ Survivor: Alive</span>';
     return '<div class="cvtags">'+tb(rank,true)+survH+'<span class="badge" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.2)">#'+rank+' of '+COACHES.length+'</span>'+(c.vipEntry?'<span class="badge bvip">★ VIP Entry</span>':'')+'</div>';
   })()+
@@ -978,7 +983,8 @@ function showCoach(rank){
           (c.wealthPct!==undefined?'<div class="cvstat"><div class="cvsl">Value Rank</div><div class="cvsv" style="color:'+(c.wealthPct>=75?'var(--green)':c.wealthPct>=50?'var(--accent)':'var(--muted)')+'">Top '+(100-c.wealthPct+1)+'%</div></div>':'')+
     (function(){
     var isElim2 = c.survivorStatus === 'eliminated';
-    return '<div class="cvstat"><div class="cvsl">Survivor</div><div class="cvsv" style="color:'+(isElim2?'var(--red)':'var(--green)')+';font-size:1.1rem">'+(isElim2?'\u2717 Out R'+(c.eliminatedRound||''):'\u2713 Alive')+'</div></div>';
+    var isInelig2 = c.survivorStatus === 'ineligible';
+    return '<div class="cvstat"><div class="cvsl">Survivor</div><div class="cvsv" style="color:'+(isInelig2?'#94a3b8':isElim2?'var(--red)':'var(--green)')+';font-size:1.1rem">'+(isInelig2?'— N/A':isElim2?'\u2717 Out R'+(c.eliminatedRound||''):'\u2713 Alive')+'</div></div>';
   })()+
         '</div>'+
       '</div>'+
@@ -990,8 +996,12 @@ function showCoach(rank){
     '<div class="cvsec"><div class="cvsect">Main Season — Qualifying</div><p style="font-size:.875rem;color:var(--muted);line-height:1.65">Ranked <strong style="color:var(--text)">#'+rank+'</strong> of '+COACHES.length+'. Projected into <strong style="color:var(--text)">'+tname+'</strong> for Seeding. '+buf+' Qualifying runs until Round 8.</p></div>'+
     (function(){
     var isElim3 = c.survivorStatus === 'eliminated';
-    if(isElim3) return '<div class="cvsec"><div class="cvsect">Survivor</div><p style="font-size:.875rem;color:var(--muted);line-height:1.65"><strong style="color:var(--red)">✗ Eliminated after R2.</strong> Your R2 score of <strong style="color:var(--text)">'+c.r2+'</strong> was in the bottom 20 this round (cut: 963).</p></div>';
-    return '<div class="cvsec"><div class="cvsect">Survivor</div><p style="font-size:.875rem;color:var(--muted);line-height:1.65"><strong style="color:var(--green)">✓ Still alive.</strong> Your R2 score: <strong style="color:var(--text)">'+c.r2+'</strong>. The R2 cut was 963 — you were safe.</p></div>';
+    var isInelig3 = c.survivorStatus === 'ineligible';
+    if(isInelig3) return '<div class="cvsec"><div class="cvsect">Survivor</div><p style="font-size:.875rem;color:var(--muted);line-height:1.65"><strong style="color:#94a3b8">— Late Entry.</strong> This team joined after the season started and is not eligible for the Survivor competition.</p></div>';
+    var curRkey2='r'+CUR;
+    var curScore2=(c.scores&&c.scores[curRkey2])||0;
+    if(isElim3) return '<div class="cvsec"><div class="cvsect">Survivor</div><p style="font-size:.875rem;color:var(--muted);line-height:1.65"><strong style="color:var(--red)">✗ Eliminated after R'+(c.eliminatedRound||CUR)+'.</strong> Your R'+(c.eliminatedRound||CUR)+' score of <strong style="color:var(--text)">'+curScore2+'</strong> was in the bottom cut this round.</p></div>';
+    return '<div class="cvsec"><div class="cvsect">Survivor</div><p style="font-size:.875rem;color:var(--muted);line-height:1.65"><strong style="color:var(--green)">✓ Still alive.</strong> Your R'+CUR+' score: <strong style="color:var(--text)">'+curScore2+'</strong>. You survived the cut this round.</p></div>';
   })()+
     vipH+multiH+winH;
 
@@ -1260,7 +1270,7 @@ function fPlayers(){
     var col=p.ownedPct>=90?'var(--red)':p.ownedPct>=70?'var(--accent)':p.ownedPct>=40?'var(--text)':'var(--green)';
     var colN=p.topNPct>=90?'var(--red)':p.topNPct>=70?'var(--accent)':p.topNPct>=40?'var(--text)':'var(--green)';
     var bar=Math.max(2,Math.round(p.ownedPct));
-    rows+='<tr>'
+    rows+='<tr onclick="showPlayerCard(\''+p.pid+'\')" style="cursor:pointer;">'
       +'<td class="trk">'+(i+1)+'</td>'
       +'<td style="font-weight:600">'+esc(p.name)+'</td>'
       +'<td style="font-family:Bebas Neue,sans-serif;color:var(--muted)">$'+(p.cost/1000).toFixed(0)+'K</td>'
@@ -1286,7 +1296,7 @@ function fPlayers(){
     var col=p.ownedPct>=90?'var(--red)':p.ownedPct>=70?'var(--accent)':p.ownedPct>=40?'var(--text)':'var(--green)';
     var colN=p.topNPct>=90?'var(--red)':p.topNPct>=70?'var(--accent)':p.topNPct>=40?'var(--text)':'var(--green)';
     var bar=Math.max(2,Math.round(p.ownedPct));
-    cards+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.75rem 1rem;margin-bottom:.5rem;">'
+    cards+='<div onclick="showPlayerCard(\''+p.pid+'\')" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.75rem 1rem;margin-bottom:.5rem;cursor:pointer;">'
       // Player name + price row
       +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;">'
         +'<div style="font-weight:700;font-size:.95rem">'+esc(p.name)+'</div>'
@@ -1588,6 +1598,73 @@ var _ff=document.getElementById('fform');if(_ff)_ff.addEventListener('submit',fu
 // ── INIT ──────────────────────────────────────────────────────────────────
 renderOvTop();renderOvVip();renderPodcasters();renderSched();dP1();dVip();dC2();buildPlList();fPlayers();renderTradeSummary();
 
+// ── PLAYER CARD MODAL ────────────────────────────────────────────────────────
+function showPlayerCard(pid){
+  var p=PLAYERS[pid];
+  if(!p) return;
+  // Find coaches who own this player
+  var owners=COACHES.filter(function(c){ return c.players&&c.players.indexOf(pid)>=0; })
+    .sort(function(a,b){ return a.rank-b.rank; });
+  var col=p.ownedPct>=90?'var(--red)':p.ownedPct>=70?'var(--accent)':p.ownedPct>=40?'var(--text)':'var(--green)';
+  var bar=Math.max(2,Math.round(p.ownedPct));
+
+  var tradeHtml='';
+  if(p.tradedIn>0||p.tradedOut>0){
+    tradeHtml='<div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.85rem;">';
+    if(p.tradedIn>0) tradeHtml+='<div style="background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.25);border-radius:8px;padding:.5rem .85rem;text-align:center;flex:1;min-width:90px;">'
+      +'<div style="font-family:Bebas Neue,sans-serif;font-size:1.5rem;color:var(--green)">+'+p.tradedIn+'</div>'
+      +'<div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">Traded In</div>'
+      +(p.tradedInPct?'<div style="font-size:.75rem;color:var(--green);font-weight:600">'+p.tradedInPct+'% of field</div>':'')+'</div>';
+    if(p.tradedOut>0) tradeHtml+='<div style="background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.25);border-radius:8px;padding:.5rem .85rem;text-align:center;flex:1;min-width:90px;">'
+      +'<div style="font-family:Bebas Neue,sans-serif;font-size:1.5rem;color:var(--red)">-'+p.tradedOut+'</div>'
+      +'<div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">Traded Out</div>'
+      +(p.tradedOutPct?'<div style="font-size:.75rem;color:var(--red);font-weight:600">'+p.tradedOutPct+'% of field</div>':'')+'</div>';
+    tradeHtml+='</div>';
+  }
+
+  var ownersHtml='';
+  if(owners.length){
+    ownersHtml='<div style="margin-top:1rem;">'
+      +'<div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:700;margin-bottom:.5rem">Owned by '+owners.length+' coach'+(owners.length!==1?'es':'')+'</div>'
+      +'<div style="display:flex;flex-direction:column;gap:.3rem;max-height:260px;overflow-y:auto;">';
+    owners.forEach(function(c){
+      ownersHtml+='<div onclick="closePlModal();showCoach('+c.rank+')" style="display:flex;justify-content:space-between;align-items:center;background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:.4rem .7rem;cursor:pointer;transition:background .12s;" onmouseover="this.style.background=\'var(--border)\'" onmouseout="this.style.background=\'var(--surface2)\'">'
+        +'<div><div style="font-weight:600;font-size:.85rem">'+esc(c.coach)+'</div><div style="font-size:.72rem;color:var(--muted)">'+esc(c.team)+'</div></div>'
+        +'<span style="font-size:.72rem;color:var(--muted);background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:.15rem .45rem;">#'+c.rank+'</span>'
+        +'</div>';
+    });
+    ownersHtml+='</div></div>';
+  } else {
+    ownersHtml='<div style="margin-top:1rem;font-size:.85rem;color:var(--muted);font-style:italic">No coaches own this player.</div>';
+  }
+
+  document.getElementById('plmodal-body').innerHTML=
+    '<div style="font-family:Bebas Neue,sans-serif;font-size:1.6rem;letter-spacing:.04em;color:#fff;margin-bottom:.15rem">'+esc(p.name)+'</div>'
+    +'<div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.85rem;">'
+      +'<span style="font-family:Bebas Neue,sans-serif;font-size:1.1rem;color:var(--muted)">$'+(p.cost/1000).toFixed(0)+'K</span>'
+      +'<span style="font-size:.7rem;background:rgba(255,255,255,.08);border:1px solid var(--border);border-radius:5px;padding:.1rem .45rem;color:var(--muted)">R'+CUR+' price</span>'
+    +'</div>'
+    +'<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:.85rem 1rem;">'
+      +'<div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:700;margin-bottom:.5rem">JBFA Ownership</div>'
+      +'<div style="display:flex;align-items:center;gap:.75rem;">'
+        +'<div style="flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden;"><div style="width:'+bar+'%;height:100%;background:'+col+';border-radius:4px;"></div></div>'
+        +'<span style="font-family:Bebas Neue,sans-serif;font-size:1.4rem;color:'+col+'">'+p.ownedPct+'%</span>'
+        +'<span style="font-size:.8rem;color:var(--muted)">'+p.owned+' / '+COACHES.length+'</span>'
+      +'</div>'
+    +'</div>'
+    +tradeHtml+ownersHtml;
+
+  var m=document.getElementById('plmodal');
+  m.style.display='flex';
+  setTimeout(function(){ m.querySelector('.plmodal-inner').style.transform='translateY(0)'; m.querySelector('.plmodal-inner').style.opacity='1'; },10);
+}
+function closePlModal(){
+  var m=document.getElementById('plmodal');
+  m.querySelector('.plmodal-inner').style.transform='translateY(12px)';
+  m.querySelector('.plmodal-inner').style.opacity='0';
+  setTimeout(function(){ m.style.display='none'; },180);
+}
+
 // Dynamic counts
 (function(){
   var total=COACHES.length, vips=VIP_LIST.length;
@@ -1703,9 +1780,9 @@ document.getElementById('rpill').addEventListener('click',function(){
 
 }
 
-fetch(window.location.hostname === 'localhost' || window.location.hostname.includes('dev--')
-  ? 'https://raw.githubusercontent.com/donaldpcominos-sketch/JBFA26/dev/data.json'
-  : 'https://raw.githubusercontent.com/donaldpcominos-sketch/JBFA26/main/data.json')
+fetch(window.location.hostname === 'jbfa26.netlify.app'
+  ? 'https://raw.githubusercontent.com/donaldpcominos-sketch/JBFA26/main/data.json'
+  : 'https://raw.githubusercontent.com/donaldpcominos-sketch/JBFA26/dev/data.json')
   .then(function(r){
     if(!r.ok) throw new Error('HTTP '+r.status);
     return r.json();
@@ -1718,6 +1795,14 @@ fetch(window.location.hostname === 'localhost' || window.location.hostname.inclu
   });
 
 </script>
+<!-- PLAYER CARD MODAL -->
+<div id="plmodal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:3000;align-items:center;justify-content:center;padding:1rem;" onclick="if(event.target===this)closePlModal()">
+  <div class="plmodal-inner" style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.5rem;width:100%;max-width:440px;position:relative;max-height:90vh;overflow-y:auto;transform:translateY(12px);opacity:0;transition:transform .18s,opacity .18s;">
+    <button onclick="closePlModal()" style="position:absolute;top:.75rem;right:.75rem;background:none;border:none;color:var(--muted);font-size:1.1rem;cursor:pointer;line-height:1;padding:.2rem .4rem;z-index:1;">✕</button>
+    <div id="plmodal-body"></div>
+  </div>
+</div>
+
 <!-- FEEDBACK MODAL -->
 <div id="fmodal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:3000;align-items:center;justify-content:center;padding:1rem;">
   <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.5rem;width:100%;max-width:420px;position:relative;">
