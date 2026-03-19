@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- JBFA_VERSION: 1.0.03 -->
+<!-- JBFA_VERSION: 1.0.04 -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -83,10 +83,10 @@ main{max-width:1400px;margin:0 auto;padding:1.5rem;}
 #cv.open{display:block;}
 .cvback{display:inline-flex;align-items:center;gap:.4rem;background:none;border:none;color:var(--muted);font-size:.85rem;font-weight:600;cursor:pointer;margin-bottom:1.25rem;padding:0;font-family:'DM Sans',sans-serif;transition:color .2s;}
 .cvback:hover{color:var(--text);}
-.cvhero{background:linear-gradient(135deg,var(--jb) 0%,var(--jbl) 100%);border:1px solid var(--border);border-radius:16px;padding:1.75rem;margin-bottom:1.25rem;display:flex;align-items:flex-start;gap:1.5rem;position:relative;overflow:hidden;}
+.cvhero{background:linear-gradient(135deg,#1c2333 0%,#232d40 100%);border:1px solid var(--border);border-radius:16px;padding:1.25rem 1.5rem;margin-bottom:1.25rem;display:flex;align-items:flex-start;gap:1.25rem;position:relative;overflow:hidden;}
 .cvhero::before{content:'';position:absolute;top:0;right:0;width:200px;height:200px;background:radial-gradient(circle,rgba(240,180,41,.15) 0%,transparent 70%);pointer-events:none;}
-.cvav{width:64px;height:64px;border-radius:12px;flex-shrink:0;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:1.5rem;color:#fff;}
-.cvn{font-family:'Bebas Neue',sans-serif;font-size:2rem;line-height:1;letter-spacing:.04em;color:#fff;}
+.cvav{width:52px;height:52px;border-radius:10px;flex-shrink:0;background:rgba(255,255,255,.12);border:2px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:1.3rem;color:#fff;}
+.cvn{font-family:'Bebas Neue',sans-serif;font-size:1.7rem;line-height:1;letter-spacing:.04em;color:#fff;}
 .cvt{color:rgba(255,255,255,.65);font-size:.9rem;margin-top:.2rem;}
 .cvtags{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.65rem;align-items:center;}
 .cvstats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:.75rem;margin-bottom:1.25rem;}
@@ -193,6 +193,15 @@ td{padding:.6rem 1rem;vertical-align:middle;}
 .fi{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.4rem .85rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.85rem;outline:none;transition:border-color .2s;width:240px;}
 .fi:focus{border-color:var(--accent);}
 .fil{font-size:.72rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.08em;}
+
+/* TRADE INFO TOOLTIP */
+.trade-info-btn{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.7);font-size:.6rem;font-weight:700;cursor:pointer;margin-left:.45rem;vertical-align:middle;font-family:'DM Sans',sans-serif;line-height:1;transition:background .15s;flex-shrink:0;}
+.trade-info-btn:hover{background:rgba(255,255,255,.3);}
+.trade-info-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:900;align-items:center;justify-content:center;padding:1rem;}
+.trade-info-modal.open{display:flex;}
+.trade-info-box{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.5rem;max-width:420px;width:100%;position:relative;}
+.trade-info-close{position:absolute;top:.75rem;right:.75rem;background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer;line-height:1;padding:.1rem .3rem;}
+.trade-info-close:hover{color:var(--text);}
 
 /* HOW IT WORKS */
 .hg{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem;margin-bottom:1.5rem;}
@@ -366,11 +375,11 @@ td{padding:.6rem 1rem;vertical-align:middle;}
     <div class="sh"><div class="sht">🔄 Trades This Round</div><div class="shl"></div><span id="ov-trade-rnd" style="font-size:.75rem;color:var(--muted)"></span></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
       <div style="background:var(--surface);border:1px solid rgba(52,211,153,.25);border-radius:12px;overflow:hidden;">
-        <div style="background:rgba(52,211,153,.08);padding:.55rem 1rem;border-bottom:1px solid rgba(52,211,153,.15);font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--green)">Most Traded In</div>
+        <div style="background:rgba(52,211,153,.08);padding:.55rem 1rem;border-bottom:1px solid rgba(52,211,153,.15);font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--green);display:flex;align-items:center">Most Traded In<button class="trade-info-btn" onclick="document.getElementById('trade-info-modal').classList.add('open')" title="What does % eligible mean?" style="border-color:rgba(52,211,153,.3);background:rgba(52,211,153,.15);color:var(--green);">i</button></div>
         <div id="ov-traded-in" style="padding:.35rem 0;"></div>
       </div>
       <div style="background:var(--surface);border:1px solid rgba(248,113,113,.25);border-radius:12px;overflow:hidden;">
-        <div style="background:rgba(248,113,113,.08);padding:.55rem 1rem;border-bottom:1px solid rgba(248,113,113,.15);font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--red)">Most Traded Out</div>
+        <div style="background:rgba(248,113,113,.08);padding:.55rem 1rem;border-bottom:1px solid rgba(248,113,113,.15);font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--red);display:flex;align-items:center">Most Traded Out<button class="trade-info-btn" onclick="document.getElementById('trade-info-modal').classList.add('open')" title="What does % eligible mean?" style="border-color:rgba(248,113,113,.3);background:rgba(248,113,113,.15);color:var(--red);">i</button></div>
         <div id="ov-traded-out" style="padding:.35rem 0;"></div>
       </div>
     </div>
@@ -557,11 +566,11 @@ td{padding:.6rem 1rem;vertical-align:middle;}
     <!-- Trade Summary -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
       <div style="background:var(--surface);border:1px solid rgba(52,211,153,.3);border-radius:12px;overflow:hidden;">
-        <div style="background:rgba(52,211,153,.1);padding:.65rem 1rem;border-bottom:1px solid rgba(52,211,153,.2);font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:.06em;color:var(--green)">🔥 Most Traded IN</div>
+        <div style="background:rgba(52,211,153,.1);padding:.65rem 1rem;border-bottom:1px solid rgba(52,211,153,.2);font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:.06em;color:var(--green);display:flex;align-items:center;">🔥 Most Traded IN<button class="trade-info-btn" onclick="document.getElementById('trade-info-modal').classList.add('open')" title="What does % eligible mean?">i</button></div>
         <div id="pl-traded-in" style="padding:.5rem 0;"></div>
       </div>
       <div style="background:var(--surface);border:1px solid rgba(248,113,113,.3);border-radius:12px;overflow:hidden;">
-        <div style="background:rgba(248,113,113,.1);padding:.65rem 1rem;border-bottom:1px solid rgba(248,113,113,.2);font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:.06em;color:var(--red)">📉 Most Traded OUT</div>
+        <div style="background:rgba(248,113,113,.1);padding:.65rem 1rem;border-bottom:1px solid rgba(248,113,113,.2);font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:.06em;color:var(--red);display:flex;align-items:center;">📉 Most Traded OUT<button class="trade-info-btn" onclick="document.getElementById('trade-info-modal').classList.add('open')" title="What does % eligible mean?">i</button></div>
         <div id="pl-traded-out" style="padding:.5rem 0;"></div>
       </div>
     </div>
@@ -801,6 +810,21 @@ td{padding:.6rem 1rem;vertical-align:middle;}
       <tbody><tr><td colspan="5" style="text-align:center;color:var(--muted);padding:2rem;font-size:.875rem">No prizes awarded yet — season in progress.</td></tr></tbody>
     </table></div></div>
   </div>
+<!-- TRADE INFO MODAL -->
+<div class="trade-info-modal" id="trade-info-modal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="trade-info-box">
+    <button class="trade-info-close" onclick="document.getElementById('trade-info-modal').classList.remove('open')">✕</button>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.06em;margin-bottom:.75rem;color:var(--text)">Understanding Trade %</div>
+    <div style="font-size:.875rem;color:var(--muted);line-height:1.7">
+      <p style="margin-bottom:.75rem"><strong style="color:var(--text)">% of field</strong> — The percentage of <em>all 298 coaches</em> who traded this player in or out this round.</p>
+      <p style="margin-bottom:.75rem"><strong style="color:var(--text)">% eligible</strong> — The percentage of coaches who <em>could have</em> made the trade and chose to do so.</p>
+      <p style="margin-bottom:.75rem;padding:.6rem .85rem;background:rgba(240,180,41,.06);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;color:var(--text);font-size:.82rem">
+        <strong>Example:</strong> If a player was owned by 10% of coaches before the round, and 9% of all coaches traded him out, then 90% of eligible coaches chose to move him on — the % eligible tells you <em>how decisive</em> the trade move was.
+      </p>
+      <p style="font-size:.77rem;color:var(--muted);font-style:italic">Note: A coach can only trade out a player they own, so % eligible is always ≥ % of field for trades out.</p>
+    </div>
+  </div>
+</div>
 
 </main>
 
@@ -990,11 +1014,11 @@ window.showCoach = function showCoach(rank){
         '</div>'+
       '</div>'+
     '</div>'+
-    tierBoundaryHtml(rank, c)+
     sparklineHtml(c)+
     rankHistoryHtml(c)+
     podHtml(c)+
     '<div class="cvsec"><div class="cvsect">Main Season — Qualifying</div><p style="font-size:.875rem;color:var(--muted);line-height:1.65">Ranked <strong style="color:var(--text)">#'+rank+'</strong> of '+COACHES.length+'. Projected into <strong style="color:var(--text)">'+tname+'</strong> for Seeding. '+buf+' Qualifying runs until Round 8.</p></div>'+
+    tierBoundaryHtml(rank, c)+
     (function(){
     var isElim3 = c.survivorStatus === 'eliminated';
     var isInelig3 = c.survivorStatus === 'ineligible';
@@ -1025,7 +1049,7 @@ gs.addEventListener('input',function(){
   var hits=COACHES.filter(function(c){return c.coach.toLowerCase().indexOf(q)>=0||c.team.toLowerCase().indexOf(q)>=0;}).slice(0,10);
   if(!hits.length){sd.style.display='none';return;}
   sd.innerHTML=hits.map(function(c){
-    return '<div class="sdi" onclick="gs.value=\'\';sd.style.display=\'none\';showCoach('+c.rank+')">'+
+    return '<div class="sdi" onclick="document.getElementById(\'gs\').value=\'\';document.getElementById(\'sdrop\').style.display=\'none\';showCoach('+c.rank+')">'+
       '<div><div class="sdi-name">'+esc(c.coach)+vipTag(c)+'</div><div class="sdi-team">'+esc(c.team)+'</div></div>'+
       '<div style="display:flex;gap:.3rem;align-items:center">'+tb(c.rank,false)+'</div>'+
       '</div>';
@@ -1391,13 +1415,32 @@ function tierBoundaryHtml(rank, c){
   }
   var myScore = c.total || c.r1 || 0;
 
-  if(t === 2){
+  if(t === 1){
+    // Already in Tier 1 — show buffer (places inside the cut)
+    var bufferPlaces = T1 - rank;
+    var t1cutScore = scoreAt(T1);
+    var ptsBuffer = myScore - t1cutScore;
+    var barW1 = Math.min(95, Math.max(5, Math.round((bufferPlaces/T1)*100)));
+    var bufLabel = bufferPlaces === 0 ? '⚠️ On the cut' : ('✓ '+bufferPlaces+' place'+(bufferPlaces!==1?'s':'')+' inside');
+    var bufStyle = bufferPlaces === 0 ? 'background:rgba(240,180,41,.15);color:var(--accent);border-color:rgba(240,180,41,.3)' : 'background:rgba(52,211,153,.15);color:var(--green);border-color:rgba(52,211,153,.3)';
+    var pillCol = bufferPlaces === 0 ? 'var(--accent)' : 'var(--green)';
+    html += '<div class="tier-boundary">'
+      +'<div class="tb-header"><span class="tb-title">Tier 1 — Premiership</span><span class="badge bt1" style="'+bufStyle+'">'+bufLabel+'</span></div>'
+      +'<div class="tb-bar-wrap"><div class="tb-bar" style="width:'+barW1+'%;background:linear-gradient(90deg,var(--green),rgba(52,211,153,.3))"></div></div>'
+      +'<div class="tb-stats">'
+      +(bufferPlaces===0
+        ? '<span class="tb-pill" style="color:var(--accent)"><strong>Right on the T1 boundary</strong></span>'
+        : '<span class="tb-pill" style="color:'+pillCol+'"><strong>'+bufferPlaces+' place'+(bufferPlaces!==1?'s':'')+' buffer</strong></span>')
+      +'<span class="tb-pill" style="color:'+pillCol+'"><strong>+'+ptsBuffer+' pts over the cut</strong></span>'
+      +'<span class="tb-pill" style="color:var(--muted)">'+ROUNDS_LEFT+' round'+(ROUNDS_LEFT!==1?'s':'')+' left</span>'
+      +'</div>'
+      +'</div>';
+
+  } else if(t === 2){
     var toT1 = rank - T1;
-    var bufferT3 = T2 - rank;
     var t1cutScore = scoreAt(T1);
     var ptsToT1 = t1cutScore - myScore;
     var barW2 = Math.min(95, Math.max(5, 100 - Math.round((toT1/100)*100)));
-
     html += '<div class="tier-boundary">'
       +'<div class="tb-header"><span class="tb-title">Tier 1 — Premiership</span><span class="badge bt1">'+toT1+' place'+(toT1!==1?'s':'')+' away ↑</span></div>'
       +'<div class="tb-bar-wrap"><div class="tb-bar" style="width:'+barW2+'%;background:linear-gradient(90deg,var(--t1),rgba(240,180,41,.3))"></div></div>'
@@ -1408,8 +1451,8 @@ function tierBoundaryHtml(rank, c){
       +'</div>'
       +'</div>';
 
-
   } else {
+    // Tier 3 — show distance to Tier 2 only
     var toT2climb = rank - T2;
     var t2topScore = scoreAt(T2);
     var ptsToT2 = t2topScore - myScore;
@@ -1829,6 +1872,6 @@ fetch(window.location.hostname === 'jbfa26.netlify.app'
 </div>
 
 
-<div id="jbfa-ver" style="position:fixed;bottom:6px;right:10px;font-size:.62rem;color:rgba(255,255,255,.18);font-family:monospace;pointer-events:none;z-index:9999;letter-spacing:.05em;">JBFA 1.0.03</div>
+<div id="jbfa-ver" style="position:fixed;bottom:6px;right:10px;font-size:.62rem;color:rgba(255,255,255,.18);font-family:monospace;pointer-events:none;z-index:9999;letter-spacing:.05em;">JBFA 1.0.04</div>
 </body>
 </html>
