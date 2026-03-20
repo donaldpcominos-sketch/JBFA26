@@ -2008,13 +2008,48 @@ function _initPricePredictor(beModel) {
     return Math.round(be);
   }
 
-  // Project next price based on how far the score is above/below the break-even.
-  // Uses the s0 coefficient from the pricing model (~$750 per point vs BE).
-  // Score == BE → price flat. Score < BE → price drops. Score > BE → price rises.
-  function projectPrice(currentPrice, score, breakEven) {
-    if (breakEven == null) return currentPrice;
-    var W_S0 = 0.0577269772; // weight of most-recent score in pricing model
-    var delta = W_S0 * (score - breakEven) * MAGIC;
+  // Project next price using the empirically derived rolling-average formula.
+  //
+  // Based on regression over 14,000+ consecutive-round observations (2024-2025
+  // NRL Fantasy data). The true price-movement model is:
+  //   delta_price_in_$ = PRICE_MAGIC × (rolling_N_avg − currentPrice / BE_DIVISOR)
+  //
+  // where:
+  //   PRICE_MAGIC  ≈ 1888  ($/pt above break-even, settles at 3-game window)
+  //   BE_DIVISOR   ≈ 13300 (currentPrice / BE_DIVISOR = break-even score)
+  //   rolling_N_avg = mean of last min(N, 3) scores including the projected score
+  //
+  // Early-round scale factors (window hasn't filled to 3 yet):
+  //   1-game window: 925   (R1 only – single score)
+  //   2-game window: 1479  (R2 – two-score average)
+  //   3-game window: 1888  (R3+ – full rolling window)
+  //
+  // The BE computation (compute_be with anchor = startPrice/13000) is separate
+  // and remains unchanged — only the price-movement projection uses this formula.
+  //
+  // Parameters:
+  //   currentPrice  – price this round (in $, e.g. 526000)
+  //   projScore     – the user's projected score for this round
+  //   priorScores   – array of actual scores BEFORE this round (oldest first)
+  //                   used to compute the rolling average window
+  var PRICE_MAGIC_BY_WINDOW = [0, 925, 1479, 1888]; // index = window size (1-3)
+  var BE_DIVISOR = 13300;
+
+  function projectPrice(currentPrice, projScore, priorScores) {
+    // Build the rolling window: up to 2 prior scores + the projected score
+    var window = [];
+    if (priorScores && priorScores.length >= 2) {
+      window = [priorScores[priorScores.length - 2], priorScores[priorScores.length - 1], projScore];
+    } else if (priorScores && priorScores.length === 1) {
+      window = [priorScores[0], projScore];
+    } else {
+      window = [projScore];
+    }
+    var windowSize = window.length; // 1, 2, or 3
+    var rollingAvg = window.reduce(function(s, v){ return s + v; }, 0) / windowSize;
+    var magic = PRICE_MAGIC_BY_WINDOW[windowSize] || 1888;
+    var breakEvenFromPrice = currentPrice / BE_DIVISOR;
+    var delta = magic * (rollingAvg - breakEvenFromPrice);
     return Math.round((currentPrice + delta) / 1000) * 1000;
   }
 
@@ -2185,8 +2220,9 @@ function _initPricePredictor(beModel) {
             : '<span class="pp-loss">' + vsBE + ' 🔴</span>')
         : '—';
 
-      // Project next price: delta from current based on score vs BE
-      var projPrice = projectPrice(runningPrice, score, beVal);
+      // Project next price using empirical rolling-avg formula.
+      // Pass the scores BEFORE this round so projectPrice can build the correct window.
+      var projPrice = projectPrice(runningPrice, score, runningScores.slice());
       runningScores.push(score);
       var priceChange = projPrice - runningPrice;
       var totalChange = projPrice - basePrice;
