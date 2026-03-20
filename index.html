@@ -377,7 +377,7 @@ td{padding:.6rem 1rem;vertical-align:middle;}
 <div class="nav">
   <div class="nav-top">
     <button class="nb-top active" id="nbt-ov" onclick="showTopTab('ov')">Overview</button>
-    <button class="nb-top" id="nbt-comp" onclick="showTopTab('comp')">Comp</button>
+    <button class="nb-top" id="nbt-comp" onclick="showTopTab('comp')">Comps</button>
     <button class="nb-top" id="nbt-insights" onclick="showTopTab('insights')">Insights</button>
   </div>
   <div class="nav-sub" id="nav-sub-comp" style="display:none">
@@ -394,7 +394,7 @@ td{padding:.6rem 1rem;vertical-align:middle;}
     <button class="nb" id="nb-prizes" onclick="showTab(event,'prizes')">🏆 Prizes</button>
   </div>
   <div class="nav-sub" id="nav-sub-insights" style="display:none">
-    <button class="nb" id="nb-players" onclick="showTab(event,'players')">🏉 Players</button>
+    <button class="nb" id="nb-players" onclick="showTab(event,'players')">🏉 Ownership</button>
     <button class="nb" id="nb-pp" onclick="showTab(event,'pp')">💰 Price Predictor</button>
   </div>
 </div>
@@ -416,12 +416,14 @@ td{padding:.6rem 1rem;vertical-align:middle;}
       <div class="sc"><div class="scl" id="sc-avg-label">Field Avg R2</div><div class="scv" id="sc-avg-val">1034</div><div class="scs" id="sc-avg-sub"></div></div>
     </div>
     <div class="sh"><div class="sht">Overall Leaders</div><div class="shl"></div><span class="badge bt1">Live</span></div>
-    <div class="tw"><div class="tw-scroll"><table>
+    <div class="tw"><div class="tw-scroll"><table style="table-layout:fixed">
+      <colgroup><col style="width:42px"><col><col style="width:60px"><col style="width:70px"><col style="width:90px"><col style="width:72px"></colgroup>
       <thead><tr><th>#</th><th>Coach</th><th>R2</th><th>Total</th><th>Value</th><th>Trades</th></tr></thead>
       <tbody id="ov-top"></tbody>
     </table></div></div>
     <div class="sh"><div class="sht">🎙️ Podcaster Rankings</div><div class="shl"></div></div>
-    <div class="tw"><div class="tw-scroll"><table>
+    <div class="tw"><div class="tw-scroll"><table style="table-layout:fixed">
+      <colgroup><col style="width:42px"><col><col style="width:60px"><col style="width:70px"><col style="width:90px"><col style="width:72px"></colgroup>
       <thead><tr><th>#</th><th>Coach</th><th>R2</th><th>Total</th><th>Value</th><th>Trades</th></tr></thead>
       <tbody id="ov-pod"></tbody>
     </table></div></div>
