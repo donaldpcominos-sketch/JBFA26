@@ -907,7 +907,7 @@ td{padding:.6rem 1rem;vertical-align:middle;}
 
       <!-- Score Inputs -->
       <div class="pp-inputs">
-        <div class="pp-inputs-title">Projected Scores — Next 4 Rounds</div>
+        <div class="pp-inputs-title">Projected Scores — Next 3 Rounds</div>
         <div class="pp-rounds-grid" id="pp-round-inputs"></div>
       </div>
 
@@ -2021,97 +2021,64 @@ function _initPricePredictor(beModel) {
 
   if (!ENABLE_PRICE_PREDICTOR) return;
 
-  // ── BE Model — Empirically Validated (OLS, R1-R2 2026) ──────────────
+  // ── Validated BE Model — 5-Game Rolling Window ───────────────────────
   //
-  //  Fitted via OLS regression across 234 two-game + 36 one-game players
-  //  using Fantasy Coach EXACT unrounded prices.
+  //  Confirmed against NRL Fantasy Coach API across 28 players × 3 rounds.
   //
-  //  Key findings:
-  //   • Both score coefficients ≈ -0.605 (equal weight — NOT decaying)
-  //   • Intercept ≈ -0.62 (previous -17.1 was completely wrong)
-  //   • PPP = $1766/point (R²=0.89)
-  //   • Must use FC exact price, not rounded display price
-  //     (47% vs 13% exact BE accuracy)
+  //  CURRENT-ROUND BE: taken directly from player.breakEven (API-sourced).
+  //  This is exact — the platform publishes it. No formula needed.
   //
-  //  Formula: BE = round(price_mult*(price/1000) + Σ(mults[i]*scores[i]) + offset)
-  //  Delta:   PPP × (score − BE_unrounded)  → avoids double-rounding error
+  //  CHAINED ROUNDS BE (R+2, R+3): computed from rolling window:
+  //    W = min(gamesInWindow + 1, 5)
+  //    BE = round(W × price / K) − sum(last (W−1) scores in window)
+  //
+  //  PPP = $1,000/pt  |  K = 13,000  |  window = 5 games
+  //
+  //  Accuracy: R+1 ≤$3k (API-anchored), R+2 ~$5k avg, R+3 ~$10k avg.
 
-  var _DEFAULT_BE_PARAMS = {
-    0:       { price_mult:0.076914, score_mults:[],                                                        base_offset:-0.139239, ppp:1766 },
-    1:       { price_mult:0.126733, score_mults:[-0.647094],                                               base_offset:-0.621933, ppp:1766 },
-    2:       { price_mult:0.170343, score_mults:[-0.610060,-0.600176],                                     base_offset:-0.620700, ppp:1766 },
-    3:       { price_mult:0.214343, score_mults:[-0.610060,-0.600176,-0.600000],                           base_offset:-0.620700, ppp:1766 },
-    4:       { price_mult:0.258343, score_mults:[-0.610060,-0.600176,-0.600000,-0.600000],                 base_offset:-0.620700, ppp:1766 },
-    '5_plus':{ price_mult:0.302343, score_mults:[-0.610060,-0.600176,-0.600000,-0.600000,-0.600000],       base_offset:-0.620700, ppp:1766 },
-  };
+  var K    = (beModel && beModel.kMagic)  || 13000;
+  var PPP  = (beModel && beModel.ppp)     || 1000;
+  var CUR_ROUND = (beModel && beModel.currentRound) || (typeof CUR !== 'undefined' ? CUR : 3);
 
-  // Merge server-side beModel with defaults (server values override)
-  var BE_PARAMS = {};
-  Object.keys(_DEFAULT_BE_PARAMS).forEach(function(k) { BE_PARAMS[k] = _DEFAULT_BE_PARAMS[k]; });
-  if (beModel && typeof beModel === 'object') {
-    [0,1,2,3,4,'5_plus'].forEach(function(k) {
-      if (beModel[k] && beModel[k].price_mult) BE_PARAMS[k] = beModel[k];
-    });
-  }
-  var GLOBAL_PPP = (beModel && beModel.ppp) || 1766;
-
-  function getBracket(gamesPlayed) {
-    if (gamesPlayed < 0) return null;
-    var key = gamesPlayed <= 4 ? gamesPlayed : '5_plus';
-    return BE_PARAMS[key] || null;
+  // Compute chained BE given rounded price + rolling score window (oldest-first array).
+  // gamesInWindow = number of scores already in the window array.
+  function chainBE(price, window) {
+    var n = window.length;           // scores already played in the window
+    var W = Math.min(n + 1, 5);      // window size for the upcoming game
+    var nPrev = W - 1;               // how many previous scores to subtract
+    var prevSum = 0;
+    for (var i = Math.max(0, n - nPrev); i < n; i++) prevSum += window[i];
+    return Math.round(W * price / K) - prevSum;
   }
 
-  // Unrounded BE — used internally for precise delta (avoids double-rounding)
-  function computeBEExact(exactPrice, gamesPlayed, recentScores) {
-    var bracket = getBracket(gamesPlayed);
-    if (!bracket) return null;
-    var priceK = exactPrice / 1000;
-    var be = bracket.price_mult * priceK + bracket.base_offset;
-    for (var i = 0; i < bracket.score_mults.length; i++) {
-      if (i < recentScores.length) be += bracket.score_mults[i] * recentScores[i];
-    }
-    return be;
-  }
-
-  // Rounded BE for display
-  function computeBE(exactPrice, gamesPlayed, recentScores) {
-    var be = computeBEExact(exactPrice, gamesPlayed, recentScores);
-    return be !== null ? Math.round(be) : null;
-  }
-
-  // Project next display price.
-  // exactPrice = player.exactPrice (FC exact) ?? player.cost (rounded fallback)
-  function projectPrice(exactPrice, score, gamesPlayed, recentScores) {
-    var bracket = getBracket(gamesPlayed);
-    if (!bracket) return Math.round(exactPrice / 1000) * 1000;
-    var beExact = computeBEExact(exactPrice, gamesPlayed, recentScores);
-    var ppp = bracket.ppp || GLOBAL_PPP;
-    return Math.round((exactPrice + ppp * (score - beExact)) / 1000) * 1000;
+  // Project next rounded price from current price + score + BE.
+  function projectPrice(price, score, be) {
+    return Math.round((price + PPP * (score - be)) / 1000) * 1000;
   }
 
   function fmt$(v) { return '$' + (v/1000).toFixed(0) + 'k'; }
-  function fmtBig$(v) { return '$' + (v/1e6).toFixed(3) + 'm'; }
 
   // ── State ──────────────────────────────────────────────────────────────
   var ppSelectedPid = null;
 
   // ── Build player list for search ──────────────────────────────────────
+  // orderedScores = scores oldest-first [s1, s2, s3, ...] from data.json
   var ppPlayerList = [];
   Object.keys(PLAYERS).forEach(function(pid) {
     var p = PLAYERS[pid];
     if (p && p.name && p.startPrice) {
       ppPlayerList.push({
-        pid: pid,
-        name: p.name,
-        cost: p.cost || p.startPrice,
-        // Use FC exact price for BE calculations; fall back to rounded display price
-        exactPrice: p.exactPrice || p.cost || p.startPrice,
-        startPrice: p.startPrice,
-        gamesPlayed: p.gamesPlayed || 0,
-        scores: p.scores || {},
-        priceHistory: p.priceHistory || [],
-        breakEven: p.breakEven,
-        recentScores: p.recentScores || []
+        pid:           pid,
+        name:          p.name,
+        cost:          p.cost || p.startPrice,
+        startPrice:    p.startPrice,
+        gamesPlayed:   p.gamesPlayed || 0,
+        scores:        p.scores || {},
+        priceHistory:  p.priceHistory || [],
+        // API-sourced BE for the current round — always exact
+        breakEven:     p.breakEven,
+        // Scores oldest-first: used to seed the rolling window for chaining
+        orderedScores: p.orderedScores || [],
       });
     }
   });
@@ -2119,30 +2086,30 @@ function _initPricePredictor(beModel) {
 
   // ── Search ─────────────────────────────────────────────────────────────
   window.ppSearch = function() {
-    var inp = document.getElementById('pp-search-input');
+    var inp  = document.getElementById('pp-search-input');
     var drop = document.getElementById('pp-drop');
-    var q = inp.value.trim().toLowerCase();
+    var q    = inp.value.trim().toLowerCase();
     if (!q) { drop.classList.remove('open'); return; }
     var matches = ppPlayerList.filter(function(p){
       return p.name.toLowerCase().indexOf(q) >= 0;
     }).slice(0, 12);
     if (!matches.length) { drop.classList.remove('open'); return; }
     drop.innerHTML = matches.map(function(p){
-      var beStr = p.breakEven != null ? 'BE ' + p.breakEven : (p.gamesPlayed === 0 ? 'No games yet' : '');
+      var beStr = p.breakEven != null ? 'BE ' + p.breakEven : '';
       return '<div class="pp-di" onclick="ppSelectPlayer(\'' + p.pid + '\')">'
            + '<div class="pp-di-name">' + esc(p.name) + '</div>'
-           + '<div class="pp-di-meta">' + fmt$(p.cost) + (beStr ? ' · ' + beStr : '') + ' · ' + p.gamesPlayed + ' game' + (p.gamesPlayed===1?'':'s') + '</div>'
-           + '</div>';
+           + '<div class="pp-di-meta">' + fmt$(p.cost)
+           + (beStr ? ' · ' + beStr : '')
+           + ' · ' + p.gamesPlayed + ' game' + (p.gamesPlayed===1?'':'s')
+           + '</div></div>';
     }).join('');
     drop.classList.add('open');
   };
 
-  // Close dropdown when clicking outside
   document.addEventListener('click', function(e){
     var wrap = document.getElementById('pp-search-wrap');
-    if (wrap && !wrap.contains(e.target)) {
+    if (wrap && !wrap.contains(e.target))
       document.getElementById('pp-drop').classList.remove('open');
-    }
   });
 
   // ── Select player ──────────────────────────────────────────────────────
@@ -2153,113 +2120,87 @@ function _initPricePredictor(beModel) {
 
     document.getElementById('pp-drop').classList.remove('open');
     document.getElementById('pp-search-input').value = p.name;
-    document.getElementById('pp-no-player').style.display = 'none';
+    document.getElementById('pp-no-player').style.display  = 'none';
     document.getElementById('pp-player-card').style.display = '';
 
-    // Header
     document.getElementById('pp-pname').textContent = p.name;
-    var gStr = p.gamesPlayed + ' game' + (p.gamesPlayed===1?'':'s') + ' played';
-    document.getElementById('pp-pmeta').textContent = gStr;
+    document.getElementById('pp-pmeta').textContent =
+      p.gamesPlayed + ' game' + (p.gamesPlayed===1?'':'s') + ' played';
 
-    // Stats tiles
-    var orderedScores = [];
+    // Score history tiles
     var scoreKeys = Object.keys(p.scores).map(Number).sort(function(a,b){return a-b;});
-    scoreKeys.forEach(function(k){ orderedScores.push(p.scores[String(k)]); });
-
-    var statsEl = document.getElementById('pp-pstats');
-
-    // Recalculate BE from exact price (more accurate than stored rounded BE)
-    var exactPrice = p.exactPrice || p.cost;
-    var beCalc = computeBE(exactPrice, p.gamesPlayed, p.recentScores);
-    var beLabel = beCalc != null ? beCalc : (p.breakEven != null ? p.breakEven : '—');
-    var beColor = beCalc != null ? (beCalc < 0 ? 'var(--green)' : 'var(--text)') : 'var(--muted)';
-    var usingExact = p.exactPrice && p.exactPrice !== p.cost;
-
     var scoreHistHtml = scoreKeys.map(function(k){
       return '<span style="font-size:.75rem;color:var(--muted)">R'+k+'</span><strong>'+p.scores[String(k)]+'</strong>';
     }).join(' &nbsp; ') || '<span style="color:var(--muted)">No scores yet</span>';
 
-    // Show exact price if different from display price
-    var priceDisplay = fmt$(p.cost);
-    if (usingExact) {
-      priceDisplay += ' <span style="font-size:.7rem;color:var(--muted)" title="Exact internal price: $' + exactPrice.toLocaleString() + '">✓ exact</span>';
-    }
+    var beLabel = p.breakEven != null ? p.breakEven : '—';
+    var beColor = p.breakEven != null ? (p.breakEven < 0 ? 'var(--green)' : 'var(--text)') : 'var(--muted)';
 
-    statsEl.innerHTML = [
-      '<div class="pp-stat"><div class="pp-stat-label">Current Price</div><div class="pp-stat-val">' + priceDisplay + '</div></div>',
+    document.getElementById('pp-pstats').innerHTML = [
+      '<div class="pp-stat"><div class="pp-stat-label">Current Price</div><div class="pp-stat-val">' + fmt$(p.cost) + '</div></div>',
       '<div class="pp-stat"><div class="pp-stat-label">Start Price</div><div class="pp-stat-val">' + fmt$(p.startPrice) + '</div></div>',
-      '<div class="pp-stat"><div class="pp-stat-label">Next Round BE</div><div class="pp-stat-val" style="color:' + beColor + '">' + beLabel + '</div></div>',
-      '<div class="pp-stat" style="flex:2;min-width:200px"><div class="pp-stat-label">Score History</div><div style="display:flex;gap:.5rem;align-items:baseline;flex-wrap:wrap;margin-top:.15rem;font-size:.9rem">' + scoreHistHtml + '</div></div>',
+      '<div class="pp-stat"><div class="pp-stat-label">R' + (CUR_ROUND+1) + ' Break-Even</div><div class="pp-stat-val" style="color:' + beColor + '">' + beLabel + '</div></div>',
+      '<div class="pp-stat" style="flex:2;min-width:200px"><div class="pp-stat-label">Score History</div>'
+        + '<div style="display:flex;gap:.5rem;align-items:baseline;flex-wrap:wrap;margin-top:.15rem;font-size:.9rem">' + scoreHistHtml + '</div></div>',
     ].join('');
 
-    // Build round inputs (next 4 rounds from CURRENT_ROUND+1)
-    var startRound = (typeof CUR !== 'undefined' ? CUR : 2) + 1;
+    // Build round input boxes (3 rounds: R+1, R+2, R+3)
     var inputsEl = document.getElementById('pp-round-inputs');
     inputsEl.innerHTML = '';
-
-    // Pre-calculate BEs for each upcoming round
-    for (var i = 0; i < 4; i++) {
-      var rNum = startRound + i;
-      // BE for this round = computed from all prior scores (existing + projected 1..i-1)
-      // We recalculate dynamically on input, but show the current-state BE now
-      var priorScores = orderedScores.slice(); // will grow as user types
-      var thisRoundBE = i === 0 ? p.breakEven : null; // only R+1 BE is pre-known
-
-      var div = document.createElement('div');
+    for (var i = 0; i < 3; i++) {
+      var rNum = CUR_ROUND + 1 + i;
+      var div  = document.createElement('div');
       div.className = 'pp-round-input';
       div.id = 'pp-ri-' + i;
-      div.innerHTML = '<div class="pp-round-label">Round ' + rNum + '</div>'
-        + '<div class="pp-round-be" id="pp-rbe-' + i + '">'
-        + (thisRoundBE != null ? 'BE: <strong>' + thisRoundBE + '</strong>' : '<span style="color:var(--muted)">BE: —</span>')
-        + '</div>'
-        + '<input type="number" id="pp-rscore-' + i + '" min="0" max="250" placeholder="Score…" oninput="ppRecalc()" onchange="ppRecalc()">';
+      div.innerHTML =
+        '<div class="pp-round-label">Round ' + rNum + '</div>'
+        + '<div class="pp-round-be" id="pp-rbe-' + i + '"><span style="color:var(--muted)">BE: —</span></div>'
+        + '<input type="number" id="pp-rscore-' + i + '" min="0" max="250" placeholder="Score…"'
+        + ' oninput="ppRecalc()" onchange="ppRecalc()">';
       inputsEl.appendChild(div);
     }
 
     ppRecalc();
   };
 
-  // ── Recalculate projections when scores are entered ───────────────────
+  // ── Recalculate projections ────────────────────────────────────────────
   window.ppRecalc = function() {
     if (!ppSelectedPid) return;
     var p = ppPlayerList.find(function(x){ return x.pid === ppSelectedPid; });
     if (!p) return;
 
-    var startRound = (typeof CUR !== 'undefined' ? CUR : 2) + 1;
-    // Use FC exact price for the first round's BE/delta calculation.
-    // After the first projected round we use the projected price (which is
-    // already a rounded display price), so subsequent rounds use cost.
-    var basePrice    = p.cost;      // rounded display price (for totalChange display)
-    var exactBase    = p.exactPrice || p.cost;  // exact price for first BE calc
+    var tbody       = document.getElementById('pp-results-body');
+    var basePrice   = p.cost;
+    var rows        = '';
+    var hasInput    = false;
 
-    // Running state — updated after each projected round:
-    var runningPrice   = exactBase;  // starts at exact, subsequent rounds use projected
-    var runningGames   = p.gamesPlayed;
-    // runningRecent = [S_{t-1}, S_{t-2}, ...] — grows each projected round.
-    // Start from the player's known recent scores (already reverse-chron).
-    var runningRecent  = p.recentScores.slice();
+    // Rolling window state — seeded from the player's known scores (oldest-first).
+    // The window holds up to the last 4 scores (the 5th slot = upcoming score).
+    var window5 = p.orderedScores.slice();  // grows as we project forward
+    var runPrice = p.cost;                  // rounded display price
+    var gamesInWindow = p.gamesPlayed;
 
-    var tbody = document.getElementById('pp-results-body');
-    var rows = '';
-    var hasAnyInput = false;
+    for (var i = 0; i < 3; i++) {
+      var rNum   = CUR_ROUND + 1 + i;
+      var inpEl  = document.getElementById('pp-rscore-' + i);
+      var rawVal = inpEl ? inpEl.value.trim() : '';
+      var score  = rawVal !== '' ? parseInt(rawVal, 10) : null;
 
-    for (var i = 0; i < 4; i++) {
-      var rNum     = startRound + i;
-      var inputEl  = document.getElementById('pp-rscore-' + i);
-      var rawVal   = inputEl ? inputEl.value.trim() : '';
-      var score    = rawVal !== '' ? parseInt(rawVal, 10) : null;
+      // BE for this round:
+      // Round 0 (R+1) → always use the API-sourced breakEven (exact).
+      // Round 1+ (R+2, R+3) → chain from rolling window.
+      var be = (i === 0 && p.breakEven != null)
+               ? p.breakEven
+               : chainBE(runPrice, window5);
 
-      // Compute BE for THIS round using current running state
-      var beForThisRound = computeBE(runningPrice, runningGames, runningRecent);
-
-      // Update the BE label in the round input widget
+      // Update the BE display in the input box
       var beEl = document.getElementById('pp-rbe-' + i);
       if (beEl) {
-        if (beForThisRound != null) {
-          var beColorCls = score != null
-            ? (score >= beForThisRound ? 'style="color:var(--green)"' : 'style="color:var(--red)"')
+        if (be != null) {
+          var beClr = score != null
+            ? (score >= be ? 'style="color:var(--green)"' : 'style="color:var(--red)"')
             : '';
-          beEl.innerHTML = 'BE: <strong ' + beColorCls + '>' + beForThisRound + '</strong>';
+          beEl.innerHTML = 'BE: <strong ' + beClr + '>' + be + '</strong>';
         } else {
           beEl.innerHTML = '<span style="color:var(--muted)">BE: —</span>';
         }
@@ -2268,56 +2209,53 @@ function _initPricePredictor(beModel) {
       if (score === null || isNaN(score)) {
         rows += '<tr><td style="color:var(--muted)">R' + rNum + '</td>'
               + '<td colspan="6" style="color:var(--muted);font-style:italic">Enter score above</td></tr>';
-        break; // stop projecting once we hit a gap
+        break;
       }
 
-      hasAnyInput = true;
+      hasInput = true;
 
-      // vs BE diff
-      var vsBE     = beForThisRound != null ? score - beForThisRound : null;
+      var vsBE  = be != null ? score - be : null;
       var vsBEHtml = vsBE != null
-        ? (vsBE >= 0
-            ? '<span class="pp-gain">+' + vsBE + ' 🟢</span>'
-            : '<span class="pp-loss">' + vsBE + ' 🔴</span>')
+        ? (vsBE >= 0 ? '<span class="pp-gain">+'+vsBE+' 🟢</span>'
+                     : '<span class="pp-loss">'+vsBE+' 🔴</span>')
         : '—';
 
-      // Project next price using the running state BEFORE this round
-      var projPrice  = projectPrice(runningPrice, score, runningGames, runningRecent);
-      var priceChange = projPrice - runningPrice;
+      var projPrice   = projectPrice(runPrice, score, be);
+      var roundChange = projPrice - runPrice;
       var totalChange = projPrice - basePrice;
 
-      var priceChangeHtml = priceChange === 0
-        ? '<span class="pp-neutral">—</span>'
-        : priceChange > 0
-          ? '<span class="pp-gain">▲ ' + fmt$(priceChange) + '</span>'
-          : '<span class="pp-loss">▼ ' + fmt$(Math.abs(priceChange)) + '</span>';
+      var chgHtml = function(v) {
+        return v === 0 ? '<span class="pp-neutral">—</span>'
+             : v  > 0 ? '<span class="pp-gain">▲ '+fmt$(v)+'</span>'
+                      : '<span class="pp-loss">▼ '+fmt$(Math.abs(v))+'</span>';
+      };
+      var totHtml = function(v) {
+        return v === 0 ? '<span class="pp-neutral">—</span>'
+             : v  > 0 ? '<span class="pp-gain">+'+fmt$(v)+'</span>'
+                      : '<span class="pp-loss">-'+fmt$(Math.abs(v))+'</span>';
+      };
 
-      var totalChangeHtml = totalChange === 0
-        ? '<span class="pp-neutral">—</span>'
-        : totalChange > 0
-          ? '<span class="pp-gain">+' + fmt$(totalChange) + '</span>'
-          : '<span class="pp-loss">-' + fmt$(Math.abs(totalChange)) + '</span>';
-
-      var rowClass = (vsBE != null && vsBE >= 0) ? 'pp-be-hit' : (vsBE != null ? 'pp-be-miss' : '');
-      rows += '<tr class="' + rowClass + '">'
-        + '<td><strong>R' + rNum + '</strong></td>'
-        + '<td><strong>' + score + '</strong></td>'
-        + '<td>' + (beForThisRound != null ? beForThisRound : '—') + '</td>'
-        + '<td>' + vsBEHtml + '</td>'
-        + '<td><strong>' + fmt$(projPrice) + '</strong></td>'
-        + '<td>' + priceChangeHtml + '</td>'
-        + '<td>' + totalChangeHtml + '</td>'
+      var rowCls = (vsBE != null && vsBE >= 0) ? 'pp-be-hit' : (vsBE != null ? 'pp-be-miss' : '');
+      rows += '<tr class="' + rowCls + '">'
+        + '<td><strong>R'+rNum+'</strong></td>'
+        + '<td><strong>'+score+'</strong></td>'
+        + '<td>'+(be != null ? be : '—')+'</td>'
+        + '<td>'+vsBEHtml+'</td>'
+        + '<td><strong>'+fmt$(projPrice)+'</strong></td>'
+        + '<td>'+chgHtml(roundChange)+'</td>'
+        + '<td>'+totHtml(totalChange)+'</td>'
         + '</tr>';
 
-      // ── Shift the window for the NEXT projected round ──────────────
-      // This projected score becomes S_{t-1} next iteration; push it to
-      // the front of recentScores and cap the array at 5 entries.
-      runningRecent = [score].concat(runningRecent).slice(0, 5);
-      runningGames  += 1;
-      runningPrice   = projPrice;
+      // ── Advance the rolling window ────────────────────────────────
+      // Push this projected score into the window (oldest-first).
+      // Cap window at last 4 entries (the 5th slot = next upcoming score).
+      window5.push(score);
+      if (window5.length > 4) window5 = window5.slice(window5.length - 4);
+      gamesInWindow += 1;
+      runPrice = projPrice;
     }
 
-    tbody.innerHTML = hasAnyInput
+    tbody.innerHTML = hasInput
       ? rows
       : '<tr><td colspan="7" class="pp-empty">Enter projected scores above to see price projections</td></tr>';
   };
@@ -2326,8 +2264,8 @@ function _initPricePredictor(beModel) {
   window.ppClear = function() {
     ppSelectedPid = null;
     document.getElementById('pp-search-input').value = '';
-    document.getElementById('pp-player-card').style.display = 'none';
-    document.getElementById('pp-no-player').style.display = '';
+    document.getElementById('pp-player-card').style.display  = 'none';
+    document.getElementById('pp-no-player').style.display    = '';
     document.getElementById('pp-drop').classList.remove('open');
   };
 
