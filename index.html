@@ -2008,19 +2008,14 @@ function _initPricePredictor(beModel) {
     return Math.round(be);
   }
 
-  // Project next price given all scores to date
-  function projectPrice(startPrice, scoresArr) {
-    if (!scoresArr || !scoresArr.length) return startPrice;
-    var anchor = startPrice / MAGIC;
-    var n = scoresArr.length;
-    var projected;
-    if (n >= 2) {
-      var s0 = scoresArr[n-1], s1 = scoresArr[n-2];
-      projected = 0.727719809*anchor + 0.0577269772*s0 + 0.228358557*s1;
-    } else {
-      projected = anchor * 0.75 + scoresArr[0] * 0.25;
-    }
-    return Math.round(projected * MAGIC / 1000) * 1000;
+  // Project next price based on how far the score is above/below the break-even.
+  // Uses the s0 coefficient from the pricing model (~$750 per point vs BE).
+  // Score == BE → price flat. Score < BE → price drops. Score > BE → price rises.
+  function projectPrice(currentPrice, score, breakEven) {
+    if (breakEven == null) return currentPrice;
+    var W_S0 = 0.0577269772; // weight of most-recent score in pricing model
+    var delta = W_S0 * (score - breakEven) * MAGIC;
+    return Math.round((currentPrice + delta) / 1000) * 1000;
   }
 
   function fmt$(v) { return '$' + (v/1000).toFixed(0) + 'k'; }
@@ -2190,9 +2185,9 @@ function _initPricePredictor(beModel) {
             : '<span class="pp-loss">' + vsBE + ' 🔴</span>')
         : '—';
 
-      // Project next price
+      // Project next price: delta from current based on score vs BE
+      var projPrice = projectPrice(runningPrice, score, beVal);
       runningScores.push(score);
-      var projPrice = projectPrice(startPrice, runningScores);
       var priceChange = projPrice - runningPrice;
       var totalChange = projPrice - basePrice;
 
