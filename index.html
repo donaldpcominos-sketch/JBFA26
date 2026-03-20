@@ -1966,90 +1966,25 @@ function _initPricePredictor(beModel) {
 
   if (!ENABLE_PRICE_PREDICTOR) return;
 
-  // ── BE Model constants (from data.json or fallback to hardcoded) ─────────
+  // ── BE Model constants (from data.json or fallback) ──────────────────
   var MAGIC = (beModel && beModel.magicNumber) || 13000;
-  var TWO_COEFFS = (beModel && beModel.twoGameCoeffs) || [
-    0.727719809, 0.0577269772, 0.228358557,
-    0.669992832, 0.499361252, 0.000169811565, -0.000106239841
-  ];
-  var TWO_INTERCEPT = (beModel && beModel.twoGameIntercept) || -0.7266121757429715;
-  var ONE_COEFFS = (beModel && beModel.oneGameCoeffs) || {
-    cheap: [1.93257905,  0.27646595, -0.01352004],
-    mid:   [1.16332268,  0.49373876, -0.00745449],
-    high:  [-0.316082098, 0.660379678, -0.0000996013232]
-  };
+  var PRICE_PER_POINT = (beModel && beModel.pricePerPoint) || 1000;
 
-  function beCalcTwoGame(anchor, s0, s1) {
-    var d0 = anchor - s0, d1 = anchor - s1;
-    var feats = [anchor, s0, s1, d0, d1, d0*d0, d1*d1];
-    var r = TWO_INTERCEPT;
-    for (var i = 0; i < TWO_COEFFS.length; i++) r += TWO_COEFFS[i] * feats[i];
-    return r;
+  // Compute break-even from current price: BE = currentPrice / MAGIC
+  function computeBE(currentPrice) {
+    return Math.round(currentPrice / MAGIC);
   }
 
-  function beCalcOneGame(anchor, s0, startPrice) {
-    if (s0 >= anchor) return s0;
-    var band = startPrice <= 350000 ? 'cheap' : startPrice <= 600000 ? 'mid' : 'high';
-    var c = ONE_COEFFS[band];
-    var d = anchor - s0;
-    return anchor + (c[0] + c[1]*d + c[2]*d*d);
-  }
-
-  function computeBE(startPrice, scoresArr) {
-    if (!scoresArr || !scoresArr.length) return null;
-    var anchor = startPrice / MAGIC;
-    var n = scoresArr.length;
-    var be;
-    if (n >= 2) {
-      be = beCalcTwoGame(anchor, scoresArr[n-1], scoresArr[n-2]);
-    } else {
-      be = beCalcOneGame(anchor, scoresArr[0], startPrice);
-    }
-    return Math.round(be);
-  }
-
-  // Project next price using the empirically derived rolling-average formula.
+  // Project next price:
+  //   delta = PRICE_PER_POINT × (projectedScore − breakEven)
+  //   nextPrice = round((currentPrice + delta) / 1000) × 1000
   //
-  // Based on regression over 14,000+ consecutive-round observations (2024-2025
-  // NRL Fantasy data). The true price-movement model is:
-  //   delta_price_in_$ = PRICE_MAGIC × (rolling_N_avg − currentPrice / BE_DIVISOR)
-  //
-  // where:
-  //   PRICE_MAGIC  ≈ 1888  ($/pt above break-even, settles at 3-game window)
-  //   BE_DIVISOR   ≈ 13300 (currentPrice / BE_DIVISOR = break-even score)
-  //   rolling_N_avg = mean of last min(N, 3) scores including the projected score
-  //
-  // Early-round scale factors (window hasn't filled to 3 yet):
-  //   1-game window: 925   (R1 only – single score)
-  //   2-game window: 1479  (R2 – two-score average)
-  //   3-game window: 1888  (R3+ – full rolling window)
-  //
-  // The BE computation (compute_be with anchor = startPrice/13000) is separate
-  // and remains unchanged — only the price-movement projection uses this formula.
-  //
-  // Parameters:
-  //   currentPrice  – price this round (in $, e.g. 526000)
-  //   projScore     – the user's projected score for this round
-  //   priorScores   – array of actual scores BEFORE this round (oldest first)
-  //                   used to compute the rolling average window
-  var PRICE_MAGIC_BY_WINDOW = [0, 925, 1479, 1888]; // index = window size (1-3)
-  var BE_DIVISOR = 13300;
-
-  function projectPrice(currentPrice, projScore, priorScores) {
-    // Build the rolling window: up to 2 prior scores + the projected score
-    var window = [];
-    if (priorScores && priorScores.length >= 2) {
-      window = [priorScores[priorScores.length - 2], priorScores[priorScores.length - 1], projScore];
-    } else if (priorScores && priorScores.length === 1) {
-      window = [priorScores[0], projScore];
-    } else {
-      window = [projScore];
-    }
-    var windowSize = window.length; // 1, 2, or 3
-    var rollingAvg = window.reduce(function(s, v){ return s + v; }, 0) / windowSize;
-    var magic = PRICE_MAGIC_BY_WINDOW[windowSize] || 1888;
-    var breakEvenFromPrice = currentPrice / BE_DIVISOR;
-    var delta = magic * (rollingAvg - breakEvenFromPrice);
+  // NOTE: The NRL Fantasy platform uses rolling averages internally.
+  // This simpler $1k/pt model is transparent and predictable but
+  // actual platform price changes may differ.
+  function projectPrice(currentPrice, projScore) {
+    var be = computeBE(currentPrice);
+    var delta = PRICE_PER_POINT * (projScore - be);
     return Math.round((currentPrice + delta) / 1000) * 1000;
   }
 
@@ -2195,7 +2130,7 @@ function _initPricePredictor(beModel) {
       var score = rawVal !== '' ? parseInt(rawVal, 10) : null;
 
       // Update the BE label for this round input
-      var beForThisRound = computeBE(startPrice, runningScores);
+      var beForThisRound = computeBE(runningPrice);
       var beEl = document.getElementById('pp-rbe-' + i);
       if (beEl) {
         if (beForThisRound != null) {
