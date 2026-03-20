@@ -166,12 +166,13 @@ td{padding:.6rem 1rem;vertical-align:middle;}
   table{min-width:0;font-size:.82rem;}
   td,thead th{padding:.5rem .6rem;}
   .trk{width:32px;}
-  /* VIP table: hide Value, Total and Overall Rank on mobile */
-  #vipb tr td:nth-child(5),#vipb tr td:nth-child(6),#vipb tr td:nth-child(7),
-  #vipt thead tr th:nth-child(5),#vipt thead tr th:nth-child(6),#vipt thead tr th:nth-child(7){display:none;}
-  /* P1 table: hide Value and Tier on mobile */
-  #p1b tr td:nth-child(5),#p1b tr td:nth-child(6),
-  #p1t thead tr th:nth-child(5),#p1t thead tr th:nth-child(6){display:none;}
+  /* VIP table: nothing to hide now - 5 col layout */
+  /* P1 table: nothing to hide now - 5 col layout */
+  /* tighten last two stat cols on all overview-style tables */
+  #ovt td:nth-child(4),#ovp td:nth-child(4),#p1t td:nth-child(4),#vipt td:nth-child(4),
+  #ovt thead th:nth-child(4),#ovp thead th:nth-child(4),#p1t thead th:nth-child(4),#vipt thead th:nth-child(4){padding-left:.4rem;padding-right:.4rem;}
+  #ovt td:nth-child(5),#ovp td:nth-child(5),#p1t td:nth-child(5),#vipt td:nth-child(5),
+  #ovt thead th:nth-child(5),#ovp thead th:nth-child(5),#p1t thead th:nth-child(5),#vipt thead th:nth-child(5){padding-left:.3rem;padding-right:.4rem;}
   /* Players table: on mobile show card list, hide table */
   #pl-table-wrap{display:block;}
   #pl-card-list{display:none;}
@@ -567,7 +568,8 @@ td{padding:.6rem 1rem;vertical-align:middle;}
       <span style="margin-left:auto;font-size:.82rem;color:var(--muted)" id="p1ct"></span>
     </div>
     <div class="tw"><div class="tw-scroll"><table id="p1t">
-      <thead><tr><th>#</th><th>Coach</th><th class="scol-hdr">R2</th><th>Total</th><th>Value</th><th>Tier</th></tr></thead>
+      <colgroup><col style="width:38px"><col><col style="width:72px"><col style="width:88px"><col style="width:60px"></colgroup>
+      <thead><tr><th>#</th><th>Coach</th><th style="text-align:center">Score</th><th>Value</th><th>Trades</th></tr></thead>
       <tbody id="p1b"></tbody>
     </table></div></div>
     <div class="pager" id="p1pg"></div>
@@ -675,7 +677,8 @@ td{padding:.6rem 1rem;vertical-align:middle;}
     <div class="sh"><div class="sht">VIP Leaderboard</div><div class="shl"></div></div>
     <div class="fr"><span class="fil">Filter:</span><input class="fi" id="vipfi" placeholder="Search VIP coach or team…" oninput="fVip()"></div>
     <div class="tw"><div class="tw-scroll"><table id="vipt">
-      <thead><tr><th>#</th><th>Coach</th><th class="scol-hdr">R2</th><th>Total</th><th>Value</th><th>JBFA Rank</th></tr></thead>
+      <colgroup><col style="width:38px"><col><col style="width:72px"><col style="width:88px"><col style="width:60px"></colgroup>
+      <thead><tr><th>#</th><th>Coach</th><th style="text-align:center">Score</th><th>Value</th><th>Trades</th></tr></thead>
       <tbody id="vipb"></tbody>
     </table></div></div>
     <div class="pager" id="vippg"></div>
@@ -1342,17 +1345,18 @@ function dP1(){
   pg.forEach(function(c){
     var t=getTier(c.rank);
     if(t!==lt){
-      rows+='<tr class="tdiv"><td colspan="6">'+['Tier 1 — Premiership (Top 100)','Tier 2 — Championship (101–200)','Tier 3 — State Cup (201+)'][t-1]+'</td></tr>';
+      rows+='<tr class="tdiv"><td colspan="5">'+['Tier 1 — Premiership (Top 100)','Tier 2 — Championship (101–200)','Tier 3 — State Cup (201+)'][t-1]+'</td></tr>';
       lt=t;
     }
     var wv=fmtWealth(c);
+    var tr=c.tradesRemaining;
+    var trClr=tr===undefined?'var(--muted)':tr>=20?'var(--green)':tr>=10?'var(--accent)':'var(--red)';
     rows+='<tr onclick="showCoach('+c.rank+')">'+
       '<td class="trk">'+(c.rank<=3?medals[c.rank-1]:c.rank)+'</td>'+
       '<td><div class="tco">'+esc(c.coach)+vipTag(c)+'</div><div class="tte">'+esc(c.team)+'</div></td>'+
-      '<td class="tsc">'+c.r2+'</td>'+
-      '<td class="tsc hi">'+(c.total||c.r1)+'</td>'+
+      '<td style="text-align:center;vertical-align:middle;padding-bottom:4px"><div class="tsc hi">'+(c.total||c.r1)+'</div><div style="font-size:.7rem;color:var(--muted);font-weight:500;margin-top:4px">'+c.r2+'</div></td>'+
       '<td style="font-size:.82rem;font-weight:700;color:var(--text)">'+wv+'</td>'+
-      '<td>'+tb(c.rank,false)+'</td>'+
+      '<td style="font-size:.82rem;font-weight:700;color:'+trClr+';text-align:center">'+(tr!==undefined?tr:'—')+'</td>'+
       '</tr>';
   });
   document.getElementById('p1b').innerHTML=rows;
@@ -1376,13 +1380,14 @@ function dVip(){
   pg.forEach(function(c,idx){
     var i=vipl.indexOf(c);
     var wvip=fmtWealth(c);
+    var tr=c.tradesRemaining;
+    var trClr=tr===undefined?'var(--muted)':tr>=20?'var(--green)':tr>=10?'var(--accent)':'var(--red)';
     rows+='<tr onclick="showCoach('+c.rank+')">'+
       '<td class="trk">'+(c.vipRankCalc<=3?medals[c.vipRankCalc-1]:c.vipRankCalc)+'</td>'+
       '<td><div class="tco">'+esc(c.coach)+vipTag(c)+'</div><div class="tte">'+esc(c.team)+'</div></td>'+
-      '<td class="tsc">'+c.r2+'</td>'+
-      '<td class="tsc hi">'+(c.total||c.r1)+'</td>'+
+      '<td style="text-align:center;vertical-align:middle;padding-bottom:4px"><div class="tsc hi">'+(c.total||c.r1)+'</div><div style="font-size:.7rem;color:var(--muted);font-weight:500;margin-top:4px">'+c.r2+'</div></td>'+
       '<td style="font-size:.82rem;font-weight:700;color:var(--text)">'+wvip+'</td>'+
-      '<td class="tte">#'+c.rank+' overall</td>'+
+      '<td style="font-size:.82rem;font-weight:700;color:'+trClr+';text-align:center">'+(tr!==undefined?tr:'—')+'</td>'+
       '</tr>';
   });
   document.getElementById('vipb').innerHTML=rows;
