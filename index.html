@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- JBFA_VERSION: 1.0.07 -->
+<!-- JBFA_VERSION: 1.0.05 -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -2021,78 +2021,72 @@ function _initPricePredictor(beModel) {
 
   if (!ENABLE_PRICE_PREDICTOR) return;
 
-  // ── BE Model — Dynamic Autoregressive Engine ─────────────────────────
+  // ── BE Model — Empirically Validated (OLS, R1-R2 2026) ──────────────
   //
-  //  The NRL Fantasy pricing engine uses a bracket model that changes
-  //  depending on how many games a player has played.  Each bracket has:
-  //    multiplier  — $ per point above/below the computed BE
-  //    price_mult  — weight on the current price in the BE formula
-  //    score_mults — weights on recent scores [S_{t-1}, S_{t-2}, ...]
-  //    base_offset — intercept constant (tweak weekly if market drifts)
+  //  Fitted via OLS regression across 234 two-game + 36 one-game players
+  //  using Fantasy Coach EXACT unrounded prices.
   //
-  //  For Game N (where the player is about to play their N-th game):
-  //    BE       = price_mult × P + sum(score_mult[i] × S_{t-1-i}) + base_offset
-  //    ΔPrice   = multiplier × (score − BE)
-  //    NextPrice = round((P + ΔPrice) / 1000) × 1000
+  //  Key findings:
+  //   • Both score coefficients ≈ -0.605 (equal weight — NOT decaying)
+  //   • Intercept ≈ -0.62 (previous -17.1 was completely wrong)
+  //   • PPP = $1766/point (R²=0.89)
+  //   • Must use FC exact price, not rounded display price
+  //     (47% vs 13% exact BE accuracy)
+  //
+  //  Formula: BE = round(price_mult*(price/1000) + Σ(mults[i]*scores[i]) + offset)
+  //  Delta:   PPP × (score − BE_unrounded)  → avoids double-rounding error
 
-  var BE_PARAMS = (beModel && typeof beModel === 'object' && beModel['1']) ? beModel : {
-    // Fallback hard-coded bracket params (mirrors generate_data.py BE_PARAMS)
-    '1':     { multiplier: 1.157, price_mult: 0.171, score_mults: [],                              base_offset: -42.9  },
-    '2':     { multiplier: 0.873, price_mult: 0.152, score_mults: [-0.593],                        base_offset: -17.1  },
-    '3':     { multiplier: 0.787, price_mult: 0.191, score_mults: [-0.798, -0.323],                base_offset: -17.1  },
-    '4':     { multiplier: 0.824, price_mult: 0.188, score_mults: [-0.640, -0.463, -0.034],        base_offset: -14.4  },
-    '5_plus':{ multiplier: 0.860, price_mult: 0.162, score_mults: [-0.640,-0.388,-0.150,0.052,0.239], base_offset: -7.34 }
+  var _DEFAULT_BE_PARAMS = {
+    0:       { price_mult:0.076914, score_mults:[],                                                        base_offset:-0.139239, ppp:1766 },
+    1:       { price_mult:0.126733, score_mults:[-0.647094],                                               base_offset:-0.621933, ppp:1766 },
+    2:       { price_mult:0.170343, score_mults:[-0.610060,-0.600176],                                     base_offset:-0.620700, ppp:1766 },
+    3:       { price_mult:0.214343, score_mults:[-0.610060,-0.600176,-0.600000],                           base_offset:-0.620700, ppp:1766 },
+    4:       { price_mult:0.258343, score_mults:[-0.610060,-0.600176,-0.600000,-0.600000],                 base_offset:-0.620700, ppp:1766 },
+    '5_plus':{ price_mult:0.302343, score_mults:[-0.610060,-0.600176,-0.600000,-0.600000,-0.600000],       base_offset:-0.620700, ppp:1766 },
   };
 
-  /**
-   * Return the BE parameter bracket for a given games-played count.
-   * @param {number} gamesPlayed  — games played SO FAR (before this round)
-   */
+  // Merge server-side beModel with defaults (server values override)
+  var BE_PARAMS = {};
+  Object.keys(_DEFAULT_BE_PARAMS).forEach(function(k) { BE_PARAMS[k] = _DEFAULT_BE_PARAMS[k]; });
+  if (beModel && typeof beModel === 'object') {
+    [0,1,2,3,4,'5_plus'].forEach(function(k) {
+      if (beModel[k] && beModel[k].price_mult) BE_PARAMS[k] = beModel[k];
+    });
+  }
+  var GLOBAL_PPP = (beModel && beModel.ppp) || 1766;
+
   function getBracket(gamesPlayed) {
-    if (gamesPlayed <= 0) return null;
-    var key = gamesPlayed <= 4 ? String(gamesPlayed) : '5_plus';
+    if (gamesPlayed < 0) return null;
+    var key = gamesPlayed <= 4 ? gamesPlayed : '5_plus';
     return BE_PARAMS[key] || null;
   }
 
-  /**
-   * Compute break-even score for a player's NEXT game.
-   *
-   * @param {number}   currentPrice  — player's current price ($)
-   * @param {number}   gamesPlayed   — games played so far this season
-   * @param {number[]} recentScores  — scores in reverse-chron order
-   *                                   [S_{t-1}, S_{t-2}, ...]
-   * @returns {number|null}  rounded BE or null if no games played
-   */
-  function computeBE(currentPrice, gamesPlayed, recentScores) {
+  // Unrounded BE — used internally for precise delta (avoids double-rounding)
+  function computeBEExact(exactPrice, gamesPlayed, recentScores) {
     var bracket = getBracket(gamesPlayed);
     if (!bracket) return null;
-    // Regression was fitted with price in $thousands — normalise here
-    var priceK = currentPrice / 1000;
+    var priceK = exactPrice / 1000;
     var be = bracket.price_mult * priceK + bracket.base_offset;
     for (var i = 0; i < bracket.score_mults.length; i++) {
-      if (i < recentScores.length) {
-        be += bracket.score_mults[i] * recentScores[i];
-      }
+      if (i < recentScores.length) be += bracket.score_mults[i] * recentScores[i];
     }
-    return Math.round(be);
+    return be;
   }
 
-  /**
-   * Project the next price after a player scores `score` in their next game.
-   *
-   * @param {number}   currentPrice  — current price before this game
-   * @param {number}   score         — score this game
-   * @param {number}   gamesPlayed   — games played BEFORE this game
-   * @param {number[]} recentScores  — scores before this game [S_{t-1}, ...]
-   * @returns {number}  projected next price (rounded to $1k)
-   */
-  function projectPrice(currentPrice, score, gamesPlayed, recentScores) {
+  // Rounded BE for display
+  function computeBE(exactPrice, gamesPlayed, recentScores) {
+    var be = computeBEExact(exactPrice, gamesPlayed, recentScores);
+    return be !== null ? Math.round(be) : null;
+  }
+
+  // Project next display price.
+  // exactPrice = player.exactPrice (FC exact) ?? player.cost (rounded fallback)
+  function projectPrice(exactPrice, score, gamesPlayed, recentScores) {
     var bracket = getBracket(gamesPlayed);
-    if (!bracket) return Math.round(currentPrice / 1000) * 1000;
-    var be = computeBE(currentPrice, gamesPlayed, recentScores);
-    // Regression multiplier produces delta in $thousands — scale to raw dollars
-    var delta = bracket.multiplier * (score - be) * 1000;
-    return Math.round((currentPrice + delta) / 1000) * 1000;
+    if (!bracket) return Math.round(exactPrice / 1000) * 1000;
+    var beExact = computeBEExact(exactPrice, gamesPlayed, recentScores);
+    var ppp = bracket.ppp || GLOBAL_PPP;
+    return Math.round((exactPrice + ppp * (score - beExact)) / 1000) * 1000;
   }
 
   function fmt$(v) { return '$' + (v/1000).toFixed(0) + 'k'; }
@@ -2110,12 +2104,13 @@ function _initPricePredictor(beModel) {
         pid: pid,
         name: p.name,
         cost: p.cost || p.startPrice,
+        // Use FC exact price for BE calculations; fall back to rounded display price
+        exactPrice: p.exactPrice || p.cost || p.startPrice,
         startPrice: p.startPrice,
         gamesPlayed: p.gamesPlayed || 0,
         scores: p.scores || {},
         priceHistory: p.priceHistory || [],
         breakEven: p.breakEven,
-        // recentScores: [S_{t-1}, S_{t-2}, ...] — last 5 scores reverse-chron
         recentScores: p.recentScores || []
       });
     }
@@ -2172,14 +2167,26 @@ function _initPricePredictor(beModel) {
     scoreKeys.forEach(function(k){ orderedScores.push(p.scores[String(k)]); });
 
     var statsEl = document.getElementById('pp-pstats');
-    var beLabel = p.breakEven != null ? p.breakEven : '—';
-    var beColor = p.breakEven != null ? (p.breakEven < 0 ? 'var(--green)' : 'var(--text)') : 'var(--muted)';
+
+    // Recalculate BE from exact price (more accurate than stored rounded BE)
+    var exactPrice = p.exactPrice || p.cost;
+    var beCalc = computeBE(exactPrice, p.gamesPlayed, p.recentScores);
+    var beLabel = beCalc != null ? beCalc : (p.breakEven != null ? p.breakEven : '—');
+    var beColor = beCalc != null ? (beCalc < 0 ? 'var(--green)' : 'var(--text)') : 'var(--muted)';
+    var usingExact = p.exactPrice && p.exactPrice !== p.cost;
+
     var scoreHistHtml = scoreKeys.map(function(k){
       return '<span style="font-size:.75rem;color:var(--muted)">R'+k+'</span><strong>'+p.scores[String(k)]+'</strong>';
     }).join(' &nbsp; ') || '<span style="color:var(--muted)">No scores yet</span>';
 
+    // Show exact price if different from display price
+    var priceDisplay = fmt$(p.cost);
+    if (usingExact) {
+      priceDisplay += ' <span style="font-size:.7rem;color:var(--muted)" title="Exact internal price: $' + exactPrice.toLocaleString() + '">✓ exact</span>';
+    }
+
     statsEl.innerHTML = [
-      '<div class="pp-stat"><div class="pp-stat-label">Current Price</div><div class="pp-stat-val">' + fmt$(p.cost) + '</div></div>',
+      '<div class="pp-stat"><div class="pp-stat-label">Current Price</div><div class="pp-stat-val">' + priceDisplay + '</div></div>',
       '<div class="pp-stat"><div class="pp-stat-label">Start Price</div><div class="pp-stat-val">' + fmt$(p.startPrice) + '</div></div>',
       '<div class="pp-stat"><div class="pp-stat-label">Next Round BE</div><div class="pp-stat-val" style="color:' + beColor + '">' + beLabel + '</div></div>',
       '<div class="pp-stat" style="flex:2;min-width:200px"><div class="pp-stat-label">Score History</div><div style="display:flex;gap:.5rem;align-items:baseline;flex-wrap:wrap;margin-top:.15rem;font-size:.9rem">' + scoreHistHtml + '</div></div>',
@@ -2219,10 +2226,14 @@ function _initPricePredictor(beModel) {
     if (!p) return;
 
     var startRound = (typeof CUR !== 'undefined' ? CUR : 2) + 1;
-    var basePrice  = p.cost;   // price entering the predictor window
+    // Use FC exact price for the first round's BE/delta calculation.
+    // After the first projected round we use the projected price (which is
+    // already a rounded display price), so subsequent rounds use cost.
+    var basePrice    = p.cost;      // rounded display price (for totalChange display)
+    var exactBase    = p.exactPrice || p.cost;  // exact price for first BE calc
 
     // Running state — updated after each projected round:
-    var runningPrice   = basePrice;
+    var runningPrice   = exactBase;  // starts at exact, subsequent rounds use projected
     var runningGames   = p.gamesPlayed;
     // runningRecent = [S_{t-1}, S_{t-2}, ...] — grows each projected round.
     // Start from the player's known recent scores (already reverse-chron).
@@ -2375,7 +2386,7 @@ fetch(window.location.hostname === 'jbfa26.netlify.app'
 </div>
 
 
-<div id="jbfa-ver" style="position:fixed;bottom:6px;right:10px;font-size:.62rem;color:rgba(255,255,255,.18);font-family:monospace;pointer-events:none;z-index:9999;letter-spacing:.05em;">JBFA 1.0.07</div>
+<div id="jbfa-ver" style="position:fixed;bottom:6px;right:10px;font-size:.62rem;color:rgba(255,255,255,.18);font-family:monospace;pointer-events:none;z-index:9999;letter-spacing:.05em;">JBFA 1.0.04</div>
 </body>
 </html></script>
 <!-- PLAYER CARD MODAL -->
@@ -2408,6 +2419,6 @@ fetch(window.location.hostname === 'jbfa26.netlify.app'
 </div>
 
 
-<div id="jbfa-ver" style="position:fixed;bottom:6px;right:10px;font-size:.62rem;color:rgba(255,255,255,.18);font-family:monospace;pointer-events:none;z-index:9999;letter-spacing:.05em;">JBFA 1.0.07</div>
+<div id="jbfa-ver" style="position:fixed;bottom:6px;right:10px;font-size:.62rem;color:rgba(255,255,255,.18);font-family:monospace;pointer-events:none;z-index:9999;letter-spacing:.05em;">JBFA 1.0.04</div>
 </body>
 </html>
