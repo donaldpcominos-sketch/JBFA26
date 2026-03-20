@@ -1041,6 +1041,7 @@ function _initApp(_D) {
   PLAYERS = _D.players||{};
   TRADE_SUMMARY = (_D.meta&&_D.meta.tradeSummary)||{in:[],out:[]};
   ROUND_AVGS_FROM_DATA = _D.meta.roundAvgs;
+  var SURVIVOR_COACHES = COACHES.filter(function(c){ return c.survivorEligible; });
 
 // ── VIP SORTED LIST ───────────────────────────────────────────────────────
 var VIP_LIST = COACHES.filter(function(c){return c.vipEntry;}).sort(function(a,b){return (b.total||b.r1)-(a.total||a.r1);});
@@ -1248,7 +1249,7 @@ function renderOvVip(){
 
 // ── SCHED ─────────────────────────────────────────────────────────────────
 function renderSched(){
-  var rem=COACHES.length;
+  var rem=_D.meta.survivorEligibleCount || SURVIVOR_COACHES.length;
   // heat intensity by drop size: 0=green, 4=blue-tinge, 5=amber, 10=orange, 15=red-orange, 20=red
   function heatColor(pct){
     // pct = % of current field being eliminated this round
@@ -1260,7 +1261,7 @@ function renderSched(){
     return               {bg:'rgba(220,38,38,0.18)',  lbl:'Brutal',   lc:'#ef4444'};
   }
   // Pre-calculate remaining before each round so pct uses the right denominator
-  var remBefore=COACHES.length; rem=COACHES.length;
+  var remBefore=_D.meta.survivorEligibleCount || SURVIVOR_COACHES.length; rem=remBefore;
   document.getElementById('sgrid').innerHTML=DROP.map(function(item){
     var before = remBefore;
     rem=Math.max(0,rem-item.d);
@@ -1347,10 +1348,10 @@ function dVip(){
 }
 
 // ── C2 ────────────────────────────────────────────────────────────────────
-var c2p=1,C2N=50,c2l=COACHES.slice().sort(function(a,b){return (a.r2||0)-(b.r2||0);});
+var c2p=1,C2N=50,c2l=SURVIVOR_COACHES.slice().sort(function(a,b){return (a.r2||0)-(b.r2||0);});
 function fC2(){
   var q=document.getElementById('c2fi').value.toLowerCase();
-  c2l=COACHES.filter(function(c){return c.coach.toLowerCase().indexOf(q)>=0||c.team.toLowerCase().indexOf(q)>=0;}).sort(function(a,b){return (a.r2||0)-(b.r2||0);});
+  c2l=SURVIVOR_COACHES.filter(function(c){return c.coach.toLowerCase().indexOf(q)>=0||c.team.toLowerCase().indexOf(q)>=0;}).sort(function(a,b){return (a.r2||0)-(b.r2||0);});
   c2p=1;dC2();
 }
 function dC2(){
