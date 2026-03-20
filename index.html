@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- JBFA_VERSION: 1.0.06 -->
+<!-- JBFA_VERSION: 1.0.05 -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -2066,7 +2066,9 @@ function _initPricePredictor(beModel) {
   function computeBE(currentPrice, gamesPlayed, recentScores) {
     var bracket = getBracket(gamesPlayed);
     if (!bracket) return null;
-    var be = bracket.price_mult * currentPrice + bracket.base_offset;
+    // Regression was fitted with price in $thousands — normalise here
+    var priceK = currentPrice / 1000;
+    var be = bracket.price_mult * priceK + bracket.base_offset;
     for (var i = 0; i < bracket.score_mults.length; i++) {
       if (i < recentScores.length) {
         be += bracket.score_mults[i] * recentScores[i];
@@ -2372,7 +2374,7 @@ fetch(window.location.hostname === 'jbfa26.netlify.app'
 </div>
 
 
-<div id="jbfa-ver" style="position:fixed;bottom:6px;right:10px;font-size:.62rem;color:rgba(255,255,255,.18);font-family:monospace;pointer-events:none;z-index:9999;letter-spacing:.05em;">JBFA 1.0.04</div>
+<div id="jbfa-ver" style="position:fixed;bottom:6px;right:10px;font-size:.62rem;color:rgba(255,255,255,.18);font-family:monospace;pointer-events:none;z-index:9999;letter-spacing:.05em;">JBFA 1.0.05</div>
 </body>
 </html></script>
 <!-- PLAYER CARD MODAL -->
@@ -2405,6 +2407,6 @@ fetch(window.location.hostname === 'jbfa26.netlify.app'
 </div>
 
 
-<div id="jbfa-ver" style="position:fixed;bottom:6px;right:10px;font-size:.62rem;color:rgba(255,255,255,.18);font-family:monospace;pointer-events:none;z-index:9999;letter-spacing:.05em;">JBFA 1.0.04</div>
+<div id="jbfa-ver" style="position:fixed;bottom:6px;right:10px;font-size:.62rem;color:rgba(255,255,255,.18);font-family:monospace;pointer-events:none;z-index:9999;letter-spacing:.05em;">JBFA 1.0.05</div>
 </body>
 </html>
