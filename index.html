@@ -409,7 +409,7 @@ td{padding:.6rem 1rem;vertical-align:middle;}
   <!-- OVERVIEW -->
   <div class="panel active" id="panel-ov">
     <div class="sr">
-      <div class="sc"><div class="scl">Coaches</div><div class="scv" id="sc-total">299</div><div class="scs"></div></div>
+      <div class="sc"><div class="scl">Coaches</div><div class="scv" id="sc-total">300</div><div class="scs"></div></div>
       <div class="sc"><div class="scl">Current Round</div><div class="scv" style="color:var(--accent)" id="sc-cur-round">2</div><div class="scs">of 27</div></div>
       <div class="sc"><div class="scl" id="sc-top-label">Top Score R2</div><div class="scv" style="color:var(--accent)" id="sc-top-val">1163</div><div class="scs" id="sc-top-coach" style="color:var(--text);font-weight:700;font-size:.8rem">Mark Wilson</div></div>
       <div class="sc"><div class="scl" id="sc-avg-label">Field Avg R2</div><div class="scv" id="sc-avg-val">1034</div><div class="scs" id="sc-avg-sub"></div></div>
@@ -1851,8 +1851,9 @@ function closePlModal(){
 // Dynamic counts
 (function(){
   var total=COACHES.length, vips=VIP_LIST.length;
+  var totalCoaches=_D.meta.totalCoaches || COACHES.length;
   var survivorStarted=_D.meta.survivorEligibleCount || SURVIVOR_COACHES.length;
-  var scTotal=document.getElementById('sc-total'); if(scTotal) scTotal.textContent=survivorStarted;
+  var scTotal=document.getElementById('sc-total'); if(scTotal) scTotal.textContent=totalCoaches;
   var scStarted=document.getElementById('sc-started'); if(scStarted) scStarted.textContent=survivorStarted;
   var aliveCount=_D.meta.aliveAfterLastRound;
   // Next drop
