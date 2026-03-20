@@ -2021,25 +2021,74 @@ function _initPricePredictor(beModel) {
 
   if (!ENABLE_PRICE_PREDICTOR) return;
 
-  // ── BE Model constants (from data.json or fallback) ──────────────────
-  var MAGIC = (beModel && beModel.magicNumber) || 13000;
-  var PRICE_PER_POINT = (beModel && beModel.pricePerPoint) || 1000;
+  // ── BE Model — Dynamic Autoregressive Engine ─────────────────────────
+  //
+  //  The NRL Fantasy pricing engine uses a bracket model that changes
+  //  depending on how many games a player has played.  Each bracket has:
+  //    multiplier  — $ per point above/below the computed BE
+  //    price_mult  — weight on the current price in the BE formula
+  //    score_mults — weights on recent scores [S_{t-1}, S_{t-2}, ...]
+  //    base_offset — intercept constant (tweak weekly if market drifts)
+  //
+  //  For Game N (where the player is about to play their N-th game):
+  //    BE       = price_mult × P + sum(score_mult[i] × S_{t-1-i}) + base_offset
+  //    ΔPrice   = multiplier × (score − BE)
+  //    NextPrice = round((P + ΔPrice) / 1000) × 1000
 
-  // Compute break-even from current price: BE = currentPrice / MAGIC
-  function computeBE(currentPrice) {
-    return Math.round(currentPrice / MAGIC);
+  var BE_PARAMS = (beModel && typeof beModel === 'object' && beModel['1']) ? beModel : {
+    // Fallback hard-coded bracket params (mirrors generate_data.py BE_PARAMS)
+    '1':     { multiplier: 1.157, price_mult: 0.171, score_mults: [],                              base_offset: -42.9  },
+    '2':     { multiplier: 0.873, price_mult: 0.152, score_mults: [-0.593],                        base_offset: -17.1  },
+    '3':     { multiplier: 0.787, price_mult: 0.191, score_mults: [-0.798, -0.323],                base_offset: -17.1  },
+    '4':     { multiplier: 0.824, price_mult: 0.188, score_mults: [-0.640, -0.463, -0.034],        base_offset: -14.4  },
+    '5_plus':{ multiplier: 0.860, price_mult: 0.162, score_mults: [-0.640,-0.388,-0.150,0.052,0.239], base_offset: -7.34 }
+  };
+
+  /**
+   * Return the BE parameter bracket for a given games-played count.
+   * @param {number} gamesPlayed  — games played SO FAR (before this round)
+   */
+  function getBracket(gamesPlayed) {
+    if (gamesPlayed <= 0) return null;
+    var key = gamesPlayed <= 4 ? String(gamesPlayed) : '5_plus';
+    return BE_PARAMS[key] || null;
   }
 
-  // Project next price:
-  //   delta = PRICE_PER_POINT × (projectedScore − breakEven)
-  //   nextPrice = round((currentPrice + delta) / 1000) × 1000
-  //
-  // NOTE: The NRL Fantasy platform uses rolling averages internally.
-  // This simpler $1k/pt model is transparent and predictable but
-  // actual platform price changes may differ.
-  function projectPrice(currentPrice, projScore) {
-    var be = computeBE(currentPrice);
-    var delta = PRICE_PER_POINT * (projScore - be);
+  /**
+   * Compute break-even score for a player's NEXT game.
+   *
+   * @param {number}   currentPrice  — player's current price ($)
+   * @param {number}   gamesPlayed   — games played so far this season
+   * @param {number[]} recentScores  — scores in reverse-chron order
+   *                                   [S_{t-1}, S_{t-2}, ...]
+   * @returns {number|null}  rounded BE or null if no games played
+   */
+  function computeBE(currentPrice, gamesPlayed, recentScores) {
+    var bracket = getBracket(gamesPlayed);
+    if (!bracket) return null;
+    var be = bracket.price_mult * currentPrice + bracket.base_offset;
+    for (var i = 0; i < bracket.score_mults.length; i++) {
+      if (i < recentScores.length) {
+        be += bracket.score_mults[i] * recentScores[i];
+      }
+    }
+    return Math.round(be);
+  }
+
+  /**
+   * Project the next price after a player scores `score` in their next game.
+   *
+   * @param {number}   currentPrice  — current price before this game
+   * @param {number}   score         — score this game
+   * @param {number}   gamesPlayed   — games played BEFORE this game
+   * @param {number[]} recentScores  — scores before this game [S_{t-1}, ...]
+   * @returns {number}  projected next price (rounded to $1k)
+   */
+  function projectPrice(currentPrice, score, gamesPlayed, recentScores) {
+    var bracket = getBracket(gamesPlayed);
+    if (!bracket) return Math.round(currentPrice / 1000) * 1000;
+    var be = computeBE(currentPrice, gamesPlayed, recentScores);
+    var delta = bracket.multiplier * (score - be);
     return Math.round((currentPrice + delta) / 1000) * 1000;
   }
 
@@ -2062,7 +2111,9 @@ function _initPricePredictor(beModel) {
         gamesPlayed: p.gamesPlayed || 0,
         scores: p.scores || {},
         priceHistory: p.priceHistory || [],
-        breakEven: p.breakEven
+        breakEven: p.breakEven,
+        // recentScores: [S_{t-1}, S_{t-2}, ...] — last 5 scores reverse-chron
+        recentScores: p.recentScores || []
       });
     }
   });
@@ -2164,32 +2215,36 @@ function _initPricePredictor(beModel) {
     var p = ppPlayerList.find(function(x){ return x.pid === ppSelectedPid; });
     if (!p) return;
 
-    var orderedScores = [];
-    var scoreKeys = Object.keys(p.scores).map(Number).sort(function(a,b){return a-b;});
-    scoreKeys.forEach(function(k){ orderedScores.push(Number(p.scores[String(k)])); });
-
     var startRound = (typeof CUR !== 'undefined' ? CUR : 2) + 1;
-    var startPrice = p.startPrice;
-    var basePrice = p.cost; // price entering the predictor window
+    var basePrice  = p.cost;   // price entering the predictor window
+
+    // Running state — updated after each projected round:
+    var runningPrice   = basePrice;
+    var runningGames   = p.gamesPlayed;
+    // runningRecent = [S_{t-1}, S_{t-2}, ...] — grows each projected round.
+    // Start from the player's known recent scores (already reverse-chron).
+    var runningRecent  = p.recentScores.slice();
 
     var tbody = document.getElementById('pp-results-body');
     var rows = '';
     var hasAnyInput = false;
-    var runningScores = orderedScores.slice();
-    var runningPrice = basePrice;
 
     for (var i = 0; i < 4; i++) {
-      var rNum = startRound + i;
-      var inputEl = document.getElementById('pp-rscore-' + i);
-      var rawVal = inputEl ? inputEl.value.trim() : '';
-      var score = rawVal !== '' ? parseInt(rawVal, 10) : null;
+      var rNum     = startRound + i;
+      var inputEl  = document.getElementById('pp-rscore-' + i);
+      var rawVal   = inputEl ? inputEl.value.trim() : '';
+      var score    = rawVal !== '' ? parseInt(rawVal, 10) : null;
 
-      // Update the BE label for this round input
-      var beForThisRound = computeBE(runningPrice);
+      // Compute BE for THIS round using current running state
+      var beForThisRound = computeBE(runningPrice, runningGames, runningRecent);
+
+      // Update the BE label in the round input widget
       var beEl = document.getElementById('pp-rbe-' + i);
       if (beEl) {
         if (beForThisRound != null) {
-          var beColorCls = score != null ? (score >= beForThisRound ? 'style="color:var(--green)"' : 'style="color:var(--red)"') : '';
+          var beColorCls = score != null
+            ? (score >= beForThisRound ? 'style="color:var(--green)"' : 'style="color:var(--red)"')
+            : '';
           beEl.innerHTML = 'BE: <strong ' + beColorCls + '>' + beForThisRound + '</strong>';
         } else {
           beEl.innerHTML = '<span style="color:var(--muted)">BE: —</span>';
@@ -2197,23 +2252,23 @@ function _initPricePredictor(beModel) {
       }
 
       if (score === null || isNaN(score)) {
-        rows += '<tr><td style="color:var(--muted)">R' + rNum + '</td><td colspan="6" style="color:var(--muted);font-style:italic">Enter score above</td></tr>';
+        rows += '<tr><td style="color:var(--muted)">R' + rNum + '</td>'
+              + '<td colspan="6" style="color:var(--muted);font-style:italic">Enter score above</td></tr>';
         break; // stop projecting once we hit a gap
       }
 
       hasAnyInput = true;
-      var beVal = beForThisRound;
-      var vsBE = beVal != null ? score - beVal : null;
+
+      // vs BE diff
+      var vsBE     = beForThisRound != null ? score - beForThisRound : null;
       var vsBEHtml = vsBE != null
         ? (vsBE >= 0
             ? '<span class="pp-gain">+' + vsBE + ' 🟢</span>'
             : '<span class="pp-loss">' + vsBE + ' 🔴</span>')
         : '—';
 
-      // Project next price using empirical rolling-avg formula.
-      // Pass the scores BEFORE this round so projectPrice can build the correct window.
-      var projPrice = projectPrice(runningPrice, score, runningScores.slice());
-      runningScores.push(score);
+      // Project next price using the running state BEFORE this round
+      var projPrice  = projectPrice(runningPrice, score, runningGames, runningRecent);
       var priceChange = projPrice - runningPrice;
       var totalChange = projPrice - basePrice;
 
@@ -2233,17 +2288,24 @@ function _initPricePredictor(beModel) {
       rows += '<tr class="' + rowClass + '">'
         + '<td><strong>R' + rNum + '</strong></td>'
         + '<td><strong>' + score + '</strong></td>'
-        + '<td>' + (beVal != null ? beVal : '—') + '</td>'
+        + '<td>' + (beForThisRound != null ? beForThisRound : '—') + '</td>'
         + '<td>' + vsBEHtml + '</td>'
         + '<td><strong>' + fmt$(projPrice) + '</strong></td>'
         + '<td>' + priceChangeHtml + '</td>'
         + '<td>' + totalChangeHtml + '</td>'
         + '</tr>';
 
-      runningPrice = projPrice;
+      // ── Shift the window for the NEXT projected round ──────────────
+      // This projected score becomes S_{t-1} next iteration; push it to
+      // the front of recentScores and cap the array at 5 entries.
+      runningRecent = [score].concat(runningRecent).slice(0, 5);
+      runningGames  += 1;
+      runningPrice   = projPrice;
     }
 
-    tbody.innerHTML = hasAnyInput ? rows : '<tr><td colspan="7" class="pp-empty">Enter projected scores above to see price projections</td></tr>';
+    tbody.innerHTML = hasAnyInput
+      ? rows
+      : '<tr><td colspan="7" class="pp-empty">Enter projected scores above to see price projections</td></tr>';
   };
 
   // ── Clear ──────────────────────────────────────────────────────────────
