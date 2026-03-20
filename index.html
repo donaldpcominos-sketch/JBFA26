@@ -41,37 +41,38 @@ header{position:sticky;top:0;z-index:200;background:var(--jb);border-bottom:3px 
 .sdi-team{color:var(--muted);font-size:.77rem;}
 .rpill{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:6px;padding:.3rem .85rem;font-size:.8rem;font-weight:600;color:var(--accent);white-space:nowrap;flex-shrink:0;}
 
-/* NAV */
+/* NAV — 2-level */
 .nav{background:var(--surface);border-bottom:1px solid var(--border);}
-.nav-inner{max-width:1400px;margin:0 auto;display:flex;padding:0 1.25rem;overflow-x:auto;-webkit-overflow-scrolling:touch;align-items:center;gap:6px;}
-.nb{background:none;border:1px solid var(--border);border-radius:6px;color:var(--muted);font-family:'DM Sans',sans-serif;font-weight:600;font-size:.82rem;padding:.45rem .9rem;cursor:pointer;transition:color .15s,background .15s,border-color .15s;white-space:nowrap;flex-shrink:0;}
+.nav-top{max-width:1400px;margin:0 auto;display:flex;padding:0 1.25rem;align-items:center;gap:0;}
+.nav-sub{max-width:1400px;margin:0 auto;display:flex;padding:4px 1.25rem;overflow-x:auto;-webkit-overflow-scrolling:touch;align-items:center;gap:4px;min-height:38px;border-top:1px solid var(--border);}
+/* top-level */
+.nb-top{background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-weight:700;font-size:.82rem;padding:.6rem 1rem;cursor:pointer;transition:color .15s,border-color .15s;white-space:nowrap;flex-shrink:0;margin-bottom:-1px;}
+.nb-top:hover{color:var(--text);}
+.nb-top.active{color:var(--accent);border-bottom-color:var(--accent);}
+/* sub-level */
+.nb{background:none;border:1px solid var(--border);border-radius:6px;color:var(--muted);font-family:'DM Sans',sans-serif;font-weight:600;font-size:.8rem;padding:.32rem .75rem;cursor:pointer;transition:color .15s,background .15s,border-color .15s;white-space:nowrap;flex-shrink:0;}
 .nb:hover{color:var(--text);background:var(--surface2);border-color:rgba(255,255,255,.3);}
-.nsep{width:1px;height:20px;background:var(--border);flex-shrink:0;margin:0 2px;}
-/* Overview active */
-#nb-ov.active{background:var(--surface2);border-color:var(--border);color:var(--text);}
-/* How It Works active */
-#nb-how.active{background:var(--surface2);border-color:var(--border);color:var(--text);}
-/* Main Comp group */
-.nav-group{display:flex;flex-direction:column;align-items:center;background:rgba(26,58,143,.3);border:1px solid rgba(58,123,213,.55);border-radius:8px;padding:4px 4px 3px;gap:3px;flex-shrink:0;}
-.nav-group-label{font-size:.55rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#7aaee8;padding:0 .25rem;white-space:nowrap;flex-shrink:0;line-height:1;}
-.nav-group-buttons{display:flex;gap:2px;}
-.nav-group .nb{border-radius:5px;border:none;padding:.32rem .75rem;color:#7aaee8;}
-.nav-group .nb:hover{background:rgba(58,123,213,.2);color:#fff;}
-.nav-group .nb.active{background:#1e4d8c;border:1px solid #3a7bd5;color:#fff;}
-/* Survival active */
-#nb-c2.active{background:rgba(248,113,113,.12);border-color:rgba(248,113,113,.35);color:var(--red);}
+.nb.active{background:var(--surface2);border-color:rgba(255,255,255,.35);color:var(--text);}
+.nsep{width:1px;height:18px;background:var(--border);flex-shrink:0;margin:0 2px;}
+/* Survivor */
 #nb-c2{color:#f87171;border-color:rgba(248,113,113,.2);}
-#nb-c2:hover{background:rgba(248,113,113,.1);border-color:rgba(248,113,113,.35);color:var(--red);}
-/* VIP active */
-#nb-vip{background:rgba(52,211,153,.08);border-color:rgba(52,211,153,.25);color:var(--vip);}
-#nb-vip:hover{background:rgba(52,211,153,.15);border-color:rgba(52,211,153,.4);}
-#nb-vip.active{background:rgba(52,211,153,.18);border-color:rgba(52,211,153,.5);color:var(--vip);}
+#nb-c2:hover{background:rgba(248,113,113,.1);border-color:rgba(248,113,113,.35);}
+#nb-c2.active{background:rgba(248,113,113,.12);border-color:rgba(248,113,113,.4);color:var(--red);}
+/* VIP */
+#nb-vip{color:var(--vip);border-color:rgba(52,211,153,.2);}
+#nb-vip:hover{background:rgba(52,211,153,.1);border-color:rgba(52,211,153,.4);}
+#nb-vip.active{background:rgba(52,211,153,.15);border-color:rgba(52,211,153,.5);color:var(--vip);}
+/* Players */
+#nb-players{color:var(--blue);border-color:rgba(96,165,250,.2);}
+#nb-players:hover{background:rgba(96,165,250,.1);border-color:rgba(96,165,250,.4);}
+#nb-players.active{background:rgba(96,165,250,.15);border-color:rgba(96,165,250,.5);color:var(--blue);}
 /* Prizes */
-#nb-players{background:rgba(96,165,250,.08);border-color:rgba(96,165,250,.25);color:var(--blue);}
-#nb-players:hover{background:rgba(96,165,250,.15);border-color:rgba(96,165,250,.4);}
-#nb-players.active{background:rgba(96,165,250,.18);border-color:rgba(96,165,250,.5);color:var(--blue);}
-#nb-prizes{background:rgba(240,180,41,.12);border-color:rgba(240,180,41,.35);color:#f0b429;}
-#nb-prizes.active{background:rgba(240,180,41,.25);border-color:rgba(240,180,41,.7);color:#ffd700;}
+#nb-prizes{color:#f0b429;border-color:rgba(240,180,41,.25);}
+#nb-prizes.active{background:rgba(240,180,41,.15);border-color:rgba(240,180,41,.5);color:#ffd700;}
+/* Price Predictor */
+#nb-pp{color:var(--purple);border-color:rgba(167,139,250,.2);}
+#nb-pp:hover{background:rgba(167,139,250,.1);border-color:rgba(167,139,250,.4);}
+#nb-pp.active{background:rgba(167,139,250,.15);border-color:rgba(167,139,250,.5);color:var(--purple);}
 
 /* MAIN */
 main{max-width:1400px;margin:0 auto;padding:1.5rem;}
@@ -374,26 +375,26 @@ td{padding:.6rem 1rem;vertical-align:middle;}
 
 
 <div class="nav">
-  <div class="nav-inner" style="padding:8px 1.25rem;">
-    <button class="nb active" id="nb-ov" onclick="showTab(event,'ov')">Overview</button>
+  <div class="nav-top">
+    <button class="nb-top active" id="nbt-ov" onclick="showTopTab('ov')">Overview</button>
+    <button class="nb-top" id="nbt-comp" onclick="showTopTab('comp')">Comp</button>
+    <button class="nb-top" id="nbt-insights" onclick="showTopTab('insights')">Insights</button>
+  </div>
+  <div class="nav-sub" id="nav-sub-comp" style="display:none">
     <button class="nb" id="nb-how" onclick="showTab(event,'how')">How It Works</button>
     <div class="nsep"></div>
-    <div class="nav-group">
-      <span class="nav-group-label">Main Competition</span>
-      <div class="nav-group-buttons">
-        <button class="nb" id="nb-p1" onclick="showTab(event,'p1')">Qualifying</button>
-        <button class="nb" id="nb-p2" onclick="showTab(event,'p2')">Seeding</button>
-        <button class="nb" id="nb-p3" onclick="showTab(event,'p3')">Knockout</button>
-      </div>
-    </div>
+    <button class="nb" id="nb-p1" onclick="showTab(event,'p1')">Qualifying</button>
+    <button class="nb" id="nb-p2" onclick="showTab(event,'p2')">Seeding</button>
+    <button class="nb" id="nb-p3" onclick="showTab(event,'p3')">Knockout</button>
     <div class="nsep"></div>
-    <button class="nb" id="nb-c2" onclick="showTab(event,'c2')">Survivor</button>
-    <div class="nsep"></div>
-    <button class="nb" id="nb-players" onclick="showTab(event,'players')">🏉 Players</button>
+    <button class="nb" id="nb-c2" onclick="showTab(event,'c2')">🎯 Survivor</button>
     <div class="nsep"></div>
     <button class="nb" id="nb-vip" onclick="showTab(event,'vip')">⭐ VIP</button>
     <div class="nsep"></div>
     <button class="nb" id="nb-prizes" onclick="showTab(event,'prizes')">🏆 Prizes</button>
+  </div>
+  <div class="nav-sub" id="nav-sub-insights" style="display:none">
+    <button class="nb" id="nb-players" onclick="showTab(event,'players')">🏉 Players</button>
     <button class="nb" id="nb-pp" onclick="showTab(event,'pp')">💰 Price Predictor</button>
   </div>
 </div>
@@ -421,7 +422,7 @@ td{padding:.6rem 1rem;vertical-align:middle;}
     </table></div></div>
     <div class="sh"><div class="sht">🎙️ Podcaster Rankings</div><div class="shl"></div></div>
     <div class="tw"><div class="tw-scroll"><table>
-      <thead><tr><th>#</th><th>Coach</th><th>R2</th><th>Total</th><th>Value</th><th>Tier</th><th>Survivor</th><th>Trades</th></tr></thead>
+      <thead><tr><th>#</th><th>Coach</th><th>R2</th><th>Total</th><th>Value</th><th>Trades</th></tr></thead>
       <tbody id="ov-pod"></tbody>
     </table></div></div>
     <div class="sh"><div class="sht">🔄 Trades This Round</div><div class="shl"></div><span id="ov-trade-rnd" style="font-size:.75rem;color:var(--muted)"></span></div>
@@ -1011,6 +1012,33 @@ var medals=['🥇','🥈','🥉'];
 
 // ── TABS ──────────────────────────────────────────────────────────────────
 var curTab='ov';
+// top-tab group map: which sub-nav each panel belongs to
+var _TAB_GROUP={'how':'comp','p1':'comp','p2':'comp','p3':'comp','c2':'comp','vip':'comp','prizes':'comp','players':'insights','pp':'insights'};
+function showTopTab(grp){
+  // activate top button
+  document.querySelectorAll('.nb-top').forEach(function(b){b.classList.remove('active');});
+  var tb=document.getElementById('nbt-'+grp);
+  if(tb) tb.classList.add('active');
+  // show/hide sub-navs
+  ['comp','insights'].forEach(function(g){
+    var s=document.getElementById('nav-sub-'+g);
+    if(s) s.style.display=(g===grp?'flex':'none');
+  });
+  // if overview, show that panel
+  if(grp==='ov'){
+    document.getElementById('cv').classList.remove('open');
+    document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
+    document.querySelectorAll('.nb').forEach(function(b){b.classList.remove('active');});
+    document.getElementById('panel-ov').classList.add('active');
+    curTab='ov';
+  } else {
+    // activate first sub-tab in this group if none active
+    var firstMap={'comp':'how','insights':'players'};
+    var firstTab=firstMap[grp];
+    var hasActive=document.querySelector('#nav-sub-'+grp+' .nb.active');
+    if(!hasActive) showTab(null,firstTab);
+  }
+}
 function showTab(e,id){
   document.getElementById('cv').classList.remove('open');
   document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
@@ -1020,8 +1048,28 @@ function showTab(e,id){
   if(nb) nb.classList.add('active');
   else if(e&&e.target) e.target.classList.add('active');
   curTab=id;
+  // sync top tab
+  var grp=_TAB_GROUP[id];
+  if(grp){
+    document.querySelectorAll('.nb-top').forEach(function(b){b.classList.remove('active');});
+    var tb=document.getElementById('nbt-'+grp);
+    if(tb) tb.classList.add('active');
+    ['comp','insights'].forEach(function(g){
+      var s=document.getElementById('nav-sub-'+g);
+      if(s) s.style.display=(g===grp?'flex':'none');
+    });
+  }
 }
-function goHome(){showTab(null,'ov');}
+window.showTopTab=showTopTab;
+function goHome(){
+  document.querySelectorAll('.nb-top').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('nbt-ov').classList.add('active');
+  ['comp','insights'].forEach(function(g){
+    var s=document.getElementById('nav-sub-'+g);
+    if(s) s.style.display='none';
+  });
+  showTab(null,'ov');
+}
 
 // ── INIT (runs after data.json loads) ────────────────────────────────────
 function _initApp(_D) {
@@ -1195,10 +1243,6 @@ document.addEventListener('click',function(e){if(!gs.contains(e.target)&&!sd.con
 function renderPodcasters(){
   var pods=COACHES.filter(function(c){return PODCASTERS.indexOf(c.coach)>=0;}).sort(function(a,b){return a.rank-b.rank;});
   document.getElementById('ov-pod').innerHTML=pods.map(function(c){
-    var alive=c.survivorStatus!=='eliminated';
-    var survBadge=alive
-      ?'<span class="badge balive">✓ Alive</span>'
-      :'<span class="badge" style="background:rgba(248,113,113,.15);color:var(--red);border:1px solid rgba(248,113,113,.3)">✗ Out</span>';
     var tr=c.tradesRemaining;
     var trClr=tr===undefined?'var(--muted)':tr>=20?'var(--green)':tr>=10?'var(--accent)':'var(--red)';
     return '<tr onclick="showCoach('+c.rank+')">'+
@@ -1207,8 +1251,6 @@ function renderPodcasters(){
       '<td class="tsc">'+c.r2+'</td>'+
       '<td class="tsc hi">'+(c.total||c.r1)+'</td>'+
       '<td style="font-size:.82rem;font-weight:700;color:var(--text)">'+fmtWealth(c)+'</td>'+
-      '<td>'+tb(c.rank,false)+'</td>'+
-      '<td>'+survBadge+'</td>'+
       '<td style="font-size:.82rem;font-weight:700;color:'+trClr+';text-align:center">'+(tr!==undefined?tr:'—')+'</td>'+
       '</tr>';
   }).join('');
