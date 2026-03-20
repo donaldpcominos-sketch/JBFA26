@@ -179,6 +179,11 @@ td{padding:.6rem 1rem;vertical-align:middle;}
     #pl-table-wrap{display:none;}
     #pl-card-list{display:block;}
   }
+  /* overview tables: hide Value on mobile, tighten stat cols */
+  #ovt .ov-val-col, #ovp .ov-val-col{display:none;}
+  #ovt colgroup .ov-val-col, #ovp colgroup .ov-val-col{display:none;}
+  #ovt td.tsc, #ovp td.tsc, #ovt thead th:nth-child(3), #ovp thead th:nth-child(3),
+  #ovt thead th:nth-child(4), #ovp thead th:nth-child(4){width:52px;padding:.5rem .4rem;text-align:center;}
   /* c2 survival: nothing to hide - already compact */
   /* overview: nothing to hide - already has coach+team combined */
 }
@@ -416,15 +421,15 @@ td{padding:.6rem 1rem;vertical-align:middle;}
       <div class="sc"><div class="scl" id="sc-avg-label">Field Avg R2</div><div class="scv" id="sc-avg-val">1034</div><div class="scs" id="sc-avg-sub"></div></div>
     </div>
     <div class="sh"><div class="sht">Overall Leaders</div><div class="shl"></div><span class="badge bt1">Live</span></div>
-    <div class="tw"><div class="tw-scroll"><table style="table-layout:fixed">
-      <colgroup><col style="width:42px"><col><col style="width:60px"><col style="width:70px"><col style="width:90px"><col style="width:72px"></colgroup>
-      <thead><tr><th>#</th><th>Coach</th><th>R2</th><th>Total</th><th>Value</th><th>Trades</th></tr></thead>
+    <div class="tw"><div class="tw-scroll"><table id="ovt">
+      <colgroup><col style="width:38px"><col><col style="width:56px"><col style="width:62px"><col class="ov-val-col" style="width:88px"><col style="width:64px"></colgroup>
+      <thead><tr><th>#</th><th>Coach</th><th>R2</th><th>Total</th><th class="ov-val-col">Value</th><th>Trades</th></tr></thead>
       <tbody id="ov-top"></tbody>
     </table></div></div>
     <div class="sh"><div class="sht">🎙️ Podcaster Rankings</div><div class="shl"></div></div>
-    <div class="tw"><div class="tw-scroll"><table style="table-layout:fixed">
-      <colgroup><col style="width:42px"><col><col style="width:60px"><col style="width:70px"><col style="width:90px"><col style="width:72px"></colgroup>
-      <thead><tr><th>#</th><th>Coach</th><th>R2</th><th>Total</th><th>Value</th><th>Trades</th></tr></thead>
+    <div class="tw"><div class="tw-scroll"><table id="ovp">
+      <colgroup><col style="width:38px"><col><col style="width:56px"><col style="width:62px"><col class="ov-val-col" style="width:88px"><col style="width:64px"></colgroup>
+      <thead><tr><th>#</th><th>Coach</th><th>R2</th><th>Total</th><th class="ov-val-col">Value</th><th>Trades</th></tr></thead>
       <tbody id="ov-pod"></tbody>
     </table></div></div>
     <div class="sh"><div class="sht">🔄 Trades This Round</div><div class="shl"></div><span id="ov-trade-rnd" style="font-size:.75rem;color:var(--muted)"></span></div>
@@ -1252,7 +1257,7 @@ function renderPodcasters(){
       '<td><div class="tco">'+esc(c.coach)+vipTag(c)+'</div><div class="tte">'+esc(c.team)+'</div></td>'+
       '<td class="tsc">'+c.r2+'</td>'+
       '<td class="tsc hi">'+(c.total||c.r1)+'</td>'+
-      '<td style="font-size:.82rem;font-weight:700;color:var(--text)">'+fmtWealth(c)+'</td>'+
+      '<td class="ov-val-col" style="font-size:.82rem;font-weight:700;color:var(--text)">'+fmtWealth(c)+'</td>'+
       '<td style="font-size:.82rem;font-weight:700;color:'+trClr+';text-align:center">'+(tr!==undefined?tr:'—')+'</td>'+
       '</tr>';
   }).join('');
@@ -1268,7 +1273,7 @@ function renderOvTop(){
       '<td><div class="tco">'+esc(c.coach)+vipTag(c)+'</div><div class="tte">'+esc(c.team)+'</div></td>'+
       '<td class="tsc" style="color:#fff">'+c.r2+'</td>'+
       '<td class="tsc hi">'+score+'</td>'+
-      '<td style="font-size:.82rem;font-weight:700;color:var(--text)">'+fmtWealth(c)+'</td>'+
+      '<td class="ov-val-col" style="font-size:.82rem;font-weight:700;color:var(--text)">'+fmtWealth(c)+'</td>'+
       '<td style="font-size:.82rem;font-weight:700;color:'+trClr+';text-align:center">'+(tr!==undefined?tr:'—')+'</td>'+
       '</tr>';
   }).join('');
