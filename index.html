@@ -99,6 +99,25 @@ main{max-width:1400px;margin:0 auto;padding:1.5rem;}
 .schips{display:flex;gap:.4rem;flex-wrap:wrap;}
 .schip{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:.25rem .65rem;font-size:.82rem;font-weight:600;}
 
+/* SIGNAL CHIPS */
+.sig-chip{display:inline-flex;align-items:center;gap:.2rem;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;padding:.15rem .45rem;border-radius:4px;white-space:nowrap;}
+.sig-rising{background:rgba(52,211,153,.15);color:var(--green);border:1px solid rgba(52,211,153,.35);}
+.sig-risk{background:rgba(248,113,113,.15);color:var(--red);border:1px solid rgba(248,113,113,.35);}
+.sig-pod{background:rgba(167,139,250,.15);color:var(--purple);border:1px solid rgba(167,139,250,.35);}
+/* SIGNAL SUMMARY STRIP */
+.sig-strip{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem;padding:.65rem .85rem;background:rgba(240,180,41,.05);border:1px solid rgba(240,180,41,.15);border-radius:10px;}
+.sig-strip-item{font-size:.78rem;color:var(--muted);display:flex;align-items:center;gap:.35rem;}
+.sig-strip-item strong{color:var(--text);}
+/* ROUND NARRATIVE STRIP */
+.round-narrative{background:rgba(96,165,250,.06);border:1px solid rgba(96,165,250,.18);border-radius:10px;padding:.75rem 1rem;margin-bottom:1.25rem;}
+.round-narrative-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--blue);margin-bottom:.5rem;}
+.round-narrative-items{display:flex;flex-direction:column;gap:.3rem;}
+.round-narrative-item{font-size:.8rem;color:var(--muted);line-height:1.5;}
+.round-narrative-item::before{content:"›";margin-right:.4rem;color:var(--blue);}
+/* PLAYERS VIEW — desktop: table; mobile: cards (overridden in @media block below) */
+#pl-table-wrap{display:block;}
+#pl-card-list{display:none;}
+
 /* VIP BADGE */
 .vip{display:inline-flex;align-items:center;gap:.2rem;background:rgba(52,211,153,.15);color:var(--vip);border:1px solid rgba(52,211,153,.35);border-radius:4px;padding:.08rem .35rem;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;vertical-align:middle;margin-left:.3rem;white-space:nowrap;}
 .admin{display:inline-flex;align-items:center;gap:.2rem;background:rgba(96,165,250,.15);color:var(--blue);border:1px solid rgba(96,165,250,.3);border-radius:4px;padding:.08rem .35rem;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;vertical-align:middle;margin-left:.3rem;white-space:nowrap;}
@@ -173,13 +192,9 @@ td{padding:.6rem 1rem;vertical-align:middle;}
   #ovt thead th:nth-child(4),#ovp thead th:nth-child(4),#p1t thead th:nth-child(4),#vipt thead th:nth-child(4){padding-left:.4rem;padding-right:.4rem;}
   #ovt td:nth-child(5),#ovp td:nth-child(5),#p1t td:nth-child(5),#vipt td:nth-child(5),
   #ovt thead th:nth-child(5),#ovp thead th:nth-child(5),#p1t thead th:nth-child(5),#vipt thead th:nth-child(5){padding-left:.3rem;padding-right:.4rem;}
-  /* Players table: on mobile show card list, hide table */
-  #pl-table-wrap{display:block;}
-  #pl-card-list{display:none;}
-  @media(max-width:600px){
-    #pl-table-wrap{display:none;}
-    #pl-card-list{display:block;}
-  }
+  /* Players table: on mobile hide table, show card list */
+  #pl-table-wrap{display:none!important;}
+  #pl-card-list{display:block!important;}
   /* c2 survival: nothing to hide - already compact */
   /* overview: nothing to hide - already has coach+team combined */
 }
@@ -416,6 +431,8 @@ td{padding:.6rem 1rem;vertical-align:middle;}
       <div class="sc"><div class="scl" id="sc-top-label">Top Score R2</div><div class="scv" style="color:var(--accent)" id="sc-top-val">1163</div><div class="scs" id="sc-top-coach" style="color:var(--text);font-weight:700;font-size:.8rem">Mark Wilson</div></div>
       <div class="sc"><div class="scl" id="sc-avg-label">Field Avg R2</div><div class="scv" id="sc-avg-val">1034</div><div class="scs" id="sc-avg-sub"></div></div>
     </div>
+    <!-- Round Narrative Strip -->
+    <div id="ov-round-narrative" style="display:none"></div>
     <div class="sh"><div class="sht">Overall Leaders</div><div class="shl"></div><span class="badge bt1">Live</span></div>
     <div class="tw"><div class="tw-scroll"><table id="ovt">
       <colgroup><col style="width:38px"><col><col style="width:72px"><col style="width:88px"><col style="width:60px"></colgroup>
@@ -631,6 +648,9 @@ td{padding:.6rem 1rem;vertical-align:middle;}
         <div id="pl-traded-out" style="padding:.5rem 0;"></div>
       </div>
     </div>
+
+    <!-- Signal Summary Strip -->
+    <div id="pl-signal-strip" style="display:none"></div>
 
     <!-- Full ownership table -->
     <div class="sh"><div class="sht">Ownership Rankings</div><div class="shl"></div></div>
@@ -1094,6 +1114,99 @@ function _initApp(_D) {
   PLAYERS = _D.players||{};
   TRADE_SUMMARY = (_D.meta&&_D.meta.tradeSummary)||{in:[],out:[]};
   ROUND_AVGS_FROM_DATA = _D.meta.roundAvgs;
+
+  // ── SIGNAL FIELD BACKFILL ─────────────────────────────────────────────────
+  // Ensures all player objects have signal fields regardless of data.json version.
+  // Runs on every load — fast O(n), no side effects on already-populated fields.
+  (function _backfillSignalFields(){
+    Object.keys(PLAYERS).forEach(function(pid){
+      var p = PLAYERS[pid];
+      if(!p) return;
+      // Skip if already populated by generate_data.py
+      if('expectedScore' in p) return;
+      var ordered = p.orderedScores || [];
+      var be = p.breakEven;
+      var ownPct = p.ownedPct || 0;
+
+      // 1. Expected Score
+      var es;
+      if(ordered.length >= 3){
+        es = Math.round((0.5*ordered[ordered.length-1] + 0.3*ordered[ordered.length-2] + 0.2*ordered[ordered.length-3])*100)/100;
+      } else if(ordered.length > 0){
+        es = Math.round((ordered.reduce(function(a,b){return a+b;},0)/ordered.length)*100)/100;
+      } else {
+        es = 0;
+      }
+
+      // 2. Expected Delta
+      var ed = (be != null) ? Math.round((es - be)*100)/100 : 0;
+
+      // 3. Expected Price Change
+      var epc = Math.round(1000 * ed / 1000) * 1000;
+
+      // 4. Trend Tier
+      var tt = 'flat';
+      if(ordered.length >= 3){
+        var s1=ordered[ordered.length-3], s2=ordered[ordered.length-2], s3=ordered[ordered.length-1];
+        if(s3>s2&&s2>s1) tt='up';
+        else if(s3<s2&&s2<s1) tt='down';
+      }
+
+      // 5. BE Pressure
+      var bp = 0, brt = 'low';
+      if(ordered.length >= 2){
+        var mean = ordered.reduce(function(a,b){return a+b;},0)/ordered.length;
+        var variance = ordered.reduce(function(a,b){return a+Math.pow(b-mean,2);},0)/ordered.length;
+        var sd = variance > 0 ? Math.sqrt(variance) : 1;
+        bp = be != null ? Math.round(((be - es)/sd)*1000)/1000 : 0;
+      }
+      if(bp > 1) brt = 'high';
+      else if(bp > 0) brt = 'medium';
+
+      // 6. Leverage
+      var ls = Math.round((1 - ownPct/100) * es * 100)/100;
+      var lt = ls > 30 ? 'high' : ls > 10 ? 'neutral' : 'safe';
+
+      p.expectedScore       = es;
+      p.expectedDelta       = ed;
+      p.expectedPriceChange = epc;
+      p.trendTier           = tt;
+      p.bePressure          = bp;
+      p.beRiskTier          = brt;
+      p.leverageScore       = ls;
+      p.leverageTier        = lt;
+    });
+  })();
+
+  // ── COACH INSIGHTS BACKFILL ───────────────────────────────────────────────
+  // Backfills coachInsights for coaches missing it (stale _INLINE_DATA).
+  (function _backfillCoachInsights(){
+    var curRkey = 'r' + CUR;
+    var scores = COACHES.map(function(c){ return (c.scores&&c.scores[curRkey])||0; }).filter(Boolean);
+    var avgScore = scores.length ? scores.reduce(function(a,b){return a+b;},0)/scores.length : 0;
+    COACHES.forEach(function(c){
+      if(c.coachInsights) return; // already populated
+      var podImpact = 0;
+      (c.players||[]).forEach(function(pid){
+        var p = PLAYERS[String(pid)];
+        if(!p) return;
+        var own = (p.ownedPct||0)/100;
+        var ordered = p.orderedScores||[];
+        if(ordered.length) podImpact += ordered[ordered.length-1]*(1-own);
+      });
+      var curScore = (c.scores&&c.scores[curRkey])||0;
+      var wealthVal = c.wealth&&c.wealth[curRkey] ? c.wealth[curRkey] : 0;
+      var totalScore = 0;
+      var sc = c.scores||{};
+      Object.keys(sc).forEach(function(k){totalScore+=sc[k]||0;});
+      var ve = wealthVal > 0 ? Math.round(totalScore/(wealthVal/1000000)*10)/10 : 0;
+      c.coachInsights = {
+        podImpact:       Math.round(podImpact*10)/10,
+        captainImpact:   Math.round((curScore - avgScore)*10)/10,
+        valueEfficiency: ve,
+      };
+    });
+  })();
   var SURVIVOR_COACHES = COACHES.filter(function(c){ return c.survivorEligible; });
 
 // ── VIP SORTED LIST ───────────────────────────────────────────────────────
@@ -1202,6 +1315,7 @@ window.showCoach = function showCoach(rank){
     '</div>'+
     sparklineHtml(c)+
     rankHistoryHtml(c)+
+    coachInsightsHtml(c)+
     podHtml(c)+
     '<div class="cvsec"><div class="cvsect">Main Season — Qualifying</div><p style="font-size:.875rem;color:var(--muted);line-height:1.65">Ranked <strong style="color:var(--text)">#'+rank+'</strong> of '+COACHES.length+'. Projected into <strong style="color:var(--text)">'+tname+'</strong> for Seeding. '+buf+' Qualifying runs until Round 8.</p></div>'+
     tierBoundaryHtml(rank, c)+
@@ -1450,6 +1564,36 @@ function getTopNOwnership(n){
   return counts;
 }
 
+// ── SIGNAL CHIP HELPERS ──────────────────────────────────────────────────────
+function sigChips(p){
+  var chips=[];
+  if(p.trendTier==='up') chips.push('<span class="sig-chip sig-rising">↑ Rising</span>');
+  if(p.beRiskTier==='high') chips.push('<span class="sig-chip sig-risk">⚠ Risk</span>');
+  if(p.leverageTier==='high') chips.push('<span class="sig-chip sig-pod">★ POD</span>');
+  return chips.slice(0,2).join(' ');
+}
+
+function renderSignalStrip(filtered){
+  var el=document.getElementById('pl-signal-strip');
+  if(!el) return;
+  // Find top riser (highest expectedDelta) and highest risk (highest bePressure)
+  var withDelta=filtered.filter(function(p){return p.expectedDelta!=null;});
+  var withPressure=filtered.filter(function(p){return p.bePressure!=null&&p.beRiskTier==='high';});
+  if(!withDelta.length&&!withPressure.length){el.style.display='none';return;}
+  var items=[];
+  if(withDelta.length){
+    var topRiser=withDelta.reduce(function(a,b){return b.expectedDelta>a.expectedDelta?b:a;});
+    var sign=topRiser.expectedDelta>=0?'+':'';
+    items.push('<span class="sig-strip-item"><span class="sig-chip sig-rising">↑ Top Riser</span><strong>'+esc(topRiser.name)+'</strong> expected delta '+sign+Math.round(topRiser.expectedDelta)+' pts vs BE</span>');
+  }
+  if(withPressure.length){
+    var topRisk=withPressure.reduce(function(a,b){return b.bePressure>a.bePressure?b:a;});
+    items.push('<span class="sig-strip-item"><span class="sig-chip sig-risk">⚠ High Risk</span><strong>'+esc(topRisk.name)+'</strong> BE pressure score '+topRisk.bePressure.toFixed(2)+'</span>');
+  }
+  el.innerHTML='<div class="sig-strip">'+items.join('')+'</div>';
+  el.style.display='';
+}
+
 function fPlayers(){
   var q=document.getElementById('plfi').value.toLowerCase().trim();
   var sortEl=document.getElementById('plsort');
@@ -1476,14 +1620,19 @@ function fPlayers(){
   });
   var ctEl=document.getElementById('plct');
   if(ctEl) ctEl.textContent=filtered.length+' players';
+
+  // Render signal summary strip
+  renderSignalStrip(filtered);
+
   var rows='';
   filtered.forEach(function(p,i){
     var col=p.ownedPct>=90?'var(--red)':p.ownedPct>=70?'var(--accent)':p.ownedPct>=40?'var(--text)':'var(--green)';
     var colN=p.topNPct>=90?'var(--red)':p.topNPct>=70?'var(--accent)':p.topNPct>=40?'var(--text)':'var(--green)';
     var bar=Math.max(2,Math.round(p.ownedPct));
+    var chips=sigChips(p);
     rows+='<tr onclick="showPlayerCard(\''+p.pid+'\')" style="cursor:pointer;">'
       +'<td class="trk">'+(i+1)+'</td>'
-      +'<td style="font-weight:600">'+esc(p.name)+'</td>'
+      +'<td style="font-weight:600">'+esc(p.name)+(chips?' <span style="margin-left:.3rem">'+chips+'</span>':'')+'</td>'
       +'<td style="font-family:Bebas Neue,sans-serif;color:var(--muted)">$'+(p.cost/1000).toFixed(0)+'K</td>'
       +'<td><div style="display:flex;align-items:center;gap:.5rem;">'
         +'<div style="width:56px;height:6px;background:var(--border);border-radius:3px;flex-shrink:0;overflow:hidden;"><div style="width:'+bar+'%;height:100%;background:'+col+';border-radius:3px;"></div></div>'
@@ -1501,18 +1650,30 @@ function fPlayers(){
   var plb=document.getElementById('plb');
   if(plb) plb.innerHTML=rows||'<tr><td colspan="11" style="text-align:center;padding:2rem;color:var(--muted)">No players found.</td></tr>';
 
-  // Mobile card list
+  // Mobile card list — with BE, expectedDelta and signal chips
   var cards='';
   filtered.forEach(function(p,i){
     var col=p.ownedPct>=90?'var(--red)':p.ownedPct>=70?'var(--accent)':p.ownedPct>=40?'var(--text)':'var(--green)';
     var colN=p.topNPct>=90?'var(--red)':p.topNPct>=70?'var(--accent)':p.topNPct>=40?'var(--text)':'var(--green)';
     var bar=Math.max(2,Math.round(p.ownedPct));
+    var chips=sigChips(p);
+    var beStr=p.breakEven!=null?'BE: <strong style="color:var(--text)">'+p.breakEven+'</strong>':'';
+    var deltaStr='';
+    if(p.expectedDelta!=null){
+      var dSign=p.expectedDelta>=0?'+':'';
+      var dCol=p.expectedDelta>=0?'var(--green)':'var(--red)';
+      deltaStr='Exp Δ: <strong style="color:'+dCol+'">'+dSign+Math.round(p.expectedDelta)+'</strong>';
+    }
     cards+='<div onclick="showPlayerCard(\''+p.pid+'\')" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.75rem 1rem;margin-bottom:.5rem;cursor:pointer;">'
       // Player name + price row
-      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;">'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.35rem;">'
         +'<div style="font-weight:700;font-size:.95rem">'+esc(p.name)+'</div>'
         +'<div style="font-family:Bebas Neue,sans-serif;color:var(--muted);font-size:.9rem">$'+(p.cost/1000).toFixed(0)+'K</div>'
       +'</div>'
+      // Signal chips row
+      +(chips?'<div style="margin-bottom:.35rem;display:flex;gap:.3rem;flex-wrap:wrap;">'+chips+'</div>':'')
+      // BE + delta row
+      +((beStr||deltaStr)?'<div style="display:flex;gap:.75rem;font-size:.78rem;color:var(--muted);margin-bottom:.4rem;">'+beStr+(beStr&&deltaStr?' · ':'')+deltaStr+'</div>':'')
       // Ownership bar + % row
       +'<div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.5rem;">'
         +'<div style="flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden;"><div style="width:'+bar+'%;height:100%;background:'+col+';border-radius:3px;"></div></div>'
@@ -1535,6 +1696,7 @@ function fPlayers(){
   var plCards=document.getElementById('pl-card-list');
   if(plCards) plCards.innerHTML=cards||'<p style="text-align:center;padding:2rem;color:var(--muted);font-size:.875rem">No players found.</p>';
 }
+window.fPlayers = fPlayers;
 
 function renderTradeSummary(){
   var ovRndEl=document.getElementById('ov-trade-rnd');
@@ -1658,6 +1820,32 @@ function tierBoundaryHtml(rank, c){
 }
 
 // ── SPARKLINE ─────────────────────────────────────────────────────────────
+// ── COACH INSIGHTS ───────────────────────────────────────────────────────────
+function coachInsightsHtml(c){
+  var ci = c.coachInsights;
+  if(!ci) return '';
+  var podImpact       = ci.podImpact       != null ? Math.round(ci.podImpact)       : 0;
+  var captainImpact   = ci.captainImpact   != null ? ci.captainImpact               : 0;
+  var valueEfficiency = ci.valueEfficiency != null ? ci.valueEfficiency             : 0;
+  var capCol  = captainImpact >= 0 ? 'var(--green)' : 'var(--red)';
+  var capSign = captainImpact >= 0 ? '+' : '';
+  return '<div class="cvsec"><div class="cvsect">📊 Coach Insights</div>'
+    +'<div style="display:flex;gap:.6rem;flex-wrap:wrap;">'
+    +'<div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.5rem .75rem;min-width:90px;text-align:center;">'
+      +'<div style="font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.15rem">POD Impact</div>'
+      +'<div style="font-family:Bebas Neue,sans-serif;font-size:1.3rem;color:var(--purple);letter-spacing:.04em">'+podImpact+'</div>'
+    +'</div>'
+    +'<div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.5rem .75rem;min-width:90px;text-align:center;">'
+      +'<div style="font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.15rem">Score vs Avg</div>'
+      +'<div style="font-family:Bebas Neue,sans-serif;font-size:1.3rem;color:'+capCol+';letter-spacing:.04em">'+capSign+captainImpact+'</div>'
+    +'</div>'
+    +'<div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.5rem .75rem;min-width:90px;text-align:center;">'
+      +'<div style="font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.15rem">Pts per $1M</div>'
+      +'<div style="font-family:Bebas Neue,sans-serif;font-size:1.3rem;color:var(--accent);letter-spacing:.04em">'+valueEfficiency+'</div>'
+    +'</div>'
+    +'</div></div>';
+}
+
 // ── POD (Point of Difference) ────────────────────────────────────────────────
 function podHtml(c){
   if(!c.players||!c.players.length) return '';
@@ -1826,7 +2014,21 @@ var _ff=document.getElementById('fform');if(_ff)_ff.addEventListener('submit',fu
     }).catch(function(){btn.textContent='Send Feedback';btn.disabled=false;alert('Something went wrong — try again.');});
 });
 // ── INIT ──────────────────────────────────────────────────────────────────
-renderOvTop();renderOvVip();renderPodcasters();renderSched();dP1();dVip();dC2();buildPlList();fPlayers();renderTradeSummary();
+function renderRoundNarrative(){
+  var el=document.getElementById('ov-round-narrative');
+  if(!el) return;  // element guard — safe no-op if missing
+  var insights=(_D&&Array.isArray(_D.roundInsights)&&_D.roundInsights.length)?_D.roundInsights:[];
+  if(!insights.length){el.style.display='none';return;}
+  var html='<div class="round-narrative">'
+    +'<div class="round-narrative-title">⚡ R'+CUR+' Signals</div>'
+    +'<div class="round-narrative-items">'
+    +insights.map(function(s){return '<div class="round-narrative-item">'+esc(String(s))+'</div>';}).join('')
+    +'</div></div>';
+  el.innerHTML=html;
+  el.style.display='';
+}
+
+renderOvTop();renderOvVip();renderPodcasters();renderSched();dP1();dVip();dC2();buildPlList();fPlayers();renderTradeSummary();renderRoundNarrative();
 
 // ── PLAYER CARD MODAL ────────────────────────────────────────────────────────
 function showPlayerCard(pid){
