@@ -303,7 +303,8 @@ td{padding:.6rem 1rem;vertical-align:middle;}
 .stats-drop-item:last-child{border-bottom:none;}
 .stats-drop-item:hover{background:var(--surface2);}
 .stats-player-card{background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:1.1rem 1.25rem;margin-bottom:1.25rem;}
-.stats-player-name{font-family:'Bebas Neue',sans-serif;font-size:1.35rem;letter-spacing:.06em;color:var(--text);margin-bottom:.25rem;}
+.stats-player-name{font-family:'Bebas Neue',sans-serif;font-size:1.35rem;letter-spacing:.06em;color:var(--text);margin-bottom:.25rem;display:flex;align-items:baseline;gap:.5rem;flex-wrap:wrap;}
+.stats-pos-tags{font-family:'DM Sans',sans-serif;font-size:.7rem;font-weight:700;letter-spacing:.07em;color:var(--muted);text-transform:uppercase;background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:.1rem .4rem;line-height:1.4;}
 .stats-player-meta{font-size:.78rem;color:var(--muted);margin-bottom:.85rem;}
 .stats-tog-filter{display:flex;align-items:center;gap:.5rem;margin-bottom:1rem;font-size:.82rem;color:var(--muted);}
 .stats-tog-filter select{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.25rem .55rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.82rem;outline:none;}
@@ -1048,14 +1049,12 @@ td{padding:.6rem 1rem;vertical-align:middle;}
         <label class="stats-filter-label">Position</label>
         <select id="stats-lb-pos" class="stats-select" onchange="statsRenderLeaderboard()">
           <option value="0">All</option>
-          <option value="5">HOK</option>
-          <option value="6">FRF</option>
-          <option value="7">SRF</option>
-          <option value="8">LRF</option>
-          <option value="2">CTW</option>
-          <option value="1">HFB</option>
-          <option value="3">5/8</option>
+          <option value="1">HOK</option>
+          <option value="2">FRF</option>
+          <option value="3">2RF</option>
           <option value="4">HLF</option>
+          <option value="5">CTW</option>
+          <option value="6">HFB</option>
         </select>
       </div>
       <div class="stats-filter-group">
@@ -2531,6 +2530,14 @@ function _initStats() {
     SO:   {label:'Send Off',         pts:-10,     floor:false},
   };
 
+  // Position labels — NRL Fantasy position IDs
+  var POS_LABELS = {1:'HOK', 2:'FRF', 3:'2RF', 4:'HLF', 5:'CTW', 6:'HFB'};
+
+  function formatPositions(positions) {
+    if (!positions || !positions.length) return '';
+    return positions.map(function(p){ return POS_LABELS[p] || (''+p); }).join(' / ');
+  }
+
   // Core stat groups (Player View default 3x3)
   var CORE_GROUPS = [
     {name:'Base',      keys:['TOG','TCK','MG']},
@@ -2715,6 +2722,7 @@ function _initStats() {
     var qualRounds = Object.keys(sp.rounds).filter(function(r){return (sp.rounds[r].TOG||0)>=togMin;});
 
     var price = sp.cost ? ('$'+(sp.cost/1000).toFixed(0)+'k') : '';
+    var posTags = formatPositions(sp.positions);
     var metaStr = (price?price+' · ':'')+qualRounds.length+' game'+(qualRounds.length!==1?'s':'')+' · TOG '+(togMin?'≥'+togMin+' min':'all mins');
 
     // Controls row
@@ -2733,7 +2741,7 @@ function _initStats() {
 
     if (!qualRounds.length) {
       cardEl.innerHTML = '<div class="stats-player-card">'
-        + '<div class="stats-player-name">'+esc(sp.name)+'</div>'
+        + '<div class="stats-player-name">'+esc(sp.name)+(posTags ? ' <span class="stats-pos-tags">'+esc(posTags)+'</span>' : '')+'</div>'
         + '<div class="stats-player-meta">'+metaStr+'</div>'
         + controlsHtml
         + '<div class="stats-empty">No qualifying rounds with the selected minutes filter.</div>'
@@ -2790,7 +2798,7 @@ function _initStats() {
     }).join('');
 
     cardEl.innerHTML = '<div class="stats-player-card">'
-      + '<div class="stats-player-name">'+esc(sp.name)+'</div>'
+      + '<div class="stats-player-name">'+esc(sp.name)+(posTags ? ' <span class="stats-pos-tags">'+esc(posTags)+'</span>' : '')+'</div>'
       + '<div class="stats-player-meta">'+metaStr+'</div>'
       + controlsHtml
       + groupsHtml
