@@ -1022,7 +1022,6 @@ td{padding:.6rem 1rem;vertical-align:middle;}
   <div class="stats-pills" id="stats-pills">
     <button class="stats-pill active" data-view="player" onclick="statsShowView('player')">Player View</button>
     <button class="stats-pill" data-view="leaderboard" onclick="statsShowView('leaderboard')">Leaderboard</button>
-    <button class="stats-pill" data-view="value" onclick="statsShowView('value')">Value Finder</button>
   </div>
 
   <!-- ── PLAYER VIEW ── -->
@@ -1046,6 +1045,20 @@ td{padding:.6rem 1rem;vertical-align:middle;}
         <select id="stats-lb-stat" class="stats-select" onchange="statsRenderLeaderboard()"></select>
       </div>
       <div class="stats-filter-group">
+        <label class="stats-filter-label">Position</label>
+        <select id="stats-lb-pos" class="stats-select" onchange="statsRenderLeaderboard()">
+          <option value="0">All</option>
+          <option value="5">HOK</option>
+          <option value="6">FRF</option>
+          <option value="7">SRF</option>
+          <option value="8">LRF</option>
+          <option value="2">CTW</option>
+          <option value="1">HFB</option>
+          <option value="3">5/8</option>
+          <option value="4">HLF</option>
+        </select>
+      </div>
+      <div class="stats-filter-group">
         <label class="stats-filter-label">Min Minutes</label>
         <select id="stats-lb-tog" class="stats-select" onchange="statsRenderLeaderboard()">
           <option value="0">All</option>
@@ -1065,32 +1078,6 @@ td{padding:.6rem 1rem;vertical-align:middle;}
     <div id="stats-lb-table-wrap" style="overflow-x:auto;margin-top:.75rem;"></div>
   </div>
 
-  <!-- ── VALUE FINDER VIEW ── -->
-  <div class="stats-view" id="stats-view-value" style="display:none">
-    <div class="stats-filters">
-      <div class="stats-filter-group">
-        <label class="stats-filter-label">Stat</label>
-        <select id="stats-vf-stat" class="stats-select" onchange="statsRenderValueFinder()"></select>
-      </div>
-      <div class="stats-filter-group">
-        <label class="stats-filter-label">Min Minutes</label>
-        <select id="stats-vf-tog" class="stats-select" onchange="statsRenderValueFinder()">
-          <option value="0">All</option>
-          <option value="40">40+</option>
-          <option value="60" selected>60+</option>
-          <option value="70">70+</option>
-        </select>
-      </div>
-      <div class="stats-filter-group">
-        <label class="stats-filter-label">Min Games</label>
-        <select id="stats-vf-games" class="stats-select" onchange="statsRenderValueFinder()">
-          <option value="1">1+</option>
-          <option value="2" selected>2+</option>
-        </select>
-      </div>
-    </div>
-    <div id="stats-vf-table-wrap" style="overflow-x:auto;margin-top:.75rem;"></div>
-  </div>
 </div>
 <!-- END STATS PANEL -->
 
@@ -2585,6 +2572,18 @@ function _initStats() {
     return n + (s[(v - 20) % 10] || s[v] || s[0]);
   }
 
+  // Colour rank from top=green → mid=amber → bottom=red
+  // totalCount is passed so we know the pool size
+  function rankColour(rank, total) {
+    if (!rank || !total || total < 2) return 'var(--muted)';
+    var pct = (rank - 1) / (total - 1); // 0 = 1st, 1 = last
+    if (pct <= 0.2)       return 'var(--green)';
+    if (pct <= 0.45)      return '#86efac'; // light green
+    if (pct <= 0.55)      return 'var(--accent)'; // amber mid
+    if (pct <= 0.75)      return '#fb923c'; // orange
+    return 'var(--red)';
+  }
+
   // ── Build player list ─────────────────────────────────────────────────────
   var STAT_PLAYERS = [];
   Object.keys(PLAYERS).forEach(function(pid) {
@@ -2592,7 +2591,7 @@ function _initStats() {
     if (!p || !p.name) return;
     var hs = p.historicalStats || {};
     if (!Object.keys(hs).length) return;
-    STAT_PLAYERS.push({pid:pid, name:p.name, cost:p.cost||p.currentPrice||0, rounds:hs});
+    STAT_PLAYERS.push({pid:pid, name:p.name, cost:p.cost||p.currentPrice||0, rounds:hs, positions:p.positions||[]});
   });
   STAT_PLAYERS.sort(function(a,b){return b.cost - a.cost;});
 
@@ -2605,6 +2604,7 @@ function _initStats() {
   }
 
   // ── Compute rank for a player on a key under a TOG filter ────────────────
+  // Returns {rank, total} or null
   function playerRank(pid, key, togMin) {
     if (!STAT_META[key] || STAT_META[key].pts === null) return null;
     var target = null;
@@ -2617,11 +2617,10 @@ function _initStats() {
     });
     if (target === null || !all.length) return null;
     var m = STAT_META[key];
-    // sort descending for positive, ascending for negative
     var desc = (m.pts >= 0);
     all.sort(function(a,b){return desc ? b.avg - a.avg : a.avg - b.avg;});
     for (var i=0; i<all.length; i++) {
-      if (all[i].pid === pid) return i+1;
+      if (all[i].pid === pid) return {rank:i+1, total:all.length};
     }
     return null;
   }
@@ -2635,7 +2634,6 @@ function _initStats() {
       if (btn) btn.classList.toggle('active', v === view);
     });
     if (view === 'leaderboard') statsRenderLeaderboard();
-    if (view === 'value') statsRenderValueFinder();
   };
 
   // ── Populate stat dropdowns ───────────────────────────────────────────────
@@ -2651,7 +2649,6 @@ function _initStats() {
     });
   }
   buildStatOptions('stats-lb-stat');
-  buildStatOptions('stats-vf-stat');
 
   // ── PLAYER VIEW: search ───────────────────────────────────────────────────
   var statsSelectedPid = null;
@@ -2758,19 +2755,23 @@ function _initStats() {
       var raw = avgs[key] !== undefined ? avgs[key] : 0;
       var label = STAT_META[key] ? STAT_META[key].label : key;
       var pts = calcPts(key, raw);
-      var rankN = playerRank(pid, key, togMin);
+      var rankInfo = playerRank(pid, key, togMin);
+      var rankN = rankInfo ? rankInfo.rank : null;
+      var rankTotal = rankInfo ? rankInfo.total : null;
 
-      // secondary line: pts + rank
+      // secondary line: pts + coloured rank
       var secondary = '';
-      var parts = [];
-      if (pts !== null && Math.abs(pts) >= 0.05) {
-        parts.push('\u2248 ' + fmtPts(pts) + ' pts');
-      }
+      var ptsPart = (pts !== null && Math.abs(pts) >= 0.05) ? ('\u2248 ' + fmtPts(pts) + ' pts') : '';
+      var rankPart = '';
       if (rankN !== null && rankN <= 999) {
-        parts.push(ordinal(rankN));
+        var col = rankColour(rankN, rankTotal);
+        rankPart = '<span style="color:'+col+';font-weight:700;">'+ordinal(rankN)+'</span>';
       }
-      if (parts.length) {
-        secondary = '<div class="stats-cell-pts">'+esc(parts.join(' \xb7 '))+'</div>';
+      var hasPts = ptsPart.length > 0;
+      var hasRank = rankPart.length > 0;
+      if (hasPts || hasRank) {
+        var sep = (hasPts && hasRank) ? ' <span style="color:var(--border)">\xb7</span> ' : '';
+        secondary = '<div class="stats-cell-pts">'+(hasPts ? esc(ptsPart) : '')+sep+rankPart+'</div>';
       }
 
       return '<div class="stats-cell">'
@@ -2801,16 +2802,20 @@ function _initStats() {
     var statSel  = document.getElementById('stats-lb-stat');
     var togSel   = document.getElementById('stats-lb-tog');
     var gamesSel = document.getElementById('stats-lb-games');
+    var posSel   = document.getElementById('stats-lb-pos');
     if (!statSel) return;
     var key      = statSel.value;
     var togMin   = parseInt(togSel ? togSel.value : 0, 10);
     var minGames = parseInt(gamesSel ? gamesSel.value : 1, 10);
+    var posFilter = parseInt(posSel ? posSel.value : 0, 10);
     var wrap = document.getElementById('stats-lb-table-wrap');
     if (!wrap) return;
 
     var meta = STAT_META[key] || {label:key, pts:0, floor:false};
     var rows = [];
     STAT_PLAYERS.forEach(function(sp) {
+      // Position filter — dual-position players match either position
+      if (posFilter > 0 && (!sp.positions || sp.positions.indexOf(posFilter) < 0)) return;
       var r = playerAvg(sp, key, togMin);
       if (!r || r.games < minGames) return;
       rows.push({name:sp.name, avg:r.avg, games:r.games});
@@ -2846,60 +2851,6 @@ function _initStats() {
     wrap.innerHTML = html;
   };
 
-  // ── VALUE FINDER ──────────────────────────────────────────────────────────
-  window.statsRenderValueFinder = function() {
-    var statSel  = document.getElementById('stats-vf-stat');
-    var togSel   = document.getElementById('stats-vf-tog');
-    var gamesSel = document.getElementById('stats-vf-games');
-    if (!statSel) return;
-    var key      = statSel.value;
-    var togMin   = parseInt(togSel ? togSel.value : 0, 10);
-    var minGames = parseInt(gamesSel ? gamesSel.value : 1, 10);
-    var wrap = document.getElementById('stats-vf-table-wrap');
-    if (!wrap) return;
-
-    var meta = STAT_META[key];
-    if (!meta || meta.pts === null) { wrap.innerHTML = ''; return; }
-
-    var rows = [];
-    STAT_PLAYERS.forEach(function(sp) {
-      if (!sp.cost) return;
-      var r = playerAvg(sp, key, togMin);
-      if (!r || r.games < minGames) return;
-      var avgPts = meta.floor ? Math.floor(r.avg * meta.pts) : r.avg * meta.pts;
-      rows.push({name:sp.name, cost:sp.cost, avgRaw:r.avg, avgPts:avgPts, games:r.games});
-    });
-    rows.sort(function(a,b){return meta.pts < 0 ? a.avgPts - b.avgPts : b.avgPts - a.avgPts;});
-
-    if (!rows.length) {
-      wrap.innerHTML = '<div class="stats-empty">No players match these filters.</div>';
-      return;
-    }
-
-    var html = '<table class="stats-table"><thead><tr>'
-      + '<th class="stats-rank">#</th>'
-      + '<th>Player</th>'
-      + '<th>'+esc(meta.label)+'/game</th>'
-      + '<th>Price</th>'
-      + '<th>Games</th>'
-      + '</tr></thead><tbody>';
-
-    rows.slice(0,50).forEach(function(row, i) {
-      var ptsFmt = fmtPts(row.avgPts);
-      var ptsColour = row.avgPts >= 0 ? 'var(--green)' : 'var(--red)';
-      var ptsHtml = Math.abs(row.avgPts) >= 0.05
-        ? '<div style="font-size:.7rem;color:'+ptsColour+';margin-top:.15rem;">'+ptsFmt+' pts</div>'
-        : '';
-      html += '<tr><td class="stats-rank">'+(i+1)+'</td>'
-        + '<td>'+esc(row.name)+'</td>'
-        + '<td><strong>'+fmtRaw(key,row.avgRaw)+'</strong>'+ptsHtml+'</td>'
-        + '<td style="color:var(--muted)">$'+(row.cost/1000).toFixed(0)+'k</td>'
-        + '<td style="color:var(--muted)">'+row.games+'</td>'
-        + '</tr>';
-    });
-    html += '</tbody></table>';
-    wrap.innerHTML = html;
-  };
 
   // Render leaderboard on first show
   statsRenderLeaderboard();
