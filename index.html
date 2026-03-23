@@ -657,7 +657,7 @@ td{padding:.6rem 1rem;vertical-align:middle;}
       <div class="sc"><div class="scl">Started</div><div class="scv" id="sc-started">299</div><div class="scs">coaches</div></div>
       <div class="sc"><div class="scl">Still Alive</div><div class="scv" style="color:var(--green)" id="sc-still-alive">…</div><div class="scs" id="sc-still-alive-sub">after R2</div></div>
       <div class="sc"><div class="scl">Eliminated</div><div class="scv" style="color:var(--muted)" id="sc-elim-count">20</div><div class="scs" id="sc-elim-sub">cut after last round</div></div>
-      <div class="sc"><div class="scl" id="sc-cut-label">R2 Cut Score</div><div class="scv" style="color:var(--red)" id="sc-cut-val">963</div><div class="scs">lowest safe R2 score</div></div>
+      <div class="sc"><div class="scl" id="sc-cut-label">R2 Cut Score</div><div class="scv" style="color:var(--red)" id="sc-cut-val">963</div></div>
       <div class="sc"><div class="scl" id="sc-next-drop-label">Next Drop</div><div class="scv" style="color:var(--red)" id="sc-next-drop-val">—</div><div class="scs">lowest weekly scores cut</div></div>
     </div>
     <div class="sh"><div class="sht">Full Drop Schedule</div><div class="shl"></div></div>
@@ -673,10 +673,6 @@ td{padding:.6rem 1rem;vertical-align:middle;}
     <p style="font-size:.78rem;color:var(--muted);margin-bottom:.5rem;">💡 <strong style="color:var(--text)">Click any round</strong> to see which coaches were eliminated that round.</p>
     <div class="sg" id="sgrid"></div>
     <div id="elim-popup" style="display:none;margin-top:.75rem;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:1rem;"></div>
-    <div class="sh"><div class="sht">All Coaches — Survivor Status</div><div class="shl"></div></div>
-    <div class="fr"><span class="fil">Filter:</span><input class="fi" id="c2fi" placeholder="Search…" oninput="fC2()"></div>
-    <div class="tw"><div class="tw-scroll"><table><thead><tr><th>R2 Score</th><th>Coach</th><th>Status</th></tr></thead><tbody id="c2b"></tbody></table></div></div>
-    <div class="pager" id="c2pg"></div>
   </div>
 
   <!-- PLAYERS TAB -->
@@ -1545,40 +1541,6 @@ function dVip(){
 }
 
 // ── C2 ────────────────────────────────────────────────────────────────────
-var c2p=1,C2N=50,c2l=SURVIVOR_COACHES.slice().sort(function(a,b){return (a.r2||0)-(b.r2||0);});
-function fC2(){
-  var q=document.getElementById('c2fi').value.toLowerCase();
-  c2l=SURVIVOR_COACHES.filter(function(c){return c.coach.toLowerCase().indexOf(q)>=0||c.team.toLowerCase().indexOf(q)>=0;}).sort(function(a,b){return (a.r2||0)-(b.r2||0);});
-  c2p=1;dC2();
-}
-function dC2(){
-  var allSorted=c2l;
-  var totalElim=_D.coaches.filter(function(c){return c.survivorStatus==='eliminated';}).length;
-  var cutScore=_D.meta.cutScore||0;
-  var pg=allSorted.slice((c2p-1)*C2N,c2p*C2N);
-  var rows='',shownDiv=false;
-  var pageStart=(c2p-1)*C2N;
-  pg.forEach(function(c,i){
-    var globalIdx=pageStart+i;
-    var isDead=globalIdx<totalElim;
-    if(!isDead && !shownDiv){
-      shownDiv=true;
-      rows+='<tr><td colspan="4" style="text-align:center;padding:.5rem 1rem;background:rgba(52,211,153,.06);border-top:2px solid rgba(52,211,153,.3);border-bottom:1px solid rgba(52,211,153,.2);font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--green)">✓ Safe — '+(_D.meta.aliveAfterLastRound)+' Coaches Alive</td></tr>';
-    }
-    var badge=isDead
-      ?'<span class="badge" style="background:rgba(248,113,113,.15);color:var(--red);border:1px solid rgba(248,113,113,.3)">✗ Eliminated R2</span>'
-      :'<span class="badge balive">✓ Alive</span>';
-    var rowStyle=isDead?'opacity:.7;':'';
-    rows+='<tr onclick="showCoach('+c.rank+')" style="'+rowStyle+'">'+
-      '<td class="tsc" style="color:'+(isDead?'var(--red)':'var(--text)')+'">'+c.r2+'</td>'+
-      '<td><div class="tco">'+esc(c.coach)+vipTag(c)+'</div><div class="tte">'+esc(c.team)+'</div></td>'+
-      '<td>'+badge+'</td>'+
-      '</tr>';
-  });
-  document.getElementById('c2b').innerHTML=rows;
-  dPager('c2pg',Math.ceil(c2l.length/C2N),c2p,function(p){c2p=p;dC2();});
-}
-
 // ── PAGER ─────────────────────────────────────────────────────────────────
 // ── PLAYERS TAB ──────────────────────────────────────────────────────────────
 var plList = [];
@@ -2068,13 +2030,13 @@ function closePlModal(){
   if(ndLabel&&nextDrop) ndLabel.textContent='Next Drop R'+nextDrop.r;
   if(ndVal&&nextDrop) ndVal.textContent=nextDrop.d>0?'-'+nextDrop.d:'—';
   var elimCountEl=document.getElementById('sc-elim-count');
-  if(elimCountEl) elimCountEl.textContent=_D.meta.totalCoaches-_D.meta.aliveAfterLastRound;
+  if(elimCountEl) elimCountEl.textContent=(_D.meta.survivorEligibleCount||_D.meta.totalCoaches)-_D.meta.aliveAfterLastRound;
   var elimSubEl=document.getElementById('sc-elim-sub');
   if(elimSubEl) elimSubEl.textContent='cut after R'+CUR;
   var aliveLabel=document.getElementById('sc-alive-label');
   if(aliveLabel) aliveLabel.textContent='Alive After R'+CUR;
   var aliveSub=document.getElementById('sc-alive-sub');
-  if(aliveSub){var elimN=_D.meta.totalCoaches-aliveCount;aliveSub.textContent=elimN+' cut after R'+CUR;}
+  if(aliveSub){var elimN=(_D.meta.survivorEligibleCount||_D.meta.totalCoaches)-aliveCount;aliveSub.textContent=elimN+' cut after R'+CUR;}
   var aliveFixEl=document.getElementById('sc-alive'); if(aliveFixEl) aliveFixEl.textContent=aliveCount;
   var stillFixEl=document.getElementById('sc-still-alive'); if(stillFixEl) stillFixEl.textContent=aliveCount;
   document.querySelectorAll('.dyn-total').forEach(function(el){el.textContent=total;});
@@ -2107,7 +2069,7 @@ function closePlModal(){
   var cutValOv=document.getElementById('sc-cut-val-ov');
   if(cutValOv) cutValOv.textContent=cutScore;
   var cutScsOv=document.getElementById('sc-cut-scs-ov');
-  if(cutScsOv) cutScsOv.textContent='lowest safe R'+CUR+' score';
+  if(cutScsOv) cutScsOv.textContent='';
 
   // Alive count — from data
   var aliveEl=document.getElementById('sc-alive');
