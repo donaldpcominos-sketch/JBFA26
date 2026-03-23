@@ -384,6 +384,7 @@ td{padding:.6rem 1rem;vertical-align:middle;}
 .scel{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.5rem;text-align:center;}
 .scel.cur{background:rgba(26,58,143,.3);border-color:var(--accent);}
 .scel.past{opacity:.4;}
+.scel.elim-active{opacity:1!important;border-color:var(--red)!important;background:rgba(248,113,113,.12)!important;}
 .scr{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);}
 .scd{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--red);}
 .scd.z{color:var(--green);}
@@ -656,7 +657,7 @@ td{padding:.6rem 1rem;vertical-align:middle;}
     <div class="sr">
       <div class="sc"><div class="scl">Started</div><div class="scv" id="sc-started">299</div><div class="scs">coaches</div></div>
       <div class="sc"><div class="scl">Still Alive</div><div class="scv" style="color:var(--green)" id="sc-still-alive">…</div><div class="scs" id="sc-still-alive-sub">after R2</div></div>
-      <div class="sc"><div class="scl">Eliminated</div><div class="scv" style="color:var(--muted)" id="sc-elim-count">20</div><div class="scs" id="sc-elim-sub">cut after last round</div></div>
+      <div class="sc"><div class="scl">Eliminated</div><div class="scv" style="color:var(--muted)" id="sc-elim-count">—</div><div class="scs" id="sc-elim-sub">cut to date</div></div>
       <div class="sc"><div class="scl" id="sc-cut-label">R2 Cut Score</div><div class="scv" style="color:var(--red)" id="sc-cut-val">963</div><div class="scs">lowest safe R2 score</div></div>
       <div class="sc"><div class="scl" id="sc-next-drop-label">Next Drop</div><div class="scv" style="color:var(--red)" id="sc-next-drop-val">—</div><div class="scs">lowest weekly scores cut</div></div>
     </div>
@@ -673,10 +674,6 @@ td{padding:.6rem 1rem;vertical-align:middle;}
     <p style="font-size:.78rem;color:var(--muted);margin-bottom:.5rem;">💡 <strong style="color:var(--text)">Click any round</strong> to see which coaches were eliminated that round.</p>
     <div class="sg" id="sgrid"></div>
     <div id="elim-popup" style="display:none;margin-top:.75rem;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:1rem;"></div>
-    <div class="sh"><div class="sht">All Coaches — Survivor Status</div><div class="shl"></div></div>
-    <div class="fr"><span class="fil">Filter:</span><input class="fi" id="c2fi" placeholder="Search…" oninput="fC2()"></div>
-    <div class="tw"><div class="tw-scroll"><table><thead><tr><th>R2 Score</th><th>Coach</th><th>Status</th></tr></thead><tbody id="c2b"></tbody></table></div></div>
-    <div class="pager" id="c2pg"></div>
   </div>
 
   <!-- PLAYERS TAB -->
@@ -1473,7 +1470,7 @@ function renderSched(){
     } else {
       extraClick='';
     }
-    return '<div class="scel '+cls+'"'+extraClick+' title="'+tooltip+'" style="background:'+h.bg+';'+(item.d>0||item.r===27?'cursor:pointer':'')+'">'
+    return '<div class="scel '+cls+'"'+extraClick+' data-round="'+item.r+'" title="'+tooltip+'" style="background:'+h.bg+';'+(item.d>0||item.r===27?'cursor:pointer':'')+'">'
       +'<div class="scr">R'+item.r+'</div>'
       +'<div class="scd '+(item.d===0?'z':'')+'" style="color:'+h.lc+'">'+( item.d===0?'—':'-'+item.d)+'</div>'
       +'<div class="scre">'+rem+' left</div>'
@@ -1482,7 +1479,55 @@ function renderSched(){
   }).join('');
 }
 
-// ── PHASE 1 ───────────────────────────────────────────────────────────────
+// ── SHOW ELIMINATED FOR ROUND ─────────────────────────────────────────────
+var _elimOpenRound=null;
+function showElimForRound(r){
+  var popup=document.getElementById('elim-popup');
+  if(!popup) return;
+  // Toggle off if same round clicked again
+  if(_elimOpenRound===r){
+    popup.style.display='none';
+    _elimOpenRound=null;
+    // Remove active highlight
+    document.querySelectorAll('.scel').forEach(function(el){el.classList.remove('elim-active');});
+    return;
+  }
+  _elimOpenRound=r;
+  var coaches=(_D.eliminatedByRound||{})[String(r)]||[];
+  // Highlight the clicked cell
+  document.querySelectorAll('.scel').forEach(function(el){el.classList.remove('elim-active');});
+  var cells=document.querySelectorAll('.scel');
+  cells.forEach(function(el){
+    if(el.getAttribute('onclick')==='showElimForRound('+r+')') el.classList.add('elim-active');
+  });
+  if(coaches.length===0){
+    popup.style.display='none';
+    _elimOpenRound=null;
+    return;
+  }
+  var rows=coaches.map(function(e,i){
+    return '<tr><td style="padding:.3rem .6rem;font-size:.8rem;color:var(--muted);width:28px">'+(i+1)+'</td>'
+      +'<td style="padding:.3rem .6rem;font-size:.85rem;font-weight:600">'+esc(e.coach)+'</td>'
+      +'<td style="padding:.3rem .6rem;font-size:.8rem;color:var(--muted)">'+esc(e.team)+'</td>'
+      +'<td style="padding:.3rem .6rem;font-size:.85rem;color:var(--red);font-weight:700;text-align:right">'+e.score+'</td>'
+      +'</tr>';
+  }).join('');
+  popup.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem">'
+    +'<span style="font-size:.85rem;font-weight:700;color:var(--red)">✗ Eliminated after Round '+r+' — '+coaches.length+' coaches</span>'
+    +'<button onclick="showElimForRound('+r+')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:1rem;line-height:1">✕</button>'
+    +'</div>'
+    +'<div class="tw-scroll"><table style="width:100%;border-collapse:collapse">'
+    +'<thead><tr>'
+    +'<th style="padding:.3rem .6rem;font-size:.7rem;color:var(--muted);text-align:left;text-transform:uppercase;letter-spacing:.08em">#</th>'
+    +'<th style="padding:.3rem .6rem;font-size:.7rem;color:var(--muted);text-align:left;text-transform:uppercase;letter-spacing:.08em">Coach</th>'
+    +'<th style="padding:.3rem .6rem;font-size:.7rem;color:var(--muted);text-align:left;text-transform:uppercase;letter-spacing:.08em">Team</th>'
+    +'<th style="padding:.3rem .6rem;font-size:.7rem;color:var(--muted);text-align:right;text-transform:uppercase;letter-spacing:.08em">R'+r+' Score</th>'
+    +'</tr></thead>'
+    +'<tbody>'+rows+'</tbody>'
+    +'</table></div>';
+  popup.style.display='block';
+}
+window.showElimForRound=showElimForRound;
 var p1p=1,P1N=50,p1l=COACHES.slice();
 function fP1(){
   var q=document.getElementById('p1fi').value.toLowerCase();
@@ -1566,7 +1611,7 @@ function dC2(){
       rows+='<tr><td colspan="4" style="text-align:center;padding:.5rem 1rem;background:rgba(52,211,153,.06);border-top:2px solid rgba(52,211,153,.3);border-bottom:1px solid rgba(52,211,153,.2);font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--green)">✓ Safe — '+(_D.meta.aliveAfterLastRound)+' Coaches Alive</td></tr>';
     }
     var badge=isDead
-      ?'<span class="badge" style="background:rgba(248,113,113,.15);color:var(--red);border:1px solid rgba(248,113,113,.3)">✗ Eliminated R2</span>'
+      ?'<span class="badge" style="background:rgba(248,113,113,.15);color:var(--red);border:1px solid rgba(248,113,113,.3)">✗ Eliminated R'+(c.eliminatedRound||'?')+'</span>'
       :'<span class="badge balive">✓ Alive</span>';
     var rowStyle=isDead?'opacity:.7;':'';
     rows+='<tr onclick="showCoach('+c.rank+')" style="'+rowStyle+'">'+
@@ -2067,10 +2112,13 @@ function closePlModal(){
   var ndVal=document.getElementById('sc-next-drop-val');
   if(ndLabel&&nextDrop) ndLabel.textContent='Next Drop R'+nextDrop.r;
   if(ndVal&&nextDrop) ndVal.textContent=nextDrop.d>0?'-'+nextDrop.d:'—';
+  var elimByRnd=_D.eliminatedByRound||{};
+  var totalElimCount=Object.values(elimByRnd).reduce(function(s,arr){return s+(arr?arr.length:0);},0);
+  var eligibleCount=_D.meta.survivorEligibleCount||SURVIVOR_COACHES.length;
   var elimCountEl=document.getElementById('sc-elim-count');
-  if(elimCountEl) elimCountEl.textContent=_D.meta.totalCoaches-_D.meta.aliveAfterLastRound;
+  if(elimCountEl) elimCountEl.textContent=totalElimCount;
   var elimSubEl=document.getElementById('sc-elim-sub');
-  if(elimSubEl) elimSubEl.textContent='cut after R'+CUR;
+  if(elimSubEl) elimSubEl.textContent='of '+eligibleCount+' eligible';
   var aliveLabel=document.getElementById('sc-alive-label');
   if(aliveLabel) aliveLabel.textContent='Alive After R'+CUR;
   var aliveSub=document.getElementById('sc-alive-sub');
