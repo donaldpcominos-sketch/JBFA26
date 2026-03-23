@@ -1,0 +1,24 @@
+{
+  "meta": {
+    "currentRound": 3,
+    "roundAvg": 835,
+    "totalCoaches": 300,
+    "tradeSummary": {
+      "in": [
+        {
+          "id": "100006093",
+          "name": "Isaiah Iongi",
+          "count": 86,
+          "totalPct": 28.7
+        }
+      ]
+    }
+  },
+  "coaches": {
+    "1": {
+      "name": "Example Coach",
+      "team": "Example Team",
+      "score": 900
+    }
+  }
+}

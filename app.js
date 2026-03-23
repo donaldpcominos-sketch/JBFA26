@@ -907,18 +907,7 @@ function sparklineHtml(c){
   return html;
 }
 
-function closeFeedback(){document.getElementById('fmodal').style.display='none';document.getElementById('fok').style.display='none';document.getElementById('fform').reset();}
-var _fm=document.getElementById('fmodal');if(_fm)_fm.addEventListener('click',function(e){if(e.target===this)closeFeedback();});
-var _ff=document.getElementById('fform');if(_ff)_ff.addEventListener('submit',function(e){
-  e.preventDefault();
-  var btn=document.getElementById('fsubmit');
-  btn.textContent='Sending…';btn.disabled=true;
-  fetch('https://formspree.io/f/xlgplwnz',{method:'POST',body:new FormData(this),headers:{'Accept':'application/json'}})
-    .then(function(r){
-      if(r.ok){document.getElementById('fok').style.display='block';btn.textContent='Sent ✓';setTimeout(closeFeedback,2000);}
-      else{btn.textContent='Send Feedback';btn.disabled=false;alert('Something went wrong — try again.');}
-    }).catch(function(){btn.textContent='Send Feedback';btn.disabled=false;alert('Something went wrong — try again.');});
-});
+
 // ── INIT ──────────────────────────────────────────────────────────────────
 renderOvTop();renderOvVip();renderPodcasters();renderSched();dP1();dVip();dC2();buildPlList();fPlayers();renderTradeSummary();
 
@@ -1827,59 +1816,11 @@ function _initStats() {
       + '</div></div>';
   }
 
-  // ── LEADERBOARD — vertical ranked list ───────────────────────────────────
-  window.statsRenderLeaderboard = function() {
-    var statSel  = document.getElementById('stats-lb-stat');
-    var togSel   = document.getElementById('stats-lb-tog');
-    var gamesSel = document.getElementById('stats-lb-games');
-    var posSel   = document.getElementById('stats-lb-pos');
-    if (!statSel) return;
-    var key       = statSel.value;
-    var togMin    = parseInt(togSel ? togSel.value : META_DEFAULTS.minMinutes, 10);
-    var minGames  = parseInt(gamesSel ? gamesSel.value : META_DEFAULTS.minGames, 10);
-    var posFilter = parseInt(posSel ? posSel.value : 0, 10);
-    var wrap = document.getElementById('stats-lb-table-wrap');
-    if (!wrap) return;
+// Initialize the separated logic
+setupFeedbackForm();
+fetchLeagueData();
 
-    var meta = STAT_META[key] || {label:key, pts:0, floor:false, isNegative:false};
-    var rows = [];
-    STAT_PLAYERS.forEach(function(sp) {
-      if (posFilter > 0 && (!sp.positions || sp.positions.indexOf(posFilter) < 0)) return;
-      var r = playerAvg(sp, key, togMin);
-      if (!r || r.games < minGames) return;
-      rows.push({pid:sp.pid, name:sp.name, positions:sp.positions, avg:r.avg, games:r.games});
-    });
-    rows.sort(function(a,b){
-      return meta.isNegative ? a.avg - b.avg : b.avg - a.avg;
-    });
 
-    if (!rows.length) {
-      wrap.innerHTML = '<div class="stats-empty">No players match these filters.</div>';
-      return;
-    }
-
-    var html = '<div class="stats-lb-list">';
-    rows.slice(0,50).forEach(function(row, i) {
-      var ptsPerGame = (meta.pts !== null) ? (meta.floor ? Math.floor(row.avg * meta.pts) : row.avg * meta.pts) : null;
-      var posStr = formatPositions(row.positions);
-      html += '<div class="stats-lb-row" style="display:flex;align-items:center;padding:.5rem .25rem;border-bottom:1px solid var(--border);gap:.5rem;">'
-        + '<span class="stats-rank" style="min-width:1.75rem;font-size:.8rem;color:var(--muted);">'+(i+1)+'</span>'
-        + '<div style="flex:1;min-width:0;">'
-        + '<div style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+esc(row.name)+'</div>'
-        + (posStr ? '<div style="font-size:.7rem;color:var(--muted);">'+esc(posStr)+'</div>' : '')
-        + '</div>'
-        + '<div style="text-align:right;min-width:56px;">'
-        + '<div style="font-weight:700;font-size:1rem;">'+fmtRaw(key,row.avg)+'</div>'
-        + (ptsPerGame !== null && Math.abs(ptsPerGame) >= 0.05 ? '<div style="font-size:.7rem;color:var(--muted);">'+fmtPts(ptsPerGame)+' pts</div>' : '')
-        + '</div>'
-        + '<div style="font-size:.75rem;color:var(--muted);min-width:32px;text-align:right;">'+row.games+'g</div>'
-        + '</div>';
-    });
-    html += '</div>';
-    wrap.innerHTML = html;
-  };
-
-  statsRenderLeaderboard();
 
 }
 
