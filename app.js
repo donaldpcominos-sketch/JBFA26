@@ -1541,12 +1541,17 @@ function _initStats() {
   }
 
   // ── Build player list ─────────────────────────────────────────────────────
+// ── Build player list ─────────────────────────────────────────────────────
+  // Inclusion: player must have stats OR be currently owned (owned players
+  // with no stats yet still deserve to appear in search/player view).
   var STAT_PLAYERS = [];
   Object.keys(PLAYERS).forEach(function(pid) {
     var p = PLAYERS[pid];
     if (!p || !p.name) return;
     var hs = p.historicalStats || {};
-    if (!Object.keys(hs).length) return;
+    var hasStats = Object.keys(hs).length > 0;
+    var isOwned  = (p.owned || 0) > 0;
+    if (!hasStats && !isOwned) return;
     STAT_PLAYERS.push({pid:pid, name:p.name, cost:p.currentPrice||p.cost||0, rounds:hs, scores:p.scores||{}, positions:p.positions||[]});
   });
   STAT_PLAYERS.sort(function(a,b){return b.cost - a.cost;});
