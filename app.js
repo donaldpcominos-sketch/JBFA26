@@ -2274,11 +2274,16 @@ function _initStats() {
 
 // INLINE DATA GOES HERE (Truncated in instructions, but should be pasted fully)
 
-fetch(window.location.hostname === 'jbfa26.netlify.app'
-  ? 'https://raw.githubusercontent.com/donaldpcominos-sketch/JBFA26/main/data.json'
-  : 'https://raw.githubusercontent.com/donaldpcominos-sketch/JBFA26/dev/data.json')
+var dataUrl =
+  (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+    ? 'data.json'
+    : (window.location.hostname === 'jbfa26.netlify.app'
+        ? 'https://raw.githubusercontent.com/donaldpcominos-sketch/JBFA26/main/data.json'
+        : 'https://raw.githubusercontent.com/donaldpcominos-sketch/JBFA26/dev2/data.json');
+
+fetch(dataUrl)
   .then(function(r){
-    if(!r.ok) throw new Error('HTTP '+r.status);
+    if(!r.ok) throw new Error('HTTP ' + r.status);
     return r.json();
   })
   .then(function(data){
@@ -2287,8 +2292,5 @@ fetch(window.location.hostname === 'jbfa26.netlify.app'
     _initStats();
   })
   .catch(function(err){
-    console.warn('Remote fetch failed ('+err+'), using inline data.json');
-    _initApp(_INLINE_DATA);
-    _initPricePredictor((_INLINE_DATA && _INLINE_DATA.beModel) || null);
-    _initStats();
+    console.warn('Remote fetch failed (' + err + ')');
   });
