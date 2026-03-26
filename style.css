@@ -601,6 +601,35 @@ td{padding:.6rem 1rem;vertical-align:middle;}
 }
 
 /* ── Shared stats filter bar ─────────────────────────────────── */
+
+/* ── Implied Value tab ───────────────────────────────────────── */
+.stats-implied-header,
+.stats-implied-row{
+  display:grid;
+  grid-template-columns:2rem 1fr 3rem 4rem 3.5rem 3.5rem;
+  gap:.25rem;align-items:center;
+  padding:.4rem .35rem;
+  font-size:.8rem;
+}
+.stats-implied-header{
+  font-size:.6rem;text-transform:uppercase;letter-spacing:.08em;
+  color:var(--muted);font-weight:700;
+  border-bottom:1px solid var(--border);margin-bottom:.1rem;
+}
+.stats-implied-row{
+  border-bottom:1px solid var(--border);cursor:pointer;
+  transition:background .12s;
+}
+.stats-implied-row:hover{background:var(--surface2);}
+.siv-name{font-weight:600;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.siv-pos{font-size:.68rem;color:var(--muted);}
+.siv-pos:before{content:'';display:block;}
+.siv-pos{display:block;}
+.siv-muted{color:var(--muted);}
+.siv-pos-val{color:var(--green);font-weight:700;}
+.siv-neg-val{color:var(--red);font-weight:700;}
+.siv-pos{color:var(--green);font-weight:700;}
+.siv-neg{color:var(--red);font-weight:700;}
 .stats-shared-filter-bar{
   display:flex;flex-wrap:wrap;gap:.5rem .85rem;
   align-items:flex-end;
@@ -608,5 +637,3 @@ td{padding:.6rem 1rem;vertical-align:middle;}
   margin-bottom:.25rem;
   border-bottom:1px solid var(--border);
 }
-/* Hide the leaderboard-only filter row since shared bar replaces it */
-#stats-view-leaderboard .stats-filters{display:none;}

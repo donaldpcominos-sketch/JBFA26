@@ -1547,7 +1547,7 @@ function _initStats() {
     if (!p || !p.name) return;
     var hs = p.historicalStats || {};
     if (!Object.keys(hs).length) return;
-    STAT_PLAYERS.push({pid:pid, name:p.name, cost:p.cost||p.currentPrice||0, rounds:hs, scores:p.scores||{}, positions:p.positions||[]});
+    STAT_PLAYERS.push({pid:pid, name:p.name, cost:p.currentPrice||p.cost||0, rounds:hs, scores:p.scores||{}, positions:p.positions||[]});
   });
   STAT_PLAYERS.sort(function(a,b){return b.cost - a.cost;});
 
@@ -1589,16 +1589,20 @@ function _initStats() {
 
   // ── View switching ────────────────────────────────────────────────────────
   window.statsShowView = function(view) {
-    ['player','leaderboard'].forEach(function(v) {
+    ['player','leaderboard','implied'].forEach(function(v) {
       var el = document.getElementById('stats-view-' + v);
       if (el) el.style.display = (v === view ? '' : 'none');
       var btn = document.querySelector('.stats-pill[data-view="' + v + '"]');
       if (btn) btn.classList.toggle('active', v === view);
     });
+    // Show stat selector only for leaderboard view
+    var statGroup = document.getElementById('stats-lb-stat-group');
+    if (statGroup) statGroup.style.display = (view === 'leaderboard') ? '' : 'none';
     if (view === 'leaderboard') statsRenderLeaderboard();
+    if (view === 'implied') statsRenderImplied();
   };
 
-  // ── Stat dropdown ─────────────────────────────────────────────────────────
+  // ── Stat dropdown builder ─────────────────────────────────────────────────
   function buildStatOptions(selId) {
     var sel = document.getElementById(selId);
     if (!sel) return;
@@ -1610,7 +1614,6 @@ function _initStats() {
       sel.appendChild(opt);
     });
   }
-  buildStatOptions('stats-lb-stat');
 
   // ── PLAYER VIEW ───────────────────────────────────────────────────────────
   var statsSelectedPid = null;
@@ -1620,11 +1623,38 @@ function _initStats() {
   (function() {
     var pills = document.getElementById('stats-pills');
     if (!pills || document.getElementById('stats-shared-filters')) return;
+
+    // Add 3rd pill tab to HTML
+    var impliedPill = document.createElement('button');
+    impliedPill.className = 'stats-pill';
+    impliedPill.setAttribute('data-view', 'implied');
+    impliedPill.onclick = function(){ statsShowView('implied'); };
+    impliedPill.textContent = 'Implied Value';
+    pills.appendChild(impliedPill);
+
+    // Inject Implied Value view div after leaderboard view
+    var lbView = document.getElementById('stats-view-leaderboard');
+    if (lbView && !document.getElementById('stats-view-implied')) {
+      var impView = document.createElement('div');
+      impView.className = 'stats-view';
+      impView.id = 'stats-view-implied';
+      impView.style.display = 'none';
+      impView.innerHTML = '<div id="stats-implied-wrap"></div>';
+      lbView.parentNode.insertBefore(impView, lbView.nextSibling);
+    }
+
+    // Build shared filter bar
     var bar = document.createElement('div');
     bar.id = 'stats-shared-filters';
     bar.className = 'stats-shared-filter-bar';
     bar.innerHTML =
-      '<div class="stats-filter-group">'
+      // Stat selector — only visible in leaderboard view
+      '<div class="stats-filter-group" id="stats-lb-stat-group" style="display:none">'
+        + '<label class="stats-filter-label">Stat</label>'
+        + '<select id="stats-lb-stat" class="stats-select" onchange="statsOnFilterChange()">'
+        + '</select>'
+      + '</div>'
+      + '<div class="stats-filter-group">'
         + '<label class="stats-filter-label">Min Minutes</label>'
         + '<select id="stats-tog" class="stats-select" onchange="statsOnFilterChange()">'
         + ['0','30','40','50','60','70','80'].map(function(v){
@@ -1648,6 +1678,9 @@ function _initStats() {
         + '</select>'
       + '</div>';
     pills.parentNode.insertBefore(bar, pills);
+
+    // Now populate the stat dropdown (element exists in DOM now)
+    buildStatOptions('stats-lb-stat');
   })();
 
   // Single handler — refreshes whichever view(s) are active
@@ -1655,7 +1688,75 @@ function _initStats() {
     if (statsSelectedPid) statsRenderPlayerCard(statsSelectedPid);
     var lb = document.getElementById('stats-view-leaderboard');
     if (lb && lb.style.display !== 'none') statsRenderLeaderboard();
+    var imp = document.getElementById('stats-view-implied');
+    if (imp && imp.style.display !== 'none') statsRenderImplied();
   };
+
+  // ── Implied Value renderer ────────────────────────────────────────────────
+  function statsRenderImplied() {
+    var wrap = document.getElementById('stats-implied-wrap');
+    if (!wrap) return;
+    var togMin    = getPlayerTogFilter();
+    var minGames  = getMinGames();
+    var posFilter = getPlayerPosFilter();
+    var magic     = getMagicNumber();
+
+    var rows = [];
+    STAT_PLAYERS.forEach(function(sp) {
+      if (posFilter > 0 && (!sp.positions || sp.positions.indexOf(posFilter) < 0)) return;
+      var allRounds = Object.keys(sp.rounds).sort(function(a,b){return parseInt(a)-parseInt(b);});
+      var qualRounds = allRounds.filter(function(r){ return (sp.rounds[r].TOG||0) >= togMin; });
+      if (qualRounds.length < minGames) return;
+      var avgScore = calcFilteredAvgScore(sp, qualRounds);
+      if (avgScore === null) return;
+      var impliedPrice = Math.round((avgScore * magic) / 1000) * 1000;
+      var currentPrice = sp.cost || 0;
+      var diff = currentPrice ? impliedPrice - currentPrice : null;
+      rows.push({
+        pid: sp.pid, name: sp.name, positions: sp.positions,
+        avgScore: avgScore, impliedPrice: impliedPrice,
+        currentPrice: currentPrice, diff: diff, games: qualRounds.length
+      });
+    });
+
+    // Sort by implied price descending
+    rows.sort(function(a,b){ return b.impliedPrice - a.impliedPrice; });
+
+    if (!rows.length) {
+      wrap.innerHTML = '<div class="stats-empty">No players match these filters.</div>';
+      return;
+    }
+
+    var html = '<div class="stats-implied-header">'
+      + '<span class="sih-rank">#</span>'
+      + '<span class="sih-name">Player</span>'
+      + '<span class="sih-avg">Avg</span>'
+      + '<span class="sih-implied">Implied</span>'
+      + '<span class="sih-price">Price</span>'
+      + '<span class="sih-diff">Diff</span>'
+      + '</div>';
+
+    rows.slice(0, 100).forEach(function(row, i) {
+      var posStr = formatPositions(row.positions);
+      var diffStr = row.diff === null ? '—'
+        : (row.diff >= 0 ? '+' : '') + (row.diff/1000).toFixed(0) + 'k';
+      var diffCls = row.diff === null ? 'siv-muted'
+        : (row.diff >= 0 ? 'siv-pos' : 'siv-neg');
+      html += '<div class="stats-implied-row" onclick="statsShowView(\'player\');statsSelectPlayer(\''+row.pid+'\')">'
+        + '<span class="sih-rank" style="color:var(--muted);font-size:.78rem;">'+(i+1)+'</span>'
+        + '<span class="sih-name"><span class="siv-name">'+esc(row.name)+'</span>'
+          + (posStr ? '<span class="siv-pos">'+esc(posStr)+'</span>' : '')
+        + '</span>'
+        + '<span class="sih-avg">'+row.avgScore.toFixed(1)+'</span>'
+        + '<span class="sih-implied" style="font-family:\'Bebas Neue\',sans-serif;font-size:.95rem;">$'+(row.impliedPrice/1000).toFixed(0)+'k</span>'
+        + '<span class="sih-price" style="color:var(--muted);">$'+(row.currentPrice/1000).toFixed(0)+'k</span>'
+        + '<span class="sih-diff '+diffCls+'">'+diffStr+'</span>'
+        + '</div>';
+    });
+
+    wrap.innerHTML = html;
+  }
+  window.statsRenderImplied = statsRenderImplied;
 
   // ── Shared filter readers ─────────────────────────────────────────────────
   function getPlayerTogFilter() {
@@ -2161,9 +2262,6 @@ function _initStats() {
     wrap.appendChild(listContainer);
   };
 
-// Initialize the separated logic
-setupFeedbackForm();
-fetchLeagueData();
 
 
 

@@ -641,40 +641,6 @@
 
   <!-- ── LEADERBOARD VIEW ── -->
   <div class="stats-view" id="stats-view-leaderboard" style="display:none">
-    <div class="stats-filters">
-      <div class="stats-filter-group">
-        <label class="stats-filter-label">Stat</label>
-        <select id="stats-lb-stat" class="stats-select" onchange="statsRenderLeaderboard()"></select>
-      </div>
-      <div class="stats-filter-group">
-        <label class="stats-filter-label">Position</label>
-        <select id="stats-lb-pos" class="stats-select" onchange="statsRenderLeaderboard()">
-          <option value="0">All</option>
-          <option value="1">HOK</option>
-          <option value="2">FRF</option>
-          <option value="3">2RF</option>
-          <option value="4">HLF</option>
-          <option value="5">CTW</option>
-          <option value="6">HFB</option>
-        </select>
-      </div>
-      <div class="stats-filter-group">
-        <label class="stats-filter-label">Min Minutes</label>
-        <select id="stats-lb-tog" class="stats-select" onchange="statsRenderLeaderboard()">
-          <option value="0">All</option>
-          <option value="40">40+</option>
-          <option value="60" selected>60+</option>
-          <option value="70">70+</option>
-        </select>
-      </div>
-      <div class="stats-filter-group">
-        <label class="stats-filter-label">Min Games</label>
-        <select id="stats-lb-games" class="stats-select" onchange="statsRenderLeaderboard()">
-          <option value="1">1+</option>
-          <option value="2" selected>2+</option>
-        </select>
-      </div>
-    </div>
     <div id="stats-lb-table-wrap" style="overflow-x:auto;margin-top:.75rem;"></div>
   </div>
 
