@@ -406,3 +406,207 @@ td{padding:.6rem 1rem;vertical-align:middle;}
   /* hide feedback button text on mobile, keep icon */
   .hdr>button{padding:.35rem .6rem;font-size:.7rem;}
 }
+/* ══════════════════════════════════════════════════════════════
+   STATS UPGRADE — Player View
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Player header card ──────────────────────────────────────── */
+.stats-player-header{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:.85rem 1rem;margin-bottom:.6rem;
+}
+.stats-player-header-name{
+  font-family:'Bebas Neue',sans-serif;font-size:1.35rem;
+  letter-spacing:.04em;line-height:1.1;margin-bottom:.25rem;
+}
+.stats-player-header-meta{
+  font-size:.75rem;color:var(--muted);
+  display:flex;flex-wrap:wrap;gap:.25rem .5rem;
+  align-items:center;margin-bottom:.55rem;
+}
+.stats-header-pill{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:4px;padding:.1rem .4rem;font-size:.68rem;
+  font-weight:700;color:var(--muted);
+}
+.stats-header-row{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:.4rem;
+}
+.stats-header-cell{
+  background:var(--surface2);border-radius:8px;
+  padding:.45rem .5rem;text-align:center;
+}
+.stats-header-cell-label{
+  font-size:.58rem;text-transform:uppercase;letter-spacing:.08em;
+  color:var(--muted);margin-bottom:.1rem;
+}
+.stats-header-cell-val{
+  font-family:'Bebas Neue',sans-serif;font-size:1.05rem;color:var(--text);
+}
+.stats-val-diff-pos{color:var(--green);}
+.stats-val-diff-neg{color:var(--red);}
+
+/* ── Magic number control ────────────────────────────────────── */
+.stats-magic-wrap{
+  display:flex;align-items:center;gap:.35rem;
+  font-size:.68rem;color:var(--muted);
+  margin-bottom:.6rem;
+}
+.stats-magic-wrap input{
+  width:60px;background:var(--surface);border:1px solid var(--border);
+  border-radius:5px;padding:.18rem .35rem;color:var(--muted);
+  font-family:'DM Sans',sans-serif;font-size:.68rem;
+  text-align:center;outline:none;
+}
+.stats-magic-wrap input:focus{border-color:var(--border);color:var(--text);}
+
+/* ── Position rank pills ─────────────────────────────────────── */
+.stats-pos-rank-section{margin-bottom:.7rem;}
+.stats-pos-rank-label{
+  font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--muted);font-weight:700;margin-bottom:.3rem;
+}
+.stats-pos-rank-pills{display:flex;flex-wrap:wrap;gap:.3rem;}
+.stats-pos-rank-pill{
+  font-size:.72rem;font-weight:600;padding:.18rem .5rem;
+  border-radius:20px;border:1px solid var(--border);
+  background:var(--surface2);color:var(--muted);white-space:nowrap;
+}
+.stats-pos-rank-pill.top3{
+  border-color:var(--accent);color:var(--accent);
+  background:rgba(240,180,41,.08);
+}
+.stats-pos-rank-pill.top5{
+  border-color:var(--green);color:var(--green);
+  background:rgba(52,211,153,.08);
+}
+.stats-pos-rank-pill.top10{color:var(--text);}
+
+/* ── Stat group header with total + expand toggle ────────────── */
+.stats-group-header{
+  display:flex;align-items:baseline;
+  justify-content:space-between;margin-bottom:.4rem;
+}
+.stats-group-total{font-size:.72rem;color:var(--muted);font-weight:600;}
+.stats-group-total span{color:var(--text);}
+.stats-expand-toggle{
+  background:none;border:none;color:var(--muted);
+  font-size:.7rem;cursor:pointer;padding:.05rem .3rem;
+  font-family:'DM Sans',sans-serif;margin-left:.4rem;
+  transition:color .15s;
+}
+.stats-expand-toggle:hover{color:var(--text);}
+
+/* ── Game history section ────────────────────────────────────── */
+.stats-hist-section{margin-top:.75rem;}
+.stats-hist-header{
+  display:grid;
+  grid-template-columns:2.2rem 2.2rem 3.2rem 3rem 3.8rem 1.25rem;
+  gap:.2rem;padding:.25rem .4rem;
+  font-size:.6rem;text-transform:uppercase;letter-spacing:.08em;
+  color:var(--muted);font-weight:700;border-bottom:1px solid var(--border);
+}
+.sh-row{border-bottom:1px solid var(--border);}
+.sh-row.sh-low{opacity:.42;}
+.sh-row-summary{
+  display:grid;
+  grid-template-columns:2.2rem 2.2rem 3.2rem 3rem 3.8rem 1.25rem;
+  gap:.2rem;align-items:center;padding:.42rem .4rem;
+  cursor:pointer;transition:background .12s;
+}
+.sh-row-summary:hover{background:var(--surface2);}
+.sh-rnd{font-size:.72rem;color:var(--muted);}
+.sh-tog{font-size:.75rem;color:var(--muted);}
+.sh-score{
+  font-weight:700;font-family:'Bebas Neue',sans-serif;
+  font-size:.98rem;color:var(--text);
+}
+.sh-atk{font-size:.78rem;}
+.sh-nonatk{font-size:.78rem;}
+.sh-chevron{
+  font-size:.9rem;color:var(--muted);justify-self:center;
+  display:block;transition:transform .18s;
+}
+.sh-row.sh-expanded .sh-chevron{transform:rotate(90deg);}
+
+/* Detail grid — hidden until expanded */
+.sh-row-detail{
+  display:none;
+  padding:.4rem .5rem .65rem 2.8rem;
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(78px,1fr));
+  gap:.3rem;
+}
+.sh-row:not(.sh-expanded) .sh-row-detail{display:none!important;}
+.sh-row.sh-expanded .sh-row-detail{display:grid!important;}
+.sh-detail-item{display:flex;flex-direction:column;gap:.04rem;}
+.sh-detail-label{
+  font-size:.58rem;text-transform:uppercase;
+  letter-spacing:.07em;color:var(--muted);
+}
+.sh-detail-val{font-size:.82rem;font-weight:600;color:var(--text);}
+
+/* ── History footer averages ─────────────────────────────────── */
+.stats-hist-foot{
+  display:grid;
+  grid-template-columns:2.2rem 2.2rem 3.2rem 3rem 3.8rem 1.25rem;
+  gap:.2rem;padding:.42rem .4rem;
+  font-size:.78rem;font-weight:700;
+  border-top:2px solid var(--border);
+  background:var(--surface2);border-radius:0 0 8px 8px;
+}
+.stats-hist-foot-label{
+  grid-column:1/3;font-size:.6rem;text-transform:uppercase;
+  letter-spacing:.08em;color:var(--muted);align-self:center;
+}
+
+/* ── Stat group section wrapper (separation) ─────────────────── */
+.stats-group-section{
+  border-top:1px solid var(--border);
+  padding-top:.7rem;
+  margin-bottom:0;
+}
+.stats-group-section:first-of-type{border-top:none;padding-top:0;}
+.stats-group-header{
+  display:flex;align-items:center;
+  justify-content:space-between;margin-bottom:.45rem;
+}
+.stats-group-header-left{
+  display:flex;align-items:baseline;gap:.45rem;
+}
+/* Override old total styling — now inline left of header */
+.stats-group-total{
+  font-size:.72rem;color:var(--muted);font-weight:600;
+  /* no span wrapper needed now */
+}
+
+/* ── History valuation row ───────────────────────────────────── */
+.stats-hist-valuation{
+  display:flex;align-items:center;gap:.45rem;flex-wrap:wrap;
+  padding:.45rem .5rem;
+  font-size:.78rem;color:var(--muted);
+  background:var(--surface2);
+  border-radius:0 0 8px 8px;
+  border-top:1px solid var(--border);
+}
+.stats-hist-val-label{
+  font-size:.6rem;text-transform:uppercase;letter-spacing:.08em;
+  font-weight:700;color:var(--muted);
+}
+.stats-hist-val-price{
+  font-family:'Bebas Neue',sans-serif;font-size:1rem;color:var(--text);
+}
+.stats-hist-val-info{
+  font-size:.75rem;color:var(--muted);cursor:help;margin-left:auto;
+}
+
+/* ── Shared stats filter bar ─────────────────────────────────── */
+.stats-shared-filter-bar{
+  display:flex;flex-wrap:wrap;gap:.5rem .85rem;
+  align-items:flex-end;
+  padding:.5rem 0 .65rem;
+  margin-bottom:.25rem;
+  border-bottom:1px solid var(--border);
+}
+/* Hide the leaderboard-only filter row since shared bar replaces it */
+#stats-view-leaderboard .stats-filters{display:none;}
