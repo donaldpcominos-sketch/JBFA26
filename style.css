@@ -523,6 +523,20 @@ td{padding:.6rem 1rem;vertical-align:middle;}
 }
 .stats-pos-rank-pill.top10{color:var(--text);border-color:rgba(255,255,255,.15);}
 
+/* ── Implied Value sort toggle bar ──────────────────────────── */
+.stats-implied-sort-bar{display:flex;gap:.35rem;margin-bottom:.55rem;}
+.stats-implied-sort-btn{
+  font-size:.7rem;font-weight:600;padding:.2rem .6rem;
+  border-radius:20px;border:1px solid var(--border);
+  background:transparent;color:var(--muted);cursor:pointer;
+  font-family:'DM Sans',sans-serif;letter-spacing:.02em;
+  transition:color .12s,border-color .12s,background .12s;
+}
+.stats-implied-sort-btn.active{
+  color:var(--accent);border-color:rgba(240,180,41,.45);
+  background:rgba(240,180,41,.08);
+}
+
 /* ── Stat group header with total + expand toggle ────────────── */
 .stats-group-header{
   display:flex;align-items:baseline;
