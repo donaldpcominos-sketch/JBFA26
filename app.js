@@ -1703,7 +1703,9 @@ function _initStats() {
         ? renderRankLine(sp.pid, tile.keys, sp.positions)
         : '';
 
-      var tooltipHtml = '<span class="tip tip-right cat-tile-info" onclick="tipTap(this)">'
+      var leftColTiles = ['scoring', 'attack-base', 'kick-inplay'];
+      var tipDir = leftColTiles.indexOf(tile.id) >= 0 ? 'tip-left' : 'tip-right';
+      var tooltipHtml = '<span class="tip ' + tipDir + ' cat-tile-info" onclick="tipTap(this)">'
         + '<span class="tiptext">' + esc(tile.tooltip) + '</span>'
         + '<span class="cat-info-icon">\u24d8</span>'
         + '</span>';
@@ -1973,36 +1975,21 @@ function _initStats() {
       });
     });
 
-    // Sort: DIFF descending by default; implied price descending as alternative
-    var impliedSortMode = window._impliedSortMode || 'diff';
-    if (impliedSortMode === 'diff') {
-      rows.sort(function(a, b) {
-        if (a.diff === null && b.diff === null) return b.impliedPrice - a.impliedPrice;
-        if (a.diff === null) return 1;
-        if (b.diff === null) return -1;
-        return b.diff - a.diff;
-      });
-    } else {
-      rows.sort(function(a, b){ return b.impliedPrice - a.impliedPrice; });
-    }
+    // Sort by implied price descending
+    rows.sort(function(a,b){ return b.impliedPrice - a.impliedPrice; });
 
     if (!rows.length) {
       wrap.innerHTML = '<div class="stats-empty">No players match these filters.</div>';
       return;
     }
 
-    var html = '<div class="stats-implied-sort-bar">'
-      + '<button class="stats-implied-sort-btn'+(impliedSortMode==='diff'?' active':'')+'" onclick="statsSetImpliedSort(\'diff\')">Sort: DIFF ↓</button>'
-      + '<button class="stats-implied-sort-btn'+(impliedSortMode==='implied'?' active':'')+'" onclick="statsSetImpliedSort(\'implied\')">Sort: Implied $</button>'
-      + '</div>';
-
-    html += '<div class="stats-implied-header">'
+    var html = '<div class="stats-implied-header">'
       + '<span class="sih-rank">#</span>'
       + '<span class="sih-name">Player</span>'
       + '<span class="sih-avg">Avg</span>'
       + '<span class="sih-implied">Implied</span>'
       + '<span class="sih-price">Price</span>'
-      + '<span class="sih-diff">Diff <span class="tip tip-right stats-hdr-tip" onclick="tipTap(this)"><span class="tiptext">Implied price is filtered game average x Magic Number</span><span class="cat-info-icon">\u24d8</span></span></span>'
+      + '<span class="sih-diff">Diff <span class="tip tip-left stats-hdr-tip" onclick="tipTap(this)"><span class="tiptext">Implied price is filtered game average x Magic Number</span><span class="cat-info-icon">\u24d8</span></span></span>'
       + '</div>';
 
     rows.slice(0, 100).forEach(function(row, i) {
@@ -2026,11 +2013,6 @@ function _initStats() {
     wrap.innerHTML = html;
   }
   window.statsRenderImplied = statsRenderImplied;
-
-  window.statsSetImpliedSort = function(mode) {
-    window._impliedSortMode = mode;
-    statsRenderImplied();
-  };
 
   // ── Shared filter readers ─────────────────────────────────────────────────
   function getPlayerTogFilter() {
@@ -2165,32 +2147,21 @@ function _initStats() {
   // ── Position rank summary pills ───────────────────────────────────────────
   function buildPosRankSummary(pid, togMin, posFilter, posLabel) {
     var summaryKeys = ['T','LB','KM','TA','LBA','TCK','TB','G'];
-    var sp = STAT_PLAYERS.find(function(x){ return x.pid === pid; });
-    var primaryPosId = (sp && sp.positions && sp.positions.length) ? sp.positions[0] : 0;
     var pills = [];
     summaryKeys.forEach(function(key) {
       var meta = STAT_META[key];
       if (!meta) return;
       var ri = playerRankInPos(pid, key, togMin, posFilter);
       if (!ri || ri.rank > 10) return;
-      var col = rankTierColour(ri.rank, primaryPosId);
-      // Derive a matching semi-transparent border from the colour token
-      var borderCol = (col === 'var(--green)')   ? 'rgba(52,211,153,.5)'
-                    : (col === '#86efac')         ? 'rgba(134,239,172,.35)'
-                    : (col === 'var(--accent)')   ? 'rgba(240,180,41,.45)'
-                    : (col === '#fb923c')          ? 'rgba(251,146,60,.4)'
-                    : (col === 'var(--red)')      ? 'rgba(248,113,113,.35)'
-                    :                               'rgba(148,163,184,.2)';
-      pills.push({ rank: ri.rank, html:
-        '<span class="stats-pos-rank-pill" style="color:'+col+';border-color:'+borderCol+';background:transparent;">'
-        + ordinal(ri.rank)+'\u00a0'+esc(meta.label)
+      var cls = ri.rank <= 3 ? 'top3' : ri.rank <= 5 ? 'top5' : 'top10';
+      pills.push(
+        '<span class="stats-pos-rank-pill '+cls+'">'
+        + ordinal(ri.rank)+' '+esc(meta.label)
         + (posFilter > 0 ? ' <span style="opacity:.6;font-size:.9em">'+esc(posLabel)+'</span>' : '')
         + '</span>'
-      });
+      );
     });
-    // Sort best rank first
-    pills.sort(function(a, b){ return a.rank - b.rank; });
-    return pills.map(function(p){ return p.html; });
+    return pills;
   }
 
   // ── Render one key stat group ─────────────────────────────────────────────
@@ -2589,7 +2560,7 @@ function _initStats() {
         var posStr = formatPositions(row.positions);
         var ptsPerGame = (isScoreKey || isCatKey) ? null : ((meta.pts !== null) ? (meta.floor ? Math.floor(row.avg * meta.pts) : row.avg * meta.pts) : null);
         var dispVal = (isScoreKey || isCatKey) ? (row.avg >= 0 ? '+' : '') + row.avg.toFixed(1) : fmtRaw(key, row.avg);
-        return '<div class="stats-lb-row" style="display:flex;align-items:center;padding:.5rem .25rem;border-bottom:1px solid var(--border);gap:.5rem;">'
+        return '<div class="stats-lb-row" style="display:flex;align-items:center;padding:.5rem .25rem;border-bottom:1px solid var(--border);gap:.5rem;cursor:pointer;" onclick="statsShowView(\'player\');statsSelectPlayer(\''+row.pid+'\')">'
           + '<span style="min-width:1.75rem;font-size:.8rem;color:var(--muted);">'+(i+1)+'</span>'
           + '<div style="flex:1;min-width:0;"><div style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+esc(row.name)+'</div>'
           + (posStr ? '<div style="font-size:.7rem;color:var(--muted);">'+esc(posStr)+'</div>' : '')+'</div>'
@@ -2606,6 +2577,17 @@ function _initStats() {
       var dispVal = (isScoreKey || isCatKey) ? (row.avg >= 0 ? '+' : '') + row.avg.toFixed(1) : fmtRaw(key, row.avg);
       var posStr = formatPositions(row.positions);
       var clone = template.content.cloneNode(true);
+      // Make row clickable — opens player profile (mirrors implied value behaviour)
+      var rowEl = clone.querySelector('.stats-lb-row');
+      if (rowEl) {
+        rowEl.style.cursor = 'pointer';
+        (function(pid) {
+          rowEl.addEventListener('click', function() {
+            statsShowView('player');
+            window.statsSelectPlayer(pid);
+          });
+        }(row.pid));
+      }
       clone.querySelector('.stats-rank').textContent = (i + 1);
       clone.querySelector('.stats-name').textContent = row.name;
       clone.querySelector('.stats-score').textContent = dispVal;
