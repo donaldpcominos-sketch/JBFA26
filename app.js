@@ -1490,7 +1490,7 @@ function _initStats() {
     SO:   {label:'Send Off',        pts:-10,     floor:false, isNegative:true},
   };
 
-  var POS_LABELS = {1:'HOK', 2:'FRF', 3:'2RF', 4:'HLF', 5:'CTW', 6:'HFB'};
+  var POS_LABELS = {1:'HOK', 2:'FRF', 3:'2RF', 4:'HLF', 5:'CTR', 6:'WFB'};
 
   function formatPositions(positions) {
     if (!positions || !positions.length) return '';
@@ -1538,6 +1538,195 @@ function _initStats() {
     if (pct <= 0.55) return 'var(--accent)';
     if (pct <= 0.75) return '#fb923c';
     return 'var(--red)';
+  }
+
+  // ── Category group definitions (new player card) ─────────────────────────
+  var CATEGORY_GROUPS = [
+    {
+      id: 'attack-power', header: 'Attack & Power',
+      tiles: [
+        { id:'scoring',      label:'Scoring',       keys:['T','LB','TA','LBA'],                  tooltip:'Try (8pts), Line Break (4pts), Try Assist (5pts), LB Assist (2pts)' },
+        { id:'offloads',     label:'Offloads',      keys:['OFH','OFG'],                          tooltip:'Offloads to hand (4pts), Offloads to ground (2pts)' },
+        { id:'tacklebreaks', label:'Tackle Breaks', keys:['TB'],                                 tooltip:'Tackle Break (2pts each)' }
+      ]
+    },
+    {
+      id: 'base', header: 'Base',
+      tiles: [
+        { id:'attack-base',  label:'Attack',        keys:['MG','ER'],                            tooltip:'Run Metres (0.1pts/m floored), Error (−2pts each)' },
+        { id:'defense',      label:'Defense',       keys:['TO','TCK','MT','PC','SAI','SB','SO'], tooltip:'Turnovers (4pts), Tackles (1pt), Missed Tackles (−2pts), Penalties (−2pts), 6-Again (−1pt), Sin Bin (−5pts), Send Off (−10pts)' },
+        { id:'defuse',       label:'Defuse',        keys:['KD','EFIG','TS'],                     tooltip:'Kicks Defused (1pt), Escape in Goal (2pts), Try Saves (5pts)' }
+      ]
+    },
+    {
+      id: 'kicking', header: 'Kicking',
+      tiles: [
+        { id:'kick-inplay',  label:'In Play',       keys:['KM','FDO','FTF'],                     tooltip:'Kick Metres (0.033pts/m floored), Forced Drop-out (2pts), 40/20 or 20/40 (4pts)' },
+        { id:'goals',        label:'Goals',         keys:['G','FG'],                             tooltip:'Goal (2pts each), Field Goal (5pts each)' }
+      ]
+    }
+  ];
+
+  // ── Category avg pts helper ───────────────────────────────────────────────
+  // Returns {pts, games} or null. Signed — negatives preserved.
+  function calcCategoryAvgPts(sp, keys, togMin) {
+    var qualRounds = Object.keys(sp.rounds).filter(function(r) {
+      return (sp.rounds[r].TOG || 0) >= togMin;
+    });
+    if (!qualRounds.length) return null;
+    var total = 0;
+    keys.forEach(function(k) {
+      var m = STAT_META[k];
+      if (!m || m.pts === null) return;
+      var sum = qualRounds.reduce(function(s, r) { return s + (sp.rounds[r][k] || 0); }, 0);
+      var avg = sum / qualRounds.length;
+      total += m.floor ? Math.floor(avg * m.pts) : avg * m.pts;
+    });
+    return { pts: total, games: qualRounds.length };
+  }
+
+  // ── Rank tier colour (independent of position) ────────────────────────────
+  function rankTierColour(rank) {
+    if (!rank) return 'var(--muted)';
+    if (rank === 1)  return 'var(--green)';
+    if (rank <= 5)   return 'var(--accent)';
+    if (rank <= 10)  return '#fb923c';
+    return 'var(--red)';
+  }
+
+  // ── Category rank within a position pool ──────────────────────────────────
+  // Higher pts = better rank (descending), including negative categories.
+  function playerRankByCategory(pid, keys, togMin, posId) {
+    var targetPts = null;
+    var pool = [];
+    STAT_PLAYERS.forEach(function(sp) {
+      if (posId > 0 && (!sp.positions || sp.positions.indexOf(posId) < 0)) return;
+      var r = calcCategoryAvgPts(sp, keys, togMin);
+      if (r === null) return;
+      pool.push({ pid: sp.pid, pts: r.pts });
+      if (sp.pid === pid) targetPts = r.pts;
+    });
+    if (targetPts === null || !pool.length) return null;
+    pool.sort(function(a, b) { return b.pts - a.pts; });
+    for (var i = 0; i < pool.length; i++) {
+      if (pool[i].pid === pid) return { rank: i + 1, total: pool.length };
+    }
+    return null;
+  }
+
+  // ── Render category groups (replaces KEY_GROUPS / renderStatGroup on card) ─
+  function renderCategoryGroups(sp, togMin) {
+
+    // Position colour map — keyed by final display label (post-normalisation)
+    var POS_COLOURS = {
+      'HOK': { bg:'rgba(96,165,250,.15)',  border:'rgba(96,165,250,.5)',  text:'#60a5fa' },
+      'FRF': { bg:'rgba(248,113,113,.15)', border:'rgba(248,113,113,.5)', text:'#f87171' },
+      '2RF': { bg:'rgba(167,139,250,.15)', border:'rgba(167,139,250,.5)', text:'#a78bfa' },
+      'HLF': { bg:'rgba(240,180,41,.15)',  border:'rgba(240,180,41,.5)',  text:'#f0b429' },
+      'CTR': { bg:'rgba(52,211,153,.15)',  border:'rgba(52,211,153,.5)',  text:'#34d399' },
+      'WFB': { bg:'rgba(251,146,60,.15)',  border:'rgba(251,146,60,.5)',  text:'#fb923c' }
+    };
+
+    function getPosCol(posId) {
+      var label = POS_LABELS[posId] || String(posId);
+      return POS_COLOURS[label] || { bg:'rgba(255,255,255,.06)', border:'var(--border)', text:'var(--muted)' };
+    }
+
+    function posChip(posId) {
+      var label = POS_LABELS[posId] || String(posId);
+      var col = getPosCol(posId);
+      return '<span class="cat-pos-chip" style="background:' + col.bg
+        + ';border-color:' + col.border
+        + ';color:' + col.text + ';">' + esc(label) + '</span>';
+    }
+
+    function renderRankAndChips(pid, keys, positions) {
+      if (!positions || !positions.length) return '';
+      var rankParts = [], chipParts = [];
+      positions.forEach(function(posId) {
+        var label = POS_LABELS[posId] || String(posId);
+        var ri = playerRankByCategory(pid, keys, togMin, posId);
+        var rankCol = ri ? rankTierColour(ri.rank) : 'var(--muted)';
+        var rankTxt = ri ? '#' + ri.rank : '—';
+        rankParts.push(
+          '<span class="cat-rank-pos">' + esc(label) + '</span>'
+          + '<span class="cat-rank-num" style="color:' + rankCol + ';">' + rankTxt + '</span>'
+        );
+        chipParts.push(posChip(posId));
+      });
+      if (!rankParts.length) return '';
+      return '<div class="cat-tile-rank">'
+          + rankParts.join('<span class="cat-rank-sep">\xb7</span>')
+        + '</div>'
+        + '<div class="cat-tile-chips">' + chipParts.join('') + '</div>';
+    }
+
+    function renderCatTile(tile, sp) {
+      var result = calcCategoryAvgPts(sp, tile.keys, togMin);
+
+      var ptsStr = result !== null
+        ? (result.pts >= 0 ? '+' : '') + result.pts.toFixed(1)
+        : '\u2014';
+
+      var valColour = result === null ? 'var(--muted)'
+        : result.pts > 0 ? 'var(--text)'
+        : result.pts < 0 ? 'var(--red)'
+        : 'var(--muted)';
+
+      // Subtle left accent from primary position colour
+      var accentText = (sp.positions && sp.positions.length)
+        ? getPosCol(sp.positions[0]).text : 'transparent';
+      // Convert #rrggbb to rgba with low opacity for the border
+      var accentStyle = 'border-left:2px solid ' + accentText + ';opacity on left only is set via rgba in chip';
+      // Simpler: use inline border-left with the text colour at 25% via box-shadow trick
+      var tileStyle = 'border-left:2px solid ' + accentText + '40;';
+
+      var rankChipsHtml = (result !== null)
+        ? renderRankAndChips(sp.pid, tile.keys, sp.positions)
+        : '';
+
+      var tooltipHtml = '<span class="tip cat-tile-info" onclick="tipTap(this)">'
+        + '<span class="tiptext">' + esc(tile.tooltip) + '</span>'
+        + '<span class="cat-info-icon">\u24d8</span>'
+        + '</span>';
+
+      return '<div class="cat-tile" style="' + tileStyle + '">'
+        + tooltipHtml
+        + '<div class="cat-tile-label">' + esc(tile.label) + '</div>'
+        + '<div class="cat-tile-val" style="color:' + valColour + ';">' + ptsStr + '</div>'
+        + '<div class="cat-tile-sub">pts / game</div>'
+        + rankChipsHtml
+        + '</div>';
+    }
+
+    var html = '';
+    CATEGORY_GROUPS.forEach(function(grp) {
+      var sectionTotal = 0;
+      var sectionHasData = false;
+      grp.tiles.forEach(function(tile) {
+        var r = calcCategoryAvgPts(sp, tile.keys, togMin);
+        if (r !== null) { sectionTotal += r.pts; sectionHasData = true; }
+      });
+      var totalColour = (sectionHasData && sectionTotal < 0) ? 'color:var(--red);' : '';
+      var totalStr = sectionHasData
+        ? '<span class="cat-section-total" style="' + totalColour + '">'
+            + (sectionTotal >= 0 ? '+' : '') + sectionTotal.toFixed(1) + ' pts/g'
+          + '</span>'
+        : '';
+
+      var tilesHtml = grp.tiles.map(function(tile) {
+        return renderCatTile(tile, sp);
+      }).join('');
+
+      html += '<div class="cat-section">'
+        + '<div class="cat-section-header">'
+          + '<span class="cat-section-label">' + esc(grp.header) + '</span>'
+          + totalStr
+        + '</div>'
+        + '<div class="cat-grid">' + tilesHtml + '</div>'
+        + '</div>';
+    });
+    return html;
   }
 
   // ── Build player list ─────────────────────────────────────────────────────
@@ -2100,10 +2289,8 @@ function _initStats() {
         + '</div>'
       : '';
 
-    // ── Key stat groups ───────────────────────────────────────────────────
-    var groupsHtml = KEY_GROUPS.map(function(grp) {
-      return renderStatGroup(grp, sp, togMin, posFilter, posLabel);
-    }).join('');
+    // ── Category stat groups (new grouped card) ───────────────────────────
+    var groupsHtml = renderCategoryGroups(sp, togMin);
 
     // ── Game history ──────────────────────────────────────────────────────
     var historyHtml = renderGameHistory(sp, allRounds, togMin);

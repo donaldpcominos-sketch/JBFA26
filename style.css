@@ -637,3 +637,106 @@ td{padding:.6rem 1rem;vertical-align:middle;}
   margin-bottom:.25rem;
   border-bottom:1px solid var(--border);
 }
+
+/* ══════════════════════════════════════════════════════════════
+   CATEGORY STAT TILES — Player Card
+   ══════════════════════════════════════════════════════════════ */
+
+.cat-section{
+  border-top:1px solid var(--border);
+  padding-top:.75rem;
+  margin-bottom:.1rem;
+}
+.cat-section:first-of-type{border-top:none;padding-top:0;}
+
+.cat-section-header{
+  display:flex;align-items:center;gap:.5rem;
+  margin-bottom:.55rem;
+}
+.cat-section-label{
+  font-size:.62rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:.1em;
+  color:var(--muted);
+}
+.cat-section-total{
+  font-size:.72rem;font-weight:700;color:var(--text);
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:20px;padding:.1rem .55rem;white-space:nowrap;
+}
+
+/* 2-column grid — mobile-first, larger tiles */
+.cat-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:.5rem;margin-bottom:.5rem;
+}
+
+.cat-tile{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:.7rem .85rem .6rem;
+  position:relative;
+  display:flex;flex-direction:column;gap:.08rem;
+}
+
+/* Tooltip icon — absolute top-right */
+.cat-tile-info{
+  position:absolute;top:.5rem;right:.55rem;line-height:1;
+}
+.cat-info-icon{
+  font-size:.72rem;color:var(--muted);opacity:.55;
+  transition:opacity .15s;
+}
+.cat-tile-info:hover .cat-info-icon,
+.cat-tile-info.tapped .cat-info-icon{opacity:1;}
+
+.cat-tile-label{
+  font-size:.6rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:.09em;
+  color:var(--muted);margin-bottom:.1rem;
+  padding-right:1.4rem; /* clear ⓘ */
+}
+.cat-tile-val{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.6rem;letter-spacing:.02em;line-height:1;
+}
+.cat-tile-sub{
+  font-size:.56rem;color:var(--muted);margin-bottom:.3rem;
+}
+
+/* Rank line: HLF #4 · CTR #11 */
+.cat-tile-rank{
+  display:flex;align-items:center;flex-wrap:wrap;
+  gap:.15rem;margin-top:.15rem;line-height:1.3;
+}
+.cat-rank-pos{
+  font-size:.62rem;font-weight:700;
+  color:var(--muted);text-transform:uppercase;letter-spacing:.07em;
+}
+.cat-rank-num{
+  font-size:.68rem;font-weight:700;
+  /* colour applied inline via rankTierColour() */
+}
+.cat-rank-sep{
+  font-size:.58rem;color:var(--muted);margin:0 .2rem;
+}
+
+/* Position chip row — beneath rank line */
+.cat-tile-chips{
+  display:flex;gap:.3rem;flex-wrap:wrap;margin-top:.25rem;
+}
+.cat-pos-chip{
+  display:inline-block;
+  font-size:.58rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:.07em;
+  border:1px solid;border-radius:20px;
+  padding:.06rem .4rem;white-space:nowrap;line-height:1.4;
+}
+
+@media(max-width:600px){
+  .cat-tile-val{font-size:1.45rem;}
+}
+@media(max-width:380px){
+  .cat-grid{grid-template-columns:1fr;}
+}
