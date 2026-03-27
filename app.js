@@ -1975,21 +1975,36 @@ function _initStats() {
       });
     });
 
-    // Sort by implied price descending
-    rows.sort(function(a,b){ return b.impliedPrice - a.impliedPrice; });
+    // Sort: DIFF descending by default; implied price descending as alternative
+    var impliedSortMode = window._impliedSortMode || 'diff';
+    if (impliedSortMode === 'diff') {
+      rows.sort(function(a, b) {
+        if (a.diff === null && b.diff === null) return b.impliedPrice - a.impliedPrice;
+        if (a.diff === null) return 1;
+        if (b.diff === null) return -1;
+        return b.diff - a.diff;
+      });
+    } else {
+      rows.sort(function(a, b){ return b.impliedPrice - a.impliedPrice; });
+    }
 
     if (!rows.length) {
       wrap.innerHTML = '<div class="stats-empty">No players match these filters.</div>';
       return;
     }
 
-    var html = '<div class="stats-implied-header">'
+    var html = '<div class="stats-implied-sort-bar">'
+      + '<button class="stats-implied-sort-btn'+(impliedSortMode==='diff'?' active':'')+'" onclick="statsSetImpliedSort(\'diff\')">Sort: DIFF \u2193</button>'
+      + '<button class="stats-implied-sort-btn'+(impliedSortMode==='implied'?' active':'')+'" onclick="statsSetImpliedSort(\'implied\')">Sort: Implied $</button>'
+      + '</div>';
+
+    html += '<div class="stats-implied-header">'
       + '<span class="sih-rank">#</span>'
       + '<span class="sih-name">Player</span>'
       + '<span class="sih-avg">Avg</span>'
       + '<span class="sih-implied">Implied</span>'
       + '<span class="sih-price">Price</span>'
-      + '<span class="sih-diff">Diff <span class="tip tip-left stats-hdr-tip" onclick="tipTap(this)"><span class="tiptext">Implied price is filtered game average x Magic Number</span><span class="cat-info-icon">\u24d8</span></span></span>'
+      + '<span class="sih-diff">Diff <span class="tip tip-right stats-hdr-tip" onclick="tipTap(this)"><span class="tiptext">Implied price is filtered game average x Magic Number</span><span class="cat-info-icon">\u24d8</span></span></span>'
       + '</div>';
 
     rows.slice(0, 100).forEach(function(row, i) {
@@ -2013,6 +2028,11 @@ function _initStats() {
     wrap.innerHTML = html;
   }
   window.statsRenderImplied = statsRenderImplied;
+
+  window.statsSetImpliedSort = function(mode) {
+    window._impliedSortMode = mode;
+    statsRenderImplied();
+  };
 
   // ── Shared filter readers ─────────────────────────────────────────────────
   function getPlayerTogFilter() {
