@@ -2634,8 +2634,8 @@ var dataUrl =
   (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
     ? 'data.json'
     : (window.location.hostname === 'jbfa26.netlify.app'
-        ? 'https://raw.githubusercontent.com/donaldpcominos-sketch/JBFA26/main/data.json'
-        : 'https://raw.githubusercontent.com/donaldpcominos-sketch/JBFA26/dev2/data.json');
+        ? 'https://raw.githubusercontent.com/donaldpcominos-sketch/JBFA26/mensa/data.json'
+        : 'https://raw.githubusercontent.com/donaldpcominos-sketch/JBFA26/mensa/data.json');
 
 fetch(dataUrl)
   .then(function(r){
