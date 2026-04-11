@@ -9,72 +9,22 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="style.css">
-<style>
-#pf-results .pf-row{padding:.4rem 0;border-bottom:1px solid var(--border);font-size:.8rem;}
-#pf-results .pf-row-header{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;}
-.pf-name{font-weight:600;}
-.pf-price{font-size:.68rem;color:var(--text);font-weight:600;}
-.pf-pos{color:var(--muted);font-size:.7rem;}
-.pf-team{color:var(--muted);font-size:.7rem;}
-.pf-score{font-size:.7rem;font-weight:700;color:var(--green);margin-left:auto;}
-.pf-trade-in{font-size:.65rem;padding:.15rem .4rem;border-radius:4px;background:var(--green);color:#fff;border:none;cursor:pointer;}
-.pf-dots{display:flex;gap:3px;margin-top:.25rem;}
-.pf-dot{width:12px;height:12px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.45rem;line-height:1;}
-.pf-dot-ok{background:rgba(34,197,94,.2);color:var(--green);}
-.pf-dot-miss{background:rgba(248,113,113,.2);color:var(--red);}
-.pf-inline-trade{display:flex;gap:.35rem;align-items:center;margin-top:.3rem;flex-wrap:wrap;}
-.pf-inline-trade select{font-size:.72rem;padding:.15rem .25rem;border-radius:4px;border:1px solid var(--border);background:var(--surface);color:var(--text);}
-.pf-confirm{font-size:.65rem;padding:.15rem .4rem;border-radius:4px;background:var(--green);color:#fff;border:none;cursor:pointer;}
-.pf-cancel{font-size:.65rem;padding:.15rem .4rem;border-radius:4px;background:var(--surface2);color:var(--muted);border:none;cursor:pointer;}
-.pf-round-check{display:flex;align-items:center;gap:.2rem;font-size:.72rem;color:var(--text);cursor:pointer;}
-.pf-round-check input{margin:0;}
-.pf-no-coach{font-size:.78rem;color:var(--muted);padding:.5rem 0;}
-.pf-pagination{display:flex;align-items:center;justify-content:center;gap:.5rem;margin-top:.5rem;padding-top:.4rem;border-top:1px solid var(--border);}
-.pf-page-btn{font-size:.7rem;padding:.2rem .5rem;border-radius:4px;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;}
-.pf-page-btn:disabled{opacity:.35;cursor:default;}
-.pf-page-info{font-size:.68rem;color:var(--muted);}
-.bye-dot-surplus{background:rgba(59,130,246,.2);color:rgb(59,130,246);font-weight:700;}
-.bye-dot-selected{outline:2px solid var(--text);outline-offset:1px;border-radius:50%;}
-.bye-matrix-detail-panel{margin-top:.6rem;padding:.6rem;background:var(--surface);border:1px solid var(--border);border-radius:6px;font-size:.78rem;}
-.bye-md-section{margin-bottom:.4rem;}
-.bye-md-label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:.2rem;}
-.bye-md-player{display:flex;align-items:center;gap:.4rem;padding:.15rem 0;}
-.bye-md-pos{color:var(--muted);font-size:.68rem;}
-.bye-md-badge{font-size:.6rem;padding:.1rem .3rem;border-radius:3px;font-weight:600;}
-.bye-md-bye{background:rgba(248,113,113,.15);color:var(--red);}
-.bye-md-origin{background:rgba(251,191,36,.15);color:#d97706;}
-.bye-md-manual{background:rgba(148,163,184,.15);color:#64748b;}
-.bye-pv-grid{display:grid;grid-template-columns:minmax(100px,1fr) repeat(var(--bye-pv-cols),28px);gap:3px;align-items:center;font-size:.72rem;}
-.bye-pv-name-head{font-size:0;}
-.bye-pv-rnd{text-align:center;font-size:.6rem;font-weight:700;color:var(--muted);}
-.bye-pv-name{font-size:.72rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.bye-pv-dot{width:24px;height:18px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:.5rem;}
-.bye-pv-ok{background:rgba(34,197,94,.15);color:var(--green);}
-.bye-pv-miss{background:rgba(248,113,113,.15);color:var(--red);}
-.bye-pv-traded{background:var(--surface2);color:var(--muted);font-size:.5rem;}
-.bye-mr-dot{display:inline-flex;align-items:center;justify-content:center;min-width:32px;height:22px;border-radius:4px;font-size:.62rem;font-weight:600;padding:0 4px;}
-.bye-mr-ok{background:rgba(34,197,94,.1);color:var(--green);border:1px solid rgba(34,197,94,.25);}
-.bye-mr-out{background:rgba(248,113,113,.15);color:var(--red);border:1px solid rgba(248,113,113,.3);}
-.bye-mr-bye{background:var(--surface2);color:var(--muted);border:1px solid var(--border);opacity:.6;}
-.bye-manual-player{padding:.4rem 0;border-bottom:1px solid var(--border);}
-
-/* ── Rosterr Bye Planner promo bar ──────────────────────────── */
-#bye-promo-bar{background:linear-gradient(90deg,rgba(200,70,20,.28) 0%,rgba(180,55,15,.18) 50%,rgba(220,100,30,.22) 100%);border-bottom:1px solid rgba(220,90,30,.45);display:flex;align-items:center;justify-content:center;padding:.42rem 3rem .42rem 1rem;position:relative;min-height:36px;}
-#bye-promo-link{display:flex;align-items:center;gap:.55rem;text-decoration:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:500;transition:color .15s;}
-#bye-promo-link:hover{color:var(--accent);}
-.bpb-icon{font-size:.95rem;flex-shrink:0;}
-.bpb-badge{display:inline-flex;font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:.12rem .42rem;border-radius:4px;background:rgba(240,180,41,.15);color:var(--accent);border:1px solid rgba(240,180,41,.32);flex-shrink:0;}
-.bpb-text-full strong,.bpb-text-short strong{color:var(--accent);font-weight:700;}
-.bpb-text-short{display:none;}
-.bpb-arrow{font-size:.88rem;color:var(--accent);flex-shrink:0;transition:transform .15s;}
-#bye-promo-link:hover .bpb-arrow{transform:translateX(3px);}
-.bpb-close{position:absolute;right:.6rem;background:none;border:none;color:var(--muted);font-size:1.1rem;line-height:1;cursor:pointer;padding:.2rem .45rem;border-radius:4px;transition:color .15s,background .15s;}
-.bpb-close:hover{color:var(--text);background:rgba(255,255,255,.08);}
-@media(max-width:520px){.bpb-text-full{display:none;}.bpb-text-short{display:inline;}}
-</style>
+<!-- Styles moved to style.css -->
 
 </head>
 <body>
+
+<!-- Loading overlay — hidden once data.json is initialised -->
+<div id="app-loading">
+  <div class="loading-spinner"></div>
+  <div class="loading-text">Loading league data…</div>
+</div>
+
+<!-- Error banner — shown if data.json fails to load -->
+<div id="error-banner" role="alert">
+  ⚠️ Unable to load league data.
+  <button class="error-retry" onclick="location.reload()">Retry</button>
+</div>
 
 <header>
   <div class="hdr">
@@ -87,8 +37,8 @@
       <input id="gs" type="text" placeholder="Search coach or team…" autocomplete="off">
       <div class="sdrop" id="sdrop"></div>
     </div>
-    <div class="rpill" id="rpill" style="cursor:pointer">Round 2 of 27</div>
-    <button onclick="document.getElementById('fmodal').style.display='flex'" style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:.35rem .8rem;color:rgba(255,255,255,.8);font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:background .15s;" onmouseover="this.style.background='rgba(255,255,255,.2)'" onmouseout="this.style.background='rgba(255,255,255,.12)'">💬 Feedback</button>
+    <div class="rpill" id="rpill" style="cursor:pointer">--</div>
+    <button class="btn-feedback" onclick="document.getElementById('fmodal').style.display='flex'">💬 Feedback</button>
   </div>
 </header>
 
@@ -151,7 +101,7 @@ function dismissByePromo(){document.getElementById('bye-promo-bar').style.displa
     <div class="sr">
       <div class="sc"><div class="scl">Coaches</div><div class="scv" id="sc-total">--</div><div class="scs"></div></div>
       <div class="sc"><div class="scl">Current Round</div><div class="scv" style="color:var(--accent)" id="sc-cur-round">--</div><div class="scs">of 27</div></div>
-      <div class="sc"><div class="scl" id="sc-top-label">Top Score R--</div><div class="scv" style="color:var(--accent)" id="sc-top-val">1163</div><div class="scs" id="sc-top-coach" style="color:var(--text);font-weight:700;font-size:.8rem">--</div></div>
+      <div class="sc"><div class="scl" id="sc-top-label">Top Score R--</div><div class="scv" style="color:var(--accent)" id="sc-top-val">--</div><div class="scs" id="sc-top-coach" style="color:var(--text);font-weight:700;font-size:.8rem">--</div></div>
       <div class="sc"><div class="scl" id="sc-avg-label">Field Avg R--</div><div class="scv" id="sc-avg-val">--</div><div class="scs" id="sc-avg-sub"></div></div>
     </div>
     <div class="sh"><div class="sht">Overall Leaders</div><div class="shl"></div><span class="badge bt1">Live</span></div>
@@ -179,9 +129,9 @@ function dismissByePromo(){document.getElementById('bye-promo-bar').style.displa
     </div>
     <div class="sh"><div class="sht">Survivor</div><div class="shl"></div></div>
     <div class="sr" id="sr-surv-ov">
-      <div class="sc"><div class="scl" id="sc-alive-label">Alive After R2</div><div class="scv" style="color:var(--green)" id="sc-alive">…</div><div class="scs" id="sc-alive-sub">— cut after last round</div></div>
-      <div class="sc"><div class="scl">Eliminated R2</div><div class="scv" style="color:var(--muted)">20</div><div class="scs">lowest scores cut</div></div>
-      <div class="sc"><div class="scl" id="sc-cut-label-ov">R2 Cut Score</div><div class="scv" style="color:var(--red)" id="sc-cut-val-ov">963</div><div class="scs" id="sc-cut-scs-ov">lowest safe R2 score</div></div>
+      <div class="sc"><div class="scl" id="sc-alive-label">Alive After Last Round</div><div class="scv" style="color:var(--green)" id="sc-alive">--</div><div class="scs" id="sc-alive-sub">— cut after last round</div></div>
+      <div class="sc"><div class="scl" id="sc-elim-label">Eliminated</div><div class="scv" style="color:var(--muted)" id="sc-elim-count">--</div><div class="scs" id="sc-elim-sub">lowest scores cut</div></div>
+      <div class="sc"><div class="scl" id="sc-cut-label-ov">Cut Score</div><div class="scv" style="color:var(--red)" id="sc-cut-val-ov">--</div><div class="scs" id="sc-cut-scs-ov">lowest safe score</div></div>
       <div class="sc"><div class="scl" id="sc-next-cull-label">Next Cull</div><div class="scv" style="color:var(--red)" id="sc-next-cull-val">—</div><div class="scs" id="sc-next-cull-sub">lowest scores cut</div></div>
     </div>
   </div>
@@ -328,10 +278,10 @@ function dismissByePromo(){document.getElementById('bye-promo-bar').style.displa
     <div class="sh" style="margin-top:0"><div class="sht">Survivor</div><div class="shl"></div></div>
     <p style="color:var(--muted);font-size:.875rem;margin-bottom:1.5rem;"><strong style="color:var(--text)">Weekly score only — not cumulative.</strong> Each round the coaches with the lowest <em>that week's score</em> are eliminated, regardless of how they've performed before. Survive each round. Last coach standing after Round 27 wins.</p>
     <div class="sr">
-      <div class="sc"><div class="scl">Started</div><div class="scv" id="sc-started">299</div><div class="scs">coaches</div></div>
-      <div class="sc"><div class="scl">Still Alive</div><div class="scv" style="color:var(--green)" id="sc-still-alive">…</div><div class="scs" id="sc-still-alive-sub">after R2</div></div>
+      <div class="sc"><div class="scl">Started</div><div class="scv" id="sc-started">--</div><div class="scs">coaches</div></div>
+      <div class="sc"><div class="scl">Still Alive</div><div class="scv" style="color:var(--green)" id="sc-still-alive">--</div><div class="scs" id="sc-still-alive-sub">after last round</div></div>
       <div class="sc"><div class="scl">Eliminated</div><div class="scv" style="color:var(--muted)" id="sc-elim-count">—</div><div class="scs" id="sc-elim-sub">cut to date</div></div>
-      <div class="sc"><div class="scl" id="sc-cut-label">R2 Cut Score</div><div class="scv" style="color:var(--red)" id="sc-cut-val">963</div><div class="scs">lowest safe R2 score</div></div>
+      <div class="sc"><div class="scl" id="sc-cut-label">Cut Score</div><div class="scv" style="color:var(--red)" id="sc-cut-val">--</div><div class="scs" id="sc-cut-scs">lowest safe score</div></div>
       <div class="sc"><div class="scl" id="sc-next-drop-label">Next Drop</div><div class="scv" style="color:var(--red)" id="sc-next-drop-val">—</div><div class="scs">lowest weekly scores cut</div></div>
     </div>
     <div class="sh"><div class="sht">Full Drop Schedule</div><div class="shl"></div></div>

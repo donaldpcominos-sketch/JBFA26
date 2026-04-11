@@ -30,15 +30,13 @@ function setupFeedbackForm() {
         btn.textContent = 'Sent ✓';
         setTimeout(closeFeedback, 2000);
       } else {
-        btn.textContent = 'Send Feedback';
+        btn.textContent = 'Failed — try again';
         btn.disabled = false;
-        alert('Something went wrong — try again.');
       }
     })
     .catch(function() {
-      btn.textContent = 'Send Feedback';
+      btn.textContent = 'Failed — try again';
       btn.disabled = false;
-      alert('Something went wrong — try again.');
     });
   });
 }
@@ -60,6 +58,9 @@ function fetchLeagueData() {
     })
     .catch(function(err) {
       console.error('Remote fetch failed: ' + err);
-      alert('Unable to load league data. Please check your connection or data.json deployment.');
+      var banner=document.getElementById('error-banner');
+      if(banner) banner.classList.add('show');
+      var lo=document.getElementById('app-loading');
+      if(lo) lo.style.display='none';
     });
 }
