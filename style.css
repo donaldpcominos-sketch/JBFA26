@@ -1049,3 +1049,115 @@ td{padding:.6rem 1rem;vertical-align:middle;}
 .bpb-close{position:absolute;right:.6rem;background:none;border:none;color:var(--muted);font-size:1.1rem;line-height:1;cursor:pointer;padding:.2rem .45rem;border-radius:4px;transition:color .15s,background .15s;}
 .bpb-close:hover{color:var(--text);background:rgba(255,255,255,.08);}
 @media(max-width:520px){.bpb-text-full{display:none;}.bpb-text-short{display:inline;}}
+
+/* ══════════════════════════════════════════════════════════════
+   PWA — Bottom Navigation (mobile only)
+   ══════════════════════════════════════════════════════════════ */
+.bottom-nav{display:none;}
+
+@media(max-width:700px){
+  /* Replace top-level nav with bottom bar */
+  .nav-top{display:none;}
+
+  /* Push content above the bottom nav */
+  main{padding-bottom:calc(72px + env(safe-area-inset-bottom, 0px));}
+
+  /* Touch-friendly filter inputs */
+  .fi{width:100%;}
+  .fr{flex-direction:column;align-items:stretch;}
+
+  /* Bottom nav container */
+  .bottom-nav{
+    display:flex;
+    position:fixed;
+    bottom:0;left:0;right:0;
+    z-index:300;
+    background:var(--surface);
+    border-top:1px solid var(--border);
+    box-shadow:0 -4px 20px rgba(0,0,0,.4);
+    padding-bottom:env(safe-area-inset-bottom, 0px);
+  }
+
+  /* Bottom nav items */
+  .bn-item{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:3px;
+    padding:.5rem .25rem;
+    min-height:56px;
+    background:none;
+    border:none;
+    color:var(--muted);
+    font-family:'DM Sans',sans-serif;
+    font-size:.6rem;
+    font-weight:700;
+    letter-spacing:.05em;
+    text-transform:uppercase;
+    cursor:pointer;
+    transition:color .15s;
+    -webkit-tap-highlight-color:transparent;
+  }
+
+  .bn-icon{font-size:1.3rem;line-height:1;transition:filter .15s;}
+  .bn-label{line-height:1;}
+
+  .bn-item.active{color:var(--accent);}
+  .bn-item.active .bn-icon{filter:drop-shadow(0 0 5px rgba(240,180,41,.55));}
+}
+
+/* ── SW data-freshness toast ─────────────────────────────────── */
+.sw-toast{
+  display:flex;
+  align-items:center;
+  gap:.6rem;
+  position:fixed;
+  bottom:88px;left:50%;
+  transform:translateX(-50%) translateY(10px);
+  background:var(--surface);
+  border:1px solid var(--accent);
+  border-radius:10px;
+  padding:.55rem 1rem;
+  font-family:'DM Sans',sans-serif;
+  font-size:.82rem;
+  font-weight:600;
+  color:var(--text);
+  box-shadow:0 4px 24px rgba(0,0,0,.6);
+  z-index:1000;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .25s,transform .25s;
+  white-space:nowrap;
+}
+.sw-toast.visible{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
+  pointer-events:auto;
+}
+.sw-toast-btn{
+  background:var(--accent);
+  color:#000;
+  border:none;
+  border-radius:6px;
+  padding:.25rem .65rem;
+  font-family:'DM Sans',sans-serif;
+  font-size:.78rem;
+  font-weight:700;
+  cursor:pointer;
+}
+.sw-toast-close{
+  background:none;
+  border:none;
+  color:var(--muted);
+  font-size:1.1rem;
+  line-height:1;
+  cursor:pointer;
+  padding:0 .15rem;
+}
+.sw-toast-close:hover{color:var(--text);}
+
+@media(max-width:700px){
+  .sw-toast{bottom:calc(68px + env(safe-area-inset-bottom, 0px));}
+}

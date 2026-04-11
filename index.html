@@ -9,6 +9,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1a3a8f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="JBFA">
 <!-- Styles moved to style.css -->
 
 </head>
@@ -873,6 +878,29 @@ function dismissByePromo(){document.getElementById('bye-promo-bar').style.displa
   </div>
 </template>
 
+<!-- PWA bottom navigation (mobile only) -->
+<nav class="bottom-nav" id="bottom-nav" aria-label="Main navigation">
+  <button class="bn-item active" id="bni-ov" onclick="showTopTab('ov')">
+    <span class="bn-icon">🏠</span>
+    <span class="bn-label">Overview</span>
+  </button>
+  <button class="bn-item" id="bni-comp" onclick="showTopTab('comp')">
+    <span class="bn-icon">🏆</span>
+    <span class="bn-label">Comps</span>
+  </button>
+  <button class="bn-item" id="bni-insights" onclick="showTopTab('insights')">
+    <span class="bn-icon">📈</span>
+    <span class="bn-label">Insights</span>
+  </button>
+</nav>
+
+<!-- PWA data-freshness toast -->
+<div id="sw-toast" class="sw-toast" role="status" aria-live="polite">
+  Scores updated
+  <button class="sw-toast-btn" onclick="location.reload()">Refresh</button>
+  <button class="sw-toast-close" onclick="this.parentElement.classList.remove('visible')" aria-label="Dismiss">×</button>
+</div>
+
 <script src="dataFetcher.js"></script>
 <script src="uiRenderer.js"></script>
 <script src="app.js"></script>
@@ -883,6 +911,51 @@ function closeFeedback(){
   document.getElementById('fok').style.display='none';
   document.getElementById('fform').reset();
 }
+
+// ── PWA: Service Worker registration ─────────────────────────
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(function(err) {
+    console.warn('SW registration failed:', err);
+  });
+  navigator.serviceWorker.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'DATA_UPDATED') {
+      var toast = document.getElementById('sw-toast');
+      if (toast) toast.classList.add('visible');
+    }
+  });
+}
+
+// ── PWA: Offline indicator ────────────────────────────────────
+(function() {
+  var pill = document.getElementById('rpill');
+  function updateOnline() {
+    if (!pill) return;
+    if (navigator.onLine) {
+      pill.removeAttribute('title');
+      pill.style.opacity = '';
+    } else {
+      pill.title = 'Offline — showing cached data';
+      pill.style.opacity = '0.55';
+    }
+  }
+  window.addEventListener('online', updateOnline);
+  window.addEventListener('offline', updateOnline);
+  updateOnline();
+})();
+
+// ── PWA: Sync bottom nav with showTopTab ──────────────────────
+(function() {
+  var _sto = window.showTopTab;
+  if (!_sto) return;
+  window.showTopTab = function(grp) {
+    _sto(grp);
+    document.querySelectorAll('.bn-item').forEach(function(b) {
+      b.classList.remove('active');
+    });
+    var bni = document.getElementById('bni-' + grp);
+    if (bni) bni.classList.add('active');
+  };
+})();
 
 var _fm = document.getElementById('fmodal');
 if (_fm) {

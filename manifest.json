@@ -1,0 +1,24 @@
+{
+  "name": "JBFA Fantasy League 2026",
+  "short_name": "JBFA",
+  "description": "Track your JBFA fantasy NRL league — standings, stats, and prize comps.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0a0e1a",
+  "theme_color": "#1a3a8f",
+  "icons": [
+    {
+      "src": "logo.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any"
+    },
+    {
+      "src": "logo.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ]
+}
