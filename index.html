@@ -9,6 +9,69 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="style.css">
+<style>
+#pf-results .pf-row{padding:.4rem 0;border-bottom:1px solid var(--border);font-size:.8rem;}
+#pf-results .pf-row-header{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;}
+.pf-name{font-weight:600;}
+.pf-price{font-size:.68rem;color:var(--text);font-weight:600;}
+.pf-pos{color:var(--muted);font-size:.7rem;}
+.pf-team{color:var(--muted);font-size:.7rem;}
+.pf-score{font-size:.7rem;font-weight:700;color:var(--green);margin-left:auto;}
+.pf-trade-in{font-size:.65rem;padding:.15rem .4rem;border-radius:4px;background:var(--green);color:#fff;border:none;cursor:pointer;}
+.pf-dots{display:flex;gap:3px;margin-top:.25rem;}
+.pf-dot{width:12px;height:12px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.45rem;line-height:1;}
+.pf-dot-ok{background:rgba(34,197,94,.2);color:var(--green);}
+.pf-dot-miss{background:rgba(248,113,113,.2);color:var(--red);}
+.pf-inline-trade{display:flex;gap:.35rem;align-items:center;margin-top:.3rem;flex-wrap:wrap;}
+.pf-inline-trade select{font-size:.72rem;padding:.15rem .25rem;border-radius:4px;border:1px solid var(--border);background:var(--surface);color:var(--text);}
+.pf-confirm{font-size:.65rem;padding:.15rem .4rem;border-radius:4px;background:var(--green);color:#fff;border:none;cursor:pointer;}
+.pf-cancel{font-size:.65rem;padding:.15rem .4rem;border-radius:4px;background:var(--surface2);color:var(--muted);border:none;cursor:pointer;}
+.pf-round-check{display:flex;align-items:center;gap:.2rem;font-size:.72rem;color:var(--text);cursor:pointer;}
+.pf-round-check input{margin:0;}
+.pf-no-coach{font-size:.78rem;color:var(--muted);padding:.5rem 0;}
+.pf-pagination{display:flex;align-items:center;justify-content:center;gap:.5rem;margin-top:.5rem;padding-top:.4rem;border-top:1px solid var(--border);}
+.pf-page-btn{font-size:.7rem;padding:.2rem .5rem;border-radius:4px;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;}
+.pf-page-btn:disabled{opacity:.35;cursor:default;}
+.pf-page-info{font-size:.68rem;color:var(--muted);}
+.bye-dot-surplus{background:rgba(59,130,246,.2);color:rgb(59,130,246);font-weight:700;}
+.bye-dot-selected{outline:2px solid var(--text);outline-offset:1px;border-radius:50%;}
+.bye-matrix-detail-panel{margin-top:.6rem;padding:.6rem;background:var(--surface);border:1px solid var(--border);border-radius:6px;font-size:.78rem;}
+.bye-md-section{margin-bottom:.4rem;}
+.bye-md-label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:.2rem;}
+.bye-md-player{display:flex;align-items:center;gap:.4rem;padding:.15rem 0;}
+.bye-md-pos{color:var(--muted);font-size:.68rem;}
+.bye-md-badge{font-size:.6rem;padding:.1rem .3rem;border-radius:3px;font-weight:600;}
+.bye-md-bye{background:rgba(248,113,113,.15);color:var(--red);}
+.bye-md-origin{background:rgba(251,191,36,.15);color:#d97706;}
+.bye-md-manual{background:rgba(148,163,184,.15);color:#64748b;}
+.bye-pv-grid{display:grid;grid-template-columns:minmax(100px,1fr) repeat(var(--bye-pv-cols),28px);gap:3px;align-items:center;font-size:.72rem;}
+.bye-pv-name-head{font-size:0;}
+.bye-pv-rnd{text-align:center;font-size:.6rem;font-weight:700;color:var(--muted);}
+.bye-pv-name{font-size:.72rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.bye-pv-dot{width:24px;height:18px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:.5rem;}
+.bye-pv-ok{background:rgba(34,197,94,.15);color:var(--green);}
+.bye-pv-miss{background:rgba(248,113,113,.15);color:var(--red);}
+.bye-pv-traded{background:var(--surface2);color:var(--muted);font-size:.5rem;}
+.bye-mr-dot{display:inline-flex;align-items:center;justify-content:center;min-width:32px;height:22px;border-radius:4px;font-size:.62rem;font-weight:600;padding:0 4px;}
+.bye-mr-ok{background:rgba(34,197,94,.1);color:var(--green);border:1px solid rgba(34,197,94,.25);}
+.bye-mr-out{background:rgba(248,113,113,.15);color:var(--red);border:1px solid rgba(248,113,113,.3);}
+.bye-mr-bye{background:var(--surface2);color:var(--muted);border:1px solid var(--border);opacity:.6;}
+.bye-manual-player{padding:.4rem 0;border-bottom:1px solid var(--border);}
+
+/* ── Rosterr Bye Planner promo bar ──────────────────────────── */
+#bye-promo-bar{background:linear-gradient(90deg,rgba(26,58,143,.22) 0%,rgba(10,14,26,1) 55%,rgba(240,180,41,.07) 100%);border-bottom:1px solid rgba(240,180,41,.2);display:flex;align-items:center;justify-content:center;padding:.42rem 3rem .42rem 1rem;position:relative;min-height:36px;}
+#bye-promo-link{display:flex;align-items:center;gap:.55rem;text-decoration:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:500;transition:color .15s;}
+#bye-promo-link:hover{color:var(--accent);}
+.bpb-icon{font-size:.95rem;flex-shrink:0;}
+.bpb-badge{display:inline-flex;font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:.12rem .42rem;border-radius:4px;background:rgba(240,180,41,.15);color:var(--accent);border:1px solid rgba(240,180,41,.32);flex-shrink:0;}
+.bpb-text-full strong,.bpb-text-short strong{color:var(--accent);font-weight:700;}
+.bpb-text-short{display:none;}
+.bpb-arrow{font-size:.88rem;color:var(--accent);flex-shrink:0;transition:transform .15s;}
+#bye-promo-link:hover .bpb-arrow{transform:translateX(3px);}
+.bpb-close{position:absolute;right:.6rem;background:none;border:none;color:var(--muted);font-size:1.1rem;line-height:1;cursor:pointer;padding:.2rem .45rem;border-radius:4px;transition:color .15s,background .15s;}
+.bpb-close:hover{color:var(--text);background:rgba(255,255,255,.08);}
+@media(max-width:520px){.bpb-text-full{display:none;}.bpb-text-short{display:inline;}}
+</style>
 
 </head>
 <body>
@@ -55,8 +118,25 @@
     <button class="nb" id="nb-players" onclick="showTab(event,'players')">🏉 Ownership</button>
     <button class="nb" id="nb-pp" onclick="showTab(event,'pp')">💰 Price Predictor</button>
     <button class="nb" id="nb-sd" onclick="showTab(event,'sd')">📊 Score Distribution</button>
+    <button class="nb" id="nb-bye" onclick="showTab(event,'bye')" style="display:none">📅 Bye Planner</button>
   </div>
 </div>
+
+<!-- Rosterr Bye Planner promo bar -->
+<div id="bye-promo-bar">
+  <a href="https://rosterr.app" target="_blank" rel="noopener noreferrer" id="bye-promo-link">
+    <span class="bpb-icon">📅</span>
+    <span class="bpb-badge">NEW</span>
+    <span class="bpb-text-full">Bye Planner is now live — plan your squad around the byes at <strong>rosterr.app</strong></span>
+    <span class="bpb-text-short">Bye Planner now live at <strong>rosterr.app</strong></span>
+    <span class="bpb-arrow">→</span>
+  </a>
+  <button class="bpb-close" onclick="dismissByePromo()" title="Dismiss">×</button>
+</div>
+<script>
+(function(){if(localStorage.getItem('byePromoDismissed')){var b=document.getElementById('bye-promo-bar');if(b)b.style.display='none';}})();
+function dismissByePromo(){document.getElementById('bye-promo-bar').style.display='none';localStorage.setItem('byePromoDismissed','1');}
+</script>
 
 <main>
 
@@ -306,7 +386,7 @@
       </div>
       <span style="margin-left:auto;font-size:.82rem;color:var(--muted)" id="plct"></span>
     </div>
-    <p style="font-size:.72rem;color:var(--muted);margin-bottom:.5rem;font-style:italic"></p>
+    <p style="font-size:.72rem;color:var(--muted);margin-bottom:.5rem;font-style:italic">⚠️ Player prices reflect last round's data — updated prices appear in next week's export.</p>
     <div id="pl-table-wrap"><div class="tw"><div class="tw-scroll"><table id="plt">
       <thead><tr><th>#</th><th>Player</th><th>Price</th><th>Ownership</th><th id="topn-header" style="background:rgba(240,180,41,.12);color:var(--accent);border-left:2px solid rgba(240,180,41,.3);border-right:2px solid rgba(240,180,41,.3);">Top 100</th><th>Traded In ↑</th><th style="font-size:.65rem">% of field</th><th style="font-size:.65rem">% eligible</th><th>Traded Out ↓</th><th style="font-size:.65rem">% of field</th><th style="font-size:.65rem">% eligible</th></tr></thead>
       <tbody id="plb"></tbody>
@@ -647,6 +727,134 @@
   </div>
 </div>
 <!-- END STATS PANEL -->
+
+<!-- BYE PLANNER PANEL -->
+<div class="panel" id="panel-bye">
+  <div id="bye-content">
+    <div class="sh" style="margin-top:0"><div class="sht">📅 Bye Planner</div><div class="shl"></div></div>
+
+    <!-- Coach selector -->
+    <div id="bye-coach-select" style="margin-bottom:1rem;">
+      <div style="font-size:.82rem;color:var(--muted);margin-bottom:.5rem">Select your coach to load your squad:</div>
+      <div style="display:flex;gap:.5rem;align-items:center">
+        <div class="bye-search-wrap">
+          <span class="bye-search-icon">🔍</span>
+          <input type="text" id="bye-coach-input" placeholder="Search coach…" autocomplete="off">
+          <div class="bye-drop" id="bye-coach-drop"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Assumptions bar -->
+    <div id="bye-assumptions-bar" style="display:none;">
+      <div class="bye-assumptions-header" id="bye-assumptions-toggle">
+        <span id="bye-assumptions-summary">Origin: 0 active &nbsp; Manual: 0</span>
+        <span class="bye-chevron" id="bye-assumptions-chevron">▼</span>
+      </div>
+      <div class="bye-assumptions-body" id="bye-assumptions-body" style="display:none;">
+        <div class="bye-assumptions-section">
+          <div class="bye-assumptions-label">Origin Players (my squad)</div>
+          <div id="bye-origin-list"></div>
+          <div id="bye-origin-add-wrap" style="margin-top:.35rem">
+            <div class="bye-search-wrap bye-search-wrap-sm" style="display:inline-block">
+              <input type="text" id="bye-origin-add-search" placeholder="Add Origin player…" autocomplete="off">
+              <div class="bye-drop" id="bye-origin-add-drop"></div>
+            </div>
+          </div>
+        </div>
+        <div class="bye-assumptions-section">
+          <div class="bye-assumptions-label">Manual Unavailable</div>
+          <div id="bye-manual-list"></div>
+          <button class="bye-add-btn" id="bye-add-manual-btn">+ Add player</button>
+          <div id="bye-manual-add-ui" style="display:none;">
+            <div style="display:flex;gap:.4rem;align-items:center;margin-top:.35rem;flex-wrap:wrap;">
+              <div class="bye-search-wrap bye-search-wrap-sm">
+                <input type="text" id="bye-manual-search" placeholder="Player name…" autocomplete="off">
+                <div class="bye-drop" id="bye-manual-drop"></div>
+              </div>
+              <button class="bye-small-btn" id="bye-manual-confirm">Add</button>
+              <button class="bye-small-btn bye-small-btn-muted" id="bye-manual-cancel">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main layout -->
+    <div id="bye-main" style="display:none;">
+      <div class="bye-layout">
+        <!-- Centre -->
+        <div class="bye-centre" id="bye-centre">
+          <div id="bye-pattern" class="bye-card"></div>
+          <div id="bye-problematic" class="bye-card"></div>
+        </div>
+
+        <!-- Right: Trade Planner -->
+        <div class="bye-trades" id="bye-trades">
+          <div class="bye-card">
+            <div class="bye-card-title">Planned Trades</div>
+            <div id="bye-trade-list"></div>
+            <button class="bye-add-btn" id="bye-add-trade-btn">+ Add Trade</button>
+            <div id="bye-trade-add-ui" style="display:none;">
+              <div class="bye-trade-form">
+                <div style="margin-bottom:.35rem">
+                  <label class="bye-form-label">Round</label>
+                  <select id="bye-trade-round" class="bye-select" style="width:5rem;"></select>
+                </div>
+                <div style="margin-bottom:.35rem">
+                  <label class="bye-form-label">Trade OUT</label>
+                  <div class="bye-search-wrap bye-search-wrap-sm">
+                    <input type="text" id="bye-trade-out-search" placeholder="Player out…" autocomplete="off">
+                    <div class="bye-drop" id="bye-trade-out-drop"></div>
+                  </div>
+                  <div id="bye-trade-out-selected" class="bye-trade-selected-name"></div>
+                </div>
+                <div style="margin-bottom:.35rem">
+                  <label class="bye-form-label">Trade IN</label>
+                  <div class="bye-search-wrap bye-search-wrap-sm">
+                    <input type="text" id="bye-trade-in-search" placeholder="Player in…" autocomplete="off">
+                    <div class="bye-drop" id="bye-trade-in-drop"></div>
+                  </div>
+                  <div id="bye-trade-in-selected" class="bye-trade-selected-name" style="color:var(--green)"></div>
+                </div>
+                <div style="display:flex;gap:.4rem;margin-top:.5rem">
+                  <button class="bye-small-btn" id="bye-trade-confirm">Confirm</button>
+                  <button class="bye-small-btn bye-small-btn-muted" id="bye-trade-cancel">Cancel</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Player Finder -->
+          <div class="bye-card" id="bye-player-finder" style="margin-top:.75rem">
+            <div class="bye-card-title">🔍 Player Finder</div>
+            <div id="pf-controls" style="margin-bottom:.5rem">
+              <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-bottom:.4rem">
+                <label class="bye-form-label" style="margin:0">Position</label>
+                <select id="pf-pos" class="bye-select" style="width:5.5rem">
+                  <option value="">All</option>
+                </select>
+              </div>
+              <div>
+                <label class="bye-form-label" style="margin-bottom:.2rem;display:block">Must be available</label>
+                <div id="pf-round-checks" style="display:flex;gap:.5rem;flex-wrap:wrap"></div>
+              </div>
+              <div id="pf-price-filters" style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-top:.4rem">
+                <label class="bye-form-label" style="margin:0">Price (k)</label>
+                <input type="number" id="pf-min-price" placeholder="Min" class="bye-select" style="width:4.5rem;font-size:.72rem">
+                <span style="color:var(--muted);font-size:.7rem">–</span>
+                <input type="number" id="pf-max-price" placeholder="Max" class="bye-select" style="width:4.5rem;font-size:.72rem">
+              </div>
+            </div>
+            <div id="pf-results"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<!-- END BYE PLANNER PANEL -->
 
 <div class="trade-info-modal" id="trade-info-modal" onclick="if(event.target===this)this.classList.remove('open')">
   <div class="trade-info-box">
