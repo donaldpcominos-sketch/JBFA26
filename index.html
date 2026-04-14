@@ -9,9 +9,27 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1a3a8f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="JBFA">
+<!-- Styles moved to style.css -->
 
 </head>
 <body>
+
+<!-- Loading overlay — hidden once data.json is initialised -->
+<div id="app-loading">
+  <div class="loading-spinner"></div>
+  <div class="loading-text">Loading league data…</div>
+</div>
+
+<!-- Error banner — shown if data.json fails to load -->
+<div id="error-banner" role="alert">
+  ⚠️ Unable to load league data.
+  <button class="error-retry" onclick="location.reload()">Retry</button>
+</div>
 
 <header>
   <div class="hdr">
@@ -24,8 +42,8 @@
       <input id="gs" type="text" placeholder="Search coach or team…" autocomplete="off">
       <div class="sdrop" id="sdrop"></div>
     </div>
-    <div class="rpill" id="rpill" style="cursor:pointer">Round 2 of 27</div>
-    <button onclick="document.getElementById('fmodal').style.display='flex'" style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:.35rem .8rem;color:rgba(255,255,255,.8);font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:background .15s;" onmouseover="this.style.background='rgba(255,255,255,.2)'" onmouseout="this.style.background='rgba(255,255,255,.12)'">💬 Feedback</button>
+    <div class="rpill" id="rpill" style="cursor:pointer">--</div>
+    <button class="btn-feedback" onclick="document.getElementById('fmodal').style.display='flex'">💬 Feedback</button>
   </div>
 </header>
 
@@ -53,10 +71,25 @@
   <div class="nav-sub" id="nav-sub-insights" style="display:none">
     <button class="nb" id="nb-stats" onclick="showTab(event,'stats')">📈 Stats</button>
     <button class="nb" id="nb-players" onclick="showTab(event,'players')">🏉 Ownership</button>
-    <button class="nb" id="nb-pp" onclick="showTab(event,'pp')">💰 Price Predictor</button>
     <button class="nb" id="nb-sd" onclick="showTab(event,'sd')">📊 Score Distribution</button>
   </div>
 </div>
+
+<!-- Rosterr Bye Planner promo bar -->
+<div id="bye-promo-bar">
+  <a href="https://rosterr.app" target="_blank" rel="noopener noreferrer" id="bye-promo-link">
+    <span class="bpb-icon">📅</span>
+    <span class="bpb-badge">NEW</span>
+    <span class="bpb-text-full">Bye Planner is now live — plan your squad around the byes at <strong>rosterr.app</strong></span>
+    <span class="bpb-text-short">Bye Planner now live at <strong>rosterr.app</strong></span>
+    <span class="bpb-arrow">→</span>
+  </a>
+  <button class="bpb-close" onclick="dismissByePromo()" title="Dismiss">×</button>
+</div>
+<script>
+(function(){if(localStorage.getItem('byePromoDismissed')){var b=document.getElementById('bye-promo-bar');if(b)b.style.display='none';}})();
+function dismissByePromo(){document.getElementById('bye-promo-bar').style.display='none';localStorage.setItem('byePromoDismissed','1');}
+</script>
 
 <main>
 
@@ -71,7 +104,7 @@
     <div class="sr">
       <div class="sc"><div class="scl">Coaches</div><div class="scv" id="sc-total">--</div><div class="scs"></div></div>
       <div class="sc"><div class="scl">Current Round</div><div class="scv" style="color:var(--accent)" id="sc-cur-round">--</div><div class="scs">of 27</div></div>
-      <div class="sc"><div class="scl" id="sc-top-label">Top Score R--</div><div class="scv" style="color:var(--accent)" id="sc-top-val">1163</div><div class="scs" id="sc-top-coach" style="color:var(--text);font-weight:700;font-size:.8rem">--</div></div>
+      <div class="sc"><div class="scl" id="sc-top-label">Top Score R--</div><div class="scv" style="color:var(--accent)" id="sc-top-val">--</div><div class="scs" id="sc-top-coach" style="color:var(--text);font-weight:700;font-size:.8rem">--</div></div>
       <div class="sc"><div class="scl" id="sc-avg-label">Field Avg R--</div><div class="scv" id="sc-avg-val">--</div><div class="scs" id="sc-avg-sub"></div></div>
     </div>
     <div class="sh"><div class="sht">Overall Leaders</div><div class="shl"></div><span class="badge bt1">Live</span></div>
@@ -99,9 +132,9 @@
     </div>
     <div class="sh"><div class="sht">Survivor</div><div class="shl"></div></div>
     <div class="sr" id="sr-surv-ov">
-      <div class="sc"><div class="scl" id="sc-alive-label">Alive After R2</div><div class="scv" style="color:var(--green)" id="sc-alive">…</div><div class="scs" id="sc-alive-sub">— cut after last round</div></div>
-      <div class="sc"><div class="scl">Eliminated R2</div><div class="scv" style="color:var(--muted)">20</div><div class="scs">lowest scores cut</div></div>
-      <div class="sc"><div class="scl" id="sc-cut-label-ov">R2 Cut Score</div><div class="scv" style="color:var(--red)" id="sc-cut-val-ov">963</div><div class="scs" id="sc-cut-scs-ov">lowest safe R2 score</div></div>
+      <div class="sc"><div class="scl" id="sc-alive-label">Alive After Last Round</div><div class="scv" style="color:var(--green)" id="sc-alive">--</div><div class="scs" id="sc-alive-sub">— cut after last round</div></div>
+      <div class="sc"><div class="scl" id="sc-elim-label">Eliminated</div><div class="scv" style="color:var(--muted)" id="sc-elim-count">--</div><div class="scs" id="sc-elim-sub">lowest scores cut</div></div>
+      <div class="sc"><div class="scl" id="sc-cut-label-ov">Cut Score</div><div class="scv" style="color:var(--red)" id="sc-cut-val-ov">--</div><div class="scs" id="sc-cut-scs-ov">lowest safe score</div></div>
       <div class="sc"><div class="scl" id="sc-next-cull-label">Next Cull</div><div class="scv" style="color:var(--red)" id="sc-next-cull-val">—</div><div class="scs" id="sc-next-cull-sub">lowest scores cut</div></div>
     </div>
   </div>
@@ -248,10 +281,10 @@
     <div class="sh" style="margin-top:0"><div class="sht">Survivor</div><div class="shl"></div></div>
     <p style="color:var(--muted);font-size:.875rem;margin-bottom:1.5rem;"><strong style="color:var(--text)">Weekly score only — not cumulative.</strong> Each round the coaches with the lowest <em>that week's score</em> are eliminated, regardless of how they've performed before. Survive each round. Last coach standing after Round 27 wins.</p>
     <div class="sr">
-      <div class="sc"><div class="scl">Started</div><div class="scv" id="sc-started">299</div><div class="scs">coaches</div></div>
-      <div class="sc"><div class="scl">Still Alive</div><div class="scv" style="color:var(--green)" id="sc-still-alive">…</div><div class="scs" id="sc-still-alive-sub">after R2</div></div>
+      <div class="sc"><div class="scl">Started</div><div class="scv" id="sc-started">--</div><div class="scs">coaches</div></div>
+      <div class="sc"><div class="scl">Still Alive</div><div class="scv" style="color:var(--green)" id="sc-still-alive">--</div><div class="scs" id="sc-still-alive-sub">after last round</div></div>
       <div class="sc"><div class="scl">Eliminated</div><div class="scv" style="color:var(--muted)" id="sc-elim-count">—</div><div class="scs" id="sc-elim-sub">cut to date</div></div>
-      <div class="sc"><div class="scl" id="sc-cut-label">R2 Cut Score</div><div class="scv" style="color:var(--red)" id="sc-cut-val">963</div><div class="scs">lowest safe R2 score</div></div>
+      <div class="sc"><div class="scl" id="sc-cut-label">Cut Score</div><div class="scv" style="color:var(--red)" id="sc-cut-val">--</div><div class="scs" id="sc-cut-scs">lowest safe score</div></div>
       <div class="sc"><div class="scl" id="sc-next-drop-label">Next Drop</div><div class="scv" style="color:var(--red)" id="sc-next-drop-val">—</div><div class="scs">lowest weekly scores cut</div></div>
     </div>
     <div class="sh"><div class="sht">Full Drop Schedule</div><div class="shl"></div></div>
@@ -306,7 +339,7 @@
       </div>
       <span style="margin-left:auto;font-size:.82rem;color:var(--muted)" id="plct"></span>
     </div>
-    <p style="font-size:.72rem;color:var(--muted);margin-bottom:.5rem;font-style:italic"></p>
+    <p style="font-size:.72rem;color:var(--muted);margin-bottom:.5rem;font-style:italic">⚠️ Player prices reflect last round's data — updated prices appear in next week's export.</p>
     <div id="pl-table-wrap"><div class="tw"><div class="tw-scroll"><table id="plt">
       <thead><tr><th>#</th><th>Player</th><th>Price</th><th>Ownership</th><th id="topn-header" style="background:rgba(240,180,41,.12);color:var(--accent);border-left:2px solid rgba(240,180,41,.3);border-right:2px solid rgba(240,180,41,.3);">Top 100</th><th>Traded In ↑</th><th style="font-size:.65rem">% of field</th><th style="font-size:.65rem">% eligible</th><th>Traded Out ↓</th><th style="font-size:.65rem">% of field</th><th style="font-size:.65rem">% eligible</th></tr></thead>
       <tbody id="plb"></tbody>
@@ -648,6 +681,134 @@
 </div>
 <!-- END STATS PANEL -->
 
+<!-- BYE PLANNER PANEL -->
+<div class="panel" id="panel-bye">
+  <div id="bye-content">
+    <div class="sh" style="margin-top:0"><div class="sht">📅 Bye Planner</div><div class="shl"></div></div>
+
+    <!-- Coach selector -->
+    <div id="bye-coach-select" style="margin-bottom:1rem;">
+      <div style="font-size:.82rem;color:var(--muted);margin-bottom:.5rem">Select your coach to load your squad:</div>
+      <div style="display:flex;gap:.5rem;align-items:center">
+        <div class="bye-search-wrap">
+          <span class="bye-search-icon">🔍</span>
+          <input type="text" id="bye-coach-input" placeholder="Search coach…" autocomplete="off">
+          <div class="bye-drop" id="bye-coach-drop"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Assumptions bar -->
+    <div id="bye-assumptions-bar" style="display:none;">
+      <div class="bye-assumptions-header" id="bye-assumptions-toggle">
+        <span id="bye-assumptions-summary">Origin: 0 active &nbsp; Manual: 0</span>
+        <span class="bye-chevron" id="bye-assumptions-chevron">▼</span>
+      </div>
+      <div class="bye-assumptions-body" id="bye-assumptions-body" style="display:none;">
+        <div class="bye-assumptions-section">
+          <div class="bye-assumptions-label">Origin Players (my squad)</div>
+          <div id="bye-origin-list"></div>
+          <div id="bye-origin-add-wrap" style="margin-top:.35rem">
+            <div class="bye-search-wrap bye-search-wrap-sm" style="display:inline-block">
+              <input type="text" id="bye-origin-add-search" placeholder="Add Origin player…" autocomplete="off">
+              <div class="bye-drop" id="bye-origin-add-drop"></div>
+            </div>
+          </div>
+        </div>
+        <div class="bye-assumptions-section">
+          <div class="bye-assumptions-label">Manual Unavailable</div>
+          <div id="bye-manual-list"></div>
+          <button class="bye-add-btn" id="bye-add-manual-btn">+ Add player</button>
+          <div id="bye-manual-add-ui" style="display:none;">
+            <div style="display:flex;gap:.4rem;align-items:center;margin-top:.35rem;flex-wrap:wrap;">
+              <div class="bye-search-wrap bye-search-wrap-sm">
+                <input type="text" id="bye-manual-search" placeholder="Player name…" autocomplete="off">
+                <div class="bye-drop" id="bye-manual-drop"></div>
+              </div>
+              <button class="bye-small-btn" id="bye-manual-confirm">Add</button>
+              <button class="bye-small-btn bye-small-btn-muted" id="bye-manual-cancel">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main layout -->
+    <div id="bye-main" style="display:none;">
+      <div class="bye-layout">
+        <!-- Centre -->
+        <div class="bye-centre" id="bye-centre">
+          <div id="bye-pattern" class="bye-card"></div>
+          <div id="bye-problematic" class="bye-card"></div>
+        </div>
+
+        <!-- Right: Trade Planner -->
+        <div class="bye-trades" id="bye-trades">
+          <div class="bye-card">
+            <div class="bye-card-title">Planned Trades</div>
+            <div id="bye-trade-list"></div>
+            <button class="bye-add-btn" id="bye-add-trade-btn">+ Add Trade</button>
+            <div id="bye-trade-add-ui" style="display:none;">
+              <div class="bye-trade-form">
+                <div style="margin-bottom:.35rem">
+                  <label class="bye-form-label">Round</label>
+                  <select id="bye-trade-round" class="bye-select" style="width:5rem;"></select>
+                </div>
+                <div style="margin-bottom:.35rem">
+                  <label class="bye-form-label">Trade OUT</label>
+                  <div class="bye-search-wrap bye-search-wrap-sm">
+                    <input type="text" id="bye-trade-out-search" placeholder="Player out…" autocomplete="off">
+                    <div class="bye-drop" id="bye-trade-out-drop"></div>
+                  </div>
+                  <div id="bye-trade-out-selected" class="bye-trade-selected-name"></div>
+                </div>
+                <div style="margin-bottom:.35rem">
+                  <label class="bye-form-label">Trade IN</label>
+                  <div class="bye-search-wrap bye-search-wrap-sm">
+                    <input type="text" id="bye-trade-in-search" placeholder="Player in…" autocomplete="off">
+                    <div class="bye-drop" id="bye-trade-in-drop"></div>
+                  </div>
+                  <div id="bye-trade-in-selected" class="bye-trade-selected-name" style="color:var(--green)"></div>
+                </div>
+                <div style="display:flex;gap:.4rem;margin-top:.5rem">
+                  <button class="bye-small-btn" id="bye-trade-confirm">Confirm</button>
+                  <button class="bye-small-btn bye-small-btn-muted" id="bye-trade-cancel">Cancel</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Player Finder -->
+          <div class="bye-card" id="bye-player-finder" style="margin-top:.75rem">
+            <div class="bye-card-title">🔍 Player Finder</div>
+            <div id="pf-controls" style="margin-bottom:.5rem">
+              <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-bottom:.4rem">
+                <label class="bye-form-label" style="margin:0">Position</label>
+                <select id="pf-pos" class="bye-select" style="width:5.5rem">
+                  <option value="">All</option>
+                </select>
+              </div>
+              <div>
+                <label class="bye-form-label" style="margin-bottom:.2rem;display:block">Must be available</label>
+                <div id="pf-round-checks" style="display:flex;gap:.5rem;flex-wrap:wrap"></div>
+              </div>
+              <div id="pf-price-filters" style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-top:.4rem">
+                <label class="bye-form-label" style="margin:0">Price (k)</label>
+                <input type="number" id="pf-min-price" placeholder="Min" class="bye-select" style="width:4.5rem;font-size:.72rem">
+                <span style="color:var(--muted);font-size:.7rem">–</span>
+                <input type="number" id="pf-max-price" placeholder="Max" class="bye-select" style="width:4.5rem;font-size:.72rem">
+              </div>
+            </div>
+            <div id="pf-results"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<!-- END BYE PLANNER PANEL -->
+
 <div class="trade-info-modal" id="trade-info-modal" onclick="if(event.target===this)this.classList.remove('open')">
   <div class="trade-info-box">
     <button class="trade-info-close" onclick="document.getElementById('trade-info-modal').classList.remove('open')">✕</button>
@@ -715,6 +876,29 @@
   </div>
 </template>
 
+<!-- PWA bottom navigation (mobile only) -->
+<nav class="bottom-nav" id="bottom-nav" aria-label="Main navigation">
+  <button class="bn-item active" id="bni-ov" onclick="showTopTab('ov')">
+    <span class="bn-icon">🏠</span>
+    <span class="bn-label">Overview</span>
+  </button>
+  <button class="bn-item" id="bni-comp" onclick="showTopTab('comp')">
+    <span class="bn-icon">🏆</span>
+    <span class="bn-label">Comps</span>
+  </button>
+  <button class="bn-item" id="bni-insights" onclick="showTopTab('insights')">
+    <span class="bn-icon">📈</span>
+    <span class="bn-label">Insights</span>
+  </button>
+</nav>
+
+<!-- PWA data-freshness toast -->
+<div id="sw-toast" class="sw-toast" role="status" aria-live="polite">
+  Scores updated
+  <button class="sw-toast-btn" onclick="location.reload()">Refresh</button>
+  <button class="sw-toast-close" onclick="this.parentElement.classList.remove('visible')" aria-label="Dismiss">×</button>
+</div>
+
 <script src="dataFetcher.js"></script>
 <script src="uiRenderer.js"></script>
 <script src="app.js"></script>
@@ -725,6 +909,51 @@ function closeFeedback(){
   document.getElementById('fok').style.display='none';
   document.getElementById('fform').reset();
 }
+
+// ── PWA: Service Worker registration ─────────────────────────
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(function(err) {
+    console.warn('SW registration failed:', err);
+  });
+  navigator.serviceWorker.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'DATA_UPDATED') {
+      var toast = document.getElementById('sw-toast');
+      if (toast) toast.classList.add('visible');
+    }
+  });
+}
+
+// ── PWA: Offline indicator ────────────────────────────────────
+(function() {
+  var pill = document.getElementById('rpill');
+  function updateOnline() {
+    if (!pill) return;
+    if (navigator.onLine) {
+      pill.removeAttribute('title');
+      pill.style.opacity = '';
+    } else {
+      pill.title = 'Offline — showing cached data';
+      pill.style.opacity = '0.55';
+    }
+  }
+  window.addEventListener('online', updateOnline);
+  window.addEventListener('offline', updateOnline);
+  updateOnline();
+})();
+
+// ── PWA: Sync bottom nav with showTopTab ──────────────────────
+(function() {
+  var _sto = window.showTopTab;
+  if (!_sto) return;
+  window.showTopTab = function(grp) {
+    _sto(grp);
+    document.querySelectorAll('.bn-item').forEach(function(b) {
+      b.classList.remove('active');
+    });
+    var bni = document.getElementById('bni-' + grp);
+    if (bni) bni.classList.add('active');
+  };
+})();
 
 var _fm = document.getElementById('fmodal');
 if (_fm) {
