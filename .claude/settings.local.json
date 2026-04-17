@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls -lh \"C:\\\\Users\\\\donal\\\\Desktop\\\\JBFA\"/*.json)",
+      "Bash(python3 -c \"import json; d=json.load\\(open\\('data.json'\\)\\); print\\('Top-level keys:', list\\(d.keys\\(\\)\\)\\); print\\('meta keys:', list\\(d.get\\('meta', {}\\).keys\\(\\)\\)\\); print\\('Number of coaches:', len\\(d.get\\('coaches', []\\)\\)\\); print\\('Sample coach:', list\\(d['coaches'][0].keys\\(\\)\\) if d.get\\('coaches'\\) else 'N/A'\\)\")",
+      "Bash(python3 -c \"import json; d=json.load\\(open\\('data.json'\\)\\); print\\('byeSchedule' in d, 'squadNames' in d, 'originRounds' in d, 'originDefaults' in d\\); print\\('Players sample keys:', list\\(next\\(iter\\(d.get\\('players', {}\\).values\\(\\)\\)\\).keys\\(\\)\\)\\)\")",
+      "Bash(python3)",
+      "Bash(ls -la *.py)",
+      "Bash(ls *.html *.js)",
+      "Bash(git fetch:*)",
+      "Bash(git stash:*)",
+      "Bash(git push:*)",
+      "Bash(git checkout:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m ':*)"
+    ]
+  }
+}

@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏉</text></svg>">
+<title>JBFA Fantasy League — 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+
+<header>
+  <div class="hdr">
+    <div class="logo-wrap" onclick="goHome()">
+      <img class="logo-img" src="logo.jpg" alt="JBFA">
+      <div><div class="logo-text">JBFA</div><span class="logo-sub">Prize Comps 2026</span></div>
+    </div>
+    <div class="sw">
+      <span class="si">🔍</span>
+      <input id="gs" type="text" placeholder="Search coach or team…" autocomplete="off">
+      <div class="sdrop" id="sdrop"></div>
+    </div>
+    <div class="rpill" id="rpill" style="cursor:pointer">Round 2 of 27</div>
+    <button onclick="document.getElementById('fmodal').style.display='flex'" style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:.35rem .8rem;color:rgba(255,255,255,.8);font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:background .15s;" onmouseover="this.style.background='rgba(255,255,255,.2)'" onmouseout="this.style.background='rgba(255,255,255,.12)'">💬 Feedback</button>
+  </div>
+</header>
+
+
+
+<div class="nav">
+  <div class="nav-top">
+    <button class="nb-top active" id="nbt-ov" onclick="showTopTab('ov')">Overview</button>
+    <button class="nb-top" id="nbt-comp" onclick="showTopTab('comp')">Comps</button>
+    <button class="nb-top" id="nbt-insights" onclick="showTopTab('insights')">Insights</button>
+  </div>
+  <div class="nav-sub" id="nav-sub-comp" style="display:none">
+    <button class="nb" id="nb-how" onclick="showTab(event,'how')">How It Works</button>
+    <div class="nsep"></div>
+    <button class="nb" id="nb-p1" onclick="showTab(event,'p1')">Qualifying</button>
+    <button class="nb" id="nb-p2" onclick="showTab(event,'p2')">Seeding</button>
+    <button class="nb" id="nb-p3" onclick="showTab(event,'p3')">Knockout</button>
+    <div class="nsep"></div>
+    <button class="nb" id="nb-c2" onclick="showTab(event,'c2')">🎯 Survivor</button>
+    <div class="nsep"></div>
+    <button class="nb" id="nb-vip" onclick="showTab(event,'vip')">⭐ VIP</button>
+    <div class="nsep"></div>
+    <button class="nb" id="nb-prizes" onclick="showTab(event,'prizes')">🏆 Prizes</button>
+  </div>
+  <div class="nav-sub" id="nav-sub-insights" style="display:none">
+    <button class="nb" id="nb-stats" onclick="showTab(event,'stats')">📈 Stats</button>
+    <button class="nb" id="nb-players" onclick="showTab(event,'players')">🏉 Ownership</button>
+    <button class="nb" id="nb-pp" onclick="showTab(event,'pp')">💰 Price Predictor</button>
+    <button class="nb" id="nb-sd" onclick="showTab(event,'sd')">📊 Score Distribution</button>
+  </div>
+</div>
+
+<main>
+
+  <!-- COACH VIEW -->
+  <div id="cv">
+    <button class="cvback" onclick="closeCv()">← Back</button>
+    <div id="cvc"></div>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div class="panel active" id="panel-ov">
+    <div class="sr">
+      <div class="sc"><div class="scl">Coaches</div><div class="scv" id="sc-total">--</div><div class="scs"></div></div>
+      <div class="sc"><div class="scl">Current Round</div><div class="scv" style="color:var(--accent)" id="sc-cur-round">--</div><div class="scs">of 27</div></div>
+      <div class="sc"><div class="scl" id="sc-top-label">Top Score R--</div><div class="scv" style="color:var(--accent)" id="sc-top-val">1163</div><div class="scs" id="sc-top-coach" style="color:var(--text);font-weight:700;font-size:.8rem">--</div></div>
+      <div class="sc"><div class="scl" id="sc-avg-label">Field Avg R--</div><div class="scv" id="sc-avg-val">--</div><div class="scs" id="sc-avg-sub"></div></div>
+    </div>
+    <div class="sh"><div class="sht">Overall Leaders</div><div class="shl"></div><span class="badge bt1">Live</span></div>
+    <div class="tw"><div class="tw-scroll"><table id="ovt">
+      <colgroup><col style="width:38px"><col><col style="width:72px"><col style="width:88px"><col style="width:60px"></colgroup>
+      <thead><tr><th>#</th><th>Coach</th><th style="text-align:center">Score</th><th>Value</th><th>Trades</th></tr></thead>
+      <tbody id="ov-top"></tbody>
+    </table></div></div>
+    <div class="sh"><div class="sht">🎙️ Podcaster Rankings</div><div class="shl"></div></div>
+    <div class="tw"><div class="tw-scroll"><table id="ovp">
+      <colgroup><col style="width:38px"><col><col style="width:72px"><col style="width:88px"><col style="width:60px"></colgroup>
+      <thead><tr><th>#</th><th>Coach</th><th style="text-align:center">Score</th><th>Value</th><th>Trades</th></tr></thead>
+      <tbody id="ov-pod"></tbody>
+    </table></div></div>
+    <div class="sh"><div class="sht">🔄 Trades This Round</div><div class="shl"></div><span id="ov-trade-rnd" style="font-size:.75rem;color:var(--muted)"></span></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
+      <div style="background:var(--surface);border:1px solid rgba(52,211,153,.25);border-radius:12px;overflow:hidden;">
+        <div style="background:rgba(52,211,153,.08);padding:.55rem 1rem;border-bottom:1px solid rgba(52,211,153,.15);font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--green);display:flex;align-items:center">Most Traded In<button class="trade-info-btn" onclick="document.getElementById('trade-info-modal').classList.add('open')" title="What does % eligible mean?" style="border-color:rgba(52,211,153,.3);background:rgba(52,211,153,.15);color:var(--green);">i</button></div>
+        <div id="ov-traded-in" style="padding:.35rem 0;"></div>
+      </div>
+      <div style="background:var(--surface);border:1px solid rgba(248,113,113,.25);border-radius:12px;overflow:hidden;">
+        <div style="background:rgba(248,113,113,.08);padding:.55rem 1rem;border-bottom:1px solid rgba(248,113,113,.15);font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--red);display:flex;align-items:center">Most Traded Out<button class="trade-info-btn" onclick="document.getElementById('trade-info-modal').classList.add('open')" title="What does % eligible mean?" style="border-color:rgba(248,113,113,.3);background:rgba(248,113,113,.15);color:var(--red);">i</button></div>
+        <div id="ov-traded-out" style="padding:.35rem 0;"></div>
+      </div>
+    </div>
+    <div class="sh"><div class="sht">Survivor</div><div class="shl"></div></div>
+    <div class="sr" id="sr-surv-ov">
+      <div class="sc"><div class="scl" id="sc-alive-label">Alive After R2</div><div class="scv" style="color:var(--green)" id="sc-alive">…</div><div class="scs" id="sc-alive-sub">— cut after last round</div></div>
+      <div class="sc"><div class="scl">Eliminated R2</div><div class="scv" style="color:var(--muted)">20</div><div class="scs">lowest scores cut</div></div>
+      <div class="sc"><div class="scl" id="sc-cut-label-ov">R2 Cut Score</div><div class="scv" style="color:var(--red)" id="sc-cut-val-ov">963</div><div class="scs" id="sc-cut-scs-ov">lowest safe R2 score</div></div>
+      <div class="sc"><div class="scl" id="sc-next-cull-label">Next Cull</div><div class="scv" style="color:var(--red)" id="sc-next-cull-val">—</div><div class="scs" id="sc-next-cull-sub">lowest scores cut</div></div>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div class="panel" id="panel-how">
+
+    <!-- ── MAIN SEASON COMP ── -->
+    <div style="border:1px solid rgba(26,58,143,.6);border-radius:16px;overflow:hidden;margin-bottom:2rem;">
+      <div style="background:linear-gradient(135deg,rgba(26,58,143,.5),rgba(26,58,143,.25));padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(26,58,143,.4);">
+        <div style="display:flex;align-items:center;gap:.75rem;">
+          <span style="font-size:1.4rem">🏟️</span>
+          <div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.06em;color:#fff">Main Season Comp</div>
+            <div style="font-size:.72rem;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.1em">3 Phases · Rounds 1–27</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:.4rem">
+          <span class="badge bt1">Qualifying</span>
+          <span class="badge bt2">Seeding</span>
+          <span class="badge bp3">Knockout</span>
+        </div>
+      </div>
+      <div style="padding:1.5rem;">
+        <div class="tl" style="margin-top:0">
+          <div class="tls cur" onclick="showTab(null,'p1')"><div class="tlr">R1–R8</div><div class="tll">Qualifying</div><div class="tld">All together</div></div>
+          <div class="tls" onclick="showTab(null,'p2')"><div class="tlr">R9–R18</div><div class="tll">Seeding</div><div class="tld">3 Tier groups</div></div>
+          <div class="tls" onclick="showTab(null,'p3')"><div class="tlr">R19–R27</div><div class="tll">Knockout</div><div class="tld">Full Knockout</div></div>
+        </div>
+        <div class="tl-hint">↑ tap a phase to jump to its standings</div>
+        <div class="hg">
+          <div class="hc">
+            <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.6rem"><span class="badge bt1" style="font-size:.75rem;padding:.2rem .6rem">Qualifying</span><span style="color:var(--muted);font-size:.8rem">Rounds 1–8</span></div>
+            <div class="ht">All In</div>
+            <p>All <span class="dyn-total">JBFA</span> coaches compete together, points accumulate each week. Your <strong>rank after Round 8</strong> determines which tier you enter for Seeding.</p>
+          </div>
+          <div class="hc">
+            <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.6rem"><span class="badge bt2" style="font-size:.75rem;padding:.2rem .6rem">Seeding</span><span style="color:var(--muted);font-size:.8rem">Rounds 9–18</span></div>
+            <div class="ht">Tier Groups</div>
+            <p><strong class="ac">Points reset to zero</strong> at Round 9. Three separate competitions run for 10 rounds with their own prizes.</p>
+            <div style="display:flex;flex-direction:column;gap:.5rem;margin-top:.85rem">
+              <div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border-radius:6px;padding:.5rem .75rem"><div style="display:flex;align-items:center;gap:.5rem"><span class="badge bt1">Tier 1</span><span style="font-size:.82rem;font-weight:600">Premiership</span></div><span style="font-size:.78rem;color:var(--muted)">Top 100</span></div>
+              <div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border-radius:6px;padding:.5rem .75rem"><div style="display:flex;align-items:center;gap:.5rem"><span class="badge bt2">Tier 2</span><span style="font-size:.82rem;font-weight:600">Championship</span></div><span style="font-size:.78rem;color:var(--muted)">Ranks 101–200</span></div>
+              <div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border-radius:6px;padding:.5rem .75rem"><div style="display:flex;align-items:center;gap:.5rem"><span class="badge bt3">Tier 3</span><span style="font-size:.82rem;font-weight:600">State Cup</span></div><span style="font-size:.78rem;color:var(--muted)">Ranks 201+</span></div>
+            </div>
+          </div>
+          <div class="hc">
+            <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.6rem"><span class="badge bp3" style="font-size:.75rem;padding:.2rem .6rem">Knockout</span><span style="color:var(--muted);font-size:.8rem">Rounds 19–27</span></div>
+            <div class="ht">Full Knockout</div>
+            <p>All coaches re-enter a <strong>seeded bracket</strong> based on Seeding results. Top seeds receive byes in R19. The <strong class="ac">top 4 coaches</strong> share the main prizes.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SURVIVAL KNOCKOUT ── -->
+    <div style="border:1px solid rgba(248,113,113,.3);border-radius:16px;overflow:hidden;margin-bottom:2rem;">
+      <div style="background:linear-gradient(135deg,rgba(220,38,38,.2),rgba(220,38,38,.08));padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(248,113,113,.2);">
+        <div style="display:flex;align-items:center;gap:.75rem;">
+          <span style="font-size:1.4rem">🎯</span>
+          <div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.06em;color:#fff">Survivor</div>
+            <div style="font-size:.72rem;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.1em">Runs all 27 rounds in parallel</div>
+          </div>
+        </div>
+        <span class="badge balive" style="font-size:.7rem">Weekly Score Only</span>
+      </div>
+      <div style="padding:1.5rem;display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+        <div>
+          <div class="ht" style="margin-bottom:.5rem">How it works</div>
+          <p style="font-size:.875rem;color:var(--muted);line-height:1.65">Runs in parallel with the Main Season Comp across all 27 rounds. Each round the coaches with the <strong style="color:var(--text)">lowest score that week</strong> are eliminated — regardless of how they've performed before. <strong style="color:var(--text)">Weekly score only, never cumulative.</strong></p>
+          <p style="font-size:.72rem;color:var(--muted);line-height:1.6;margin-top:.5rem;opacity:.7">* Tiebreaker: if coaches finish on the same score at the cut line, the coach with the higher score from the <em>previous round</em> is retained. Ties cascade back further if still equal. In Round 1 (no prior round), tied coaches at the cut are both kept safe.</p>
+        </div>
+        <div>
+          <div class="ht" style="margin-bottom:.5rem">Key facts</div>
+          <div style="display:flex;flex-direction:column;gap:.4rem">
+            <div style="display:flex;justify-content:space-between;font-size:.82rem;padding:.4rem .6rem;background:var(--surface2);border-radius:6px"><span style="color:var(--muted)">Started</span><strong>299 coaches</strong></div>
+            <div style="display:flex;justify-content:space-between;font-size:.82rem;padding:.4rem .6rem;background:var(--surface2);border-radius:6px"><span style="color:var(--muted)">Round 1</span><strong style="color:var(--green)">No eliminations</strong></div>
+            <div style="display:flex;justify-content:space-between;font-size:.82rem;padding:.4rem .6rem;background:var(--surface2);border-radius:6px"><span style="color:var(--muted)">Winner</span><strong>Last coach standing (R27)</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── VIP OVERALL COMP ── -->
+    <div style="border:1px solid rgba(52,211,153,.3);border-radius:16px;overflow:hidden;margin-bottom:1rem;">
+      <div style="background:linear-gradient(135deg,rgba(52,211,153,.15),rgba(52,211,153,.05));padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(52,211,153,.2);">
+        <div style="display:flex;align-items:center;gap:.75rem;">
+          <span style="font-size:1.4rem">⭐</span>
+          <div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.06em;color:var(--vip)">VIP Overall Comp</div>
+            <div style="font-size:.72rem;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.1em">68 designated entries · Cumulative all season</div>
+          </div>
+        </div>
+        <span class="badge bvip dyn-vip-badge" style="font-size:.7rem">68 Entries</span>
+      </div>
+      <div style="padding:1.5rem;display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+        <div>
+          <div class="ht" style="margin-bottom:.5rem">How it works</div>
+          <p style="font-size:.875rem;color:var(--muted);line-height:1.65">Exclusive to VIP members. A <strong style="color:var(--text)">cumulative season-long standings</strong> using each VIP's designated entry. Coaches with multiple teams nominate one entry for this leaderboard. Best cumulative score across all 27 rounds wins.</p>
+        </div>
+        <div>
+          <div class="ht" style="margin-bottom:.5rem">Key facts</div>
+          <div style="display:flex;flex-direction:column;gap:.4rem">
+            <div style="display:flex;justify-content:space-between;font-size:.82rem;padding:.4rem .6rem;background:var(--surface2);border-radius:6px"><span style="color:var(--muted)">Entrants</span><strong style="color:var(--vip)">68 VIP coaches</strong></div>
+            <div style="display:flex;justify-content:space-between;font-size:.82rem;padding:.4rem .6rem;background:var(--surface2);border-radius:6px"><span style="color:var(--muted)">Scoring</span><strong>Cumulative — all 27 rounds</strong></div>
+            <div style="display:flex;justify-content:space-between;font-size:.82rem;padding:.4rem .6rem;background:var(--surface2);border-radius:6px"><span style="color:var(--muted)">Entries per coach</span><strong>One designated entry only</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- PHASE 1 -->
+  <div class="panel" id="panel-p1">
+    <div class="sh" style="margin-top:0"><div class="sht">Qualifying — Current Rankings</div><div class="shl"></div><span class="badge bt1" style="font-size:.68rem">Rounds 1–8</span></div>
+    <p style="color:var(--muted);font-size:.875rem;margin-bottom:1.25rem;" id="standings-sub">Standings after Round 2. Click any row for coach profile.</p>
+    <div class="fr">
+      <span class="fil">Filter:</span>
+      <input class="fi" id="p1fi" placeholder="Search coach or team…" oninput="fP1()">
+      <span style="margin-left:auto;font-size:.82rem;color:var(--muted)" id="p1ct"></span>
+    </div>
+    <div class="tw"><div class="tw-scroll"><table id="p1t">
+      <colgroup><col style="width:38px"><col><col style="width:72px"><col style="width:88px"><col style="width:60px"></colgroup>
+      <thead><tr><th>#</th><th>Coach</th><th style="text-align:center">Score</th><th>Value</th><th>Trades</th></tr></thead>
+      <tbody id="p1b"></tbody>
+    </table></div></div>
+    <div class="pager" id="p1pg"></div>
+  </div>
+
+  <!-- PHASE 2 -->
+  <div class="panel" id="panel-p2">
+    <div class="cs"><div class="csi">🏆</div><h3>Seeding — Tier Groups</h3><p>Begins Round 9. Tier splits determined by Qualifying ranking after Round 8.</p></div>
+  </div>
+
+  <!-- PHASE 3 -->
+  <div class="panel" id="panel-p3">
+    <div class="cs"><div class="csi">⚔️</div><h3>Knockout</h3><p>Begins Round 19. All coaches re-enter a seeded bracket based on Seeding results.</p></div>
+  </div>
+
+  <!-- SURVIVAL -->
+  <div class="panel" id="panel-c2">
+    <div class="sh" style="margin-top:0"><div class="sht">Survivor</div><div class="shl"></div></div>
+    <p style="color:var(--muted);font-size:.875rem;margin-bottom:1.5rem;"><strong style="color:var(--text)">Weekly score only — not cumulative.</strong> Each round the coaches with the lowest <em>that week's score</em> are eliminated, regardless of how they've performed before. Survive each round. Last coach standing after Round 27 wins.</p>
+    <div class="sr">
+      <div class="sc"><div class="scl">Started</div><div class="scv" id="sc-started">299</div><div class="scs">coaches</div></div>
+      <div class="sc"><div class="scl">Still Alive</div><div class="scv" style="color:var(--green)" id="sc-still-alive">…</div><div class="scs" id="sc-still-alive-sub">after R2</div></div>
+      <div class="sc"><div class="scl">Eliminated</div><div class="scv" style="color:var(--muted)" id="sc-elim-count">—</div><div class="scs" id="sc-elim-sub">cut to date</div></div>
+      <div class="sc"><div class="scl" id="sc-cut-label">R2 Cut Score</div><div class="scv" style="color:var(--red)" id="sc-cut-val">963</div><div class="scs">lowest safe R2 score</div></div>
+      <div class="sc"><div class="scl" id="sc-next-drop-label">Next Drop</div><div class="scv" style="color:var(--red)" id="sc-next-drop-val">—</div><div class="scs">lowest weekly scores cut</div></div>
+    </div>
+    <div class="sh"><div class="sht">Full Drop Schedule</div><div class="shl"></div></div>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.75rem;align-items:center;">
+      <span style="font-size:.7rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.08em">% cut:</span>
+      <span style="font-size:.72rem;color:var(--green);background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.25);border-radius:4px;padding:.1rem .4rem">0%</span>
+      <span style="font-size:.72rem;color:var(--blue);background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.25);border-radius:4px;padding:.1rem .4rem">&lt;5%</span>
+      <span style="font-size:.72rem;color:var(--accent);background:rgba(240,180,41,.1);border:1px solid rgba(240,180,41,.25);border-radius:4px;padding:.1rem .4rem">&lt;10%</span>
+      <span style="font-size:.72rem;color:#fb923c;background:rgba(251,146,60,.1);border:1px solid rgba(251,146,60,.25);border-radius:4px;padding:.1rem .4rem">&lt;20%</span>
+      <span style="font-size:.72rem;color:var(--red);background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.25);border-radius:4px;padding:.1rem .4rem">&lt;35%</span>
+      <span style="font-size:.72rem;color:#ef4444;background:rgba(220,38,38,.1);border:1px solid rgba(220,38,38,.25);border-radius:4px;padding:.1rem .4rem">35%+</span>
+    </div>
+    <p style="font-size:.78rem;color:var(--muted);margin-bottom:.5rem;">💡 <strong style="color:var(--text)">Click any round</strong> to see which coaches were eliminated that round.</p>
+    <div class="sg" id="sgrid"></div>
+    <div id="elim-popup" style="display:none;margin-top:.75rem;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:1rem;"></div>
+  </div>
+
+  <!-- PLAYERS TAB -->
+  <div class="panel" id="panel-players">
+    <div class="sh" style="margin-top:0"><div class="sht">🏉 Player Insights</div><div class="shl"></div><span class="badge bt2" style="font-size:.68rem" id="pl-round-badge">Round 2 data</span></div>
+    <p style="color:var(--muted);font-size:.875rem;margin-bottom:1.5rem;">Ownership and trade data across all JBFA coaches.</p>
+
+    <!-- Trade Summary -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
+      <div style="background:var(--surface);border:1px solid rgba(52,211,153,.3);border-radius:12px;overflow:hidden;">
+        <div style="background:rgba(52,211,153,.1);padding:.65rem 1rem;border-bottom:1px solid rgba(52,211,153,.2);font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:.06em;color:var(--green);display:flex;align-items:center;">🔥 Most Traded IN<button class="trade-info-btn" onclick="document.getElementById('trade-info-modal').classList.add('open')" title="What does % eligible mean?">i</button></div>
+        <div id="pl-traded-in" style="padding:.5rem 0;"></div>
+      </div>
+      <div style="background:var(--surface);border:1px solid rgba(248,113,113,.3);border-radius:12px;overflow:hidden;">
+        <div style="background:rgba(248,113,113,.1);padding:.65rem 1rem;border-bottom:1px solid rgba(248,113,113,.2);font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:.06em;color:var(--red);display:flex;align-items:center;">📉 Most Traded OUT<button class="trade-info-btn" onclick="document.getElementById('trade-info-modal').classList.add('open')" title="What does % eligible mean?">i</button></div>
+        <div id="pl-traded-out" style="padding:.5rem 0;"></div>
+      </div>
+    </div>
+
+    <!-- Full ownership table -->
+    <div class="sh"><div class="sht">Ownership Rankings</div><div class="shl"></div></div>
+    <div class="fr">
+      <span class="fil">Filter:</span>
+      <input class="fi" id="plfi" placeholder="Search player…" oninput="fPlayers()" style="width:200px">
+      <select id="plsort" onchange="fPlayers()" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.4rem .75rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.85rem;outline:none;">
+        <option value="ownedDesc">Ownership: High → Low</option>
+        <option value="ownedAsc">Ownership: Low → High</option>
+        <option value="topN">Top-N Ownership: High → Low</option>
+        <option value="cost">Price: High → Low</option>
+        <option value="tradedIn">Most Traded In</option>
+        <option value="tradedOut">Most Traded Out</option>
+      </select>
+      <div style="display:flex;align-items:center;gap:.4rem;">
+        <label style="font-size:.72rem;color:var(--accent);font-weight:700;white-space:nowrap">Top</label>
+        <input id="pltopn" type="number" value="100" min="1" max="300" oninput="fPlayers()" style="width:54px;background:rgba(240,180,41,.08);border:1px solid rgba(240,180,41,.35);border-radius:6px;padding:.35rem .5rem;color:var(--accent);font-family:'DM Sans',sans-serif;font-size:.85rem;outline:none;text-align:center;font-weight:700;">
+        <label style="font-size:.72rem;color:var(--accent);font-weight:700;white-space:nowrap">coaches ↓</label>
+      </div>
+      <span style="margin-left:auto;font-size:.82rem;color:var(--muted)" id="plct"></span>
+    </div>
+    <p style="font-size:.72rem;color:var(--muted);margin-bottom:.5rem;font-style:italic"></p>
+    <div id="pl-table-wrap"><div class="tw"><div class="tw-scroll"><table id="plt">
+      <thead><tr><th>#</th><th>Player</th><th>Price</th><th>Ownership</th><th id="topn-header" style="background:rgba(240,180,41,.12);color:var(--accent);border-left:2px solid rgba(240,180,41,.3);border-right:2px solid rgba(240,180,41,.3);">Top 100</th><th>Traded In ↑</th><th style="font-size:.65rem">% of field</th><th style="font-size:.65rem">% eligible</th><th>Traded Out ↓</th><th style="font-size:.65rem">% of field</th><th style="font-size:.65rem">% eligible</th></tr></thead>
+      <tbody id="plb"></tbody>
+    </table></div></div></div>
+    <div id="pl-card-list"></div>
+  </div>
+
+  <!-- VIP COMP -->
+  <div class="panel" id="panel-vip">
+    <div class="vip-banner">
+      <div class="vip-banner-icon">⭐</div>
+      <div>
+        <h2>VIP Overall Comp</h2>
+        <p>Exclusive to VIP members. Cumulative season-long standings using each VIP's designated entry. One entry per coach. <span class="dyn-vip-count">68</span> competitors.</p>
+      </div>
+    </div>
+    <div class="sr">
+      <div class="sc"><div class="scl">VIP Entries</div><div class="scv" style="color:var(--vip)">68</div><div class="scs">competitors</div></div>
+      <div class="sc"><div class="scl" id="vip-top-label">Top Score R2</div><div class="scv" style="color:var(--accent)" id="vip-top">—</div><div class="scs" id="vip-top-team" style="color:var(--text);font-weight:700;font-size:.8rem">—</div></div>
+      <div class="sc"><div class="scl">1st Prize</div><div class="scv" style="color:var(--vip);font-size:1.6rem;margin-top:.2rem">$500</div><hr style="border:none;border-top:1px solid var(--border);margin:.4rem 0"><div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)">Runner-up</div><div style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--vip);letter-spacing:.04em;margin:.1rem 0">$100 <span style="font-size:.75rem;color:var(--muted)">JBFA Credit</span></div></div>
+    </div>
+    <div class="sh"><div class="sht">VIP Leaderboard</div><div class="shl"></div></div>
+    <div class="fr"><span class="fil">Filter:</span><input class="fi" id="vipfi" placeholder="Search VIP coach or team…" oninput="fVip()"></div>
+    <div class="tw"><div class="tw-scroll"><table id="vipt">
+      <colgroup><col style="width:38px"><col><col style="width:72px"><col style="width:88px"><col style="width:60px"></colgroup>
+      <thead><tr><th>#</th><th>Coach</th><th style="text-align:center">Score</th><th>Value</th><th>Trades</th></tr></thead>
+      <tbody id="vipb"></tbody>
+    </table></div></div>
+    <div class="pager" id="vippg"></div>
+  </div>
+
+  <!-- PRIZES -->
+  <div class="panel" id="panel-prizes">
+    <div class="sh" style="margin-top:0"><div class="sht">Prize Pool — 2026 Season</div><div class="shl"></div></div>
+
+    <!-- OVERALL CUMULATIVE -->
+    <div style="border:1px solid rgba(240,180,41,.6);border-radius:16px;overflow:hidden;margin-bottom:2rem;">
+      <div style="background:linear-gradient(135deg,rgba(240,180,41,.3),rgba(240,180,41,.12));padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(240,180,41,.3);">
+        <div style="display:flex;align-items:center;gap:.75rem;">
+          <span style="font-size:1.4rem">🌟</span>
+          <div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.06em;color:#f0b429">Overall Points — Season Total</div>
+            <div style="font-size:.72rem;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.1em">All JBFA coaches · Cumulative all 27 rounds</div>
+          </div>
+        </div>
+        <span class="badge bt1" style="font-size:.7rem">Top 5 Paid</span>
+      </div>
+      <div style="padding:1.5rem;">
+        <div class="prizes-grid">
+          <div class="prize-card gold"><div class="prize-title">🥇 1st Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--accent);letter-spacing:.04em;margin:.5rem 0;">$750</div><div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div></div>
+          <div class="prize-card gold"><div class="prize-title">🥈 2nd Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--accent);letter-spacing:.04em;margin:.5rem 0;">$350</div><div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div></div>
+          <div class="prize-card gold"><div class="prize-title">🥉 3rd Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;color:var(--accent);letter-spacing:.04em;margin:.5rem 0;">2027 JBFA<br>VIP Package</div><div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div></div>
+          <div class="prize-card gold"><div class="prize-title">4th Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--accent);letter-spacing:.04em;margin:.5rem 0;">$100 <span style="font-size:.9rem">+ Hat &amp; Shirt</span></div><div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div></div>
+          <div class="prize-card gold"><div class="prize-title">5th Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--accent);letter-spacing:.04em;margin:.5rem 0;">$75</div><div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN SEASON COMP -->
+    <div style="border:1px solid rgba(26,58,143,.6);border-radius:16px;overflow:hidden;margin-bottom:2rem;">
+      <div style="background:linear-gradient(135deg,rgba(26,58,143,.5),rgba(26,58,143,.25));padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(26,58,143,.4);">
+        <div style="display:flex;align-items:center;gap:.75rem;">
+          <span style="font-size:1.4rem">🏟️</span>
+          <div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.06em;color:#fff">Main Season Comp</div>
+            <div style="font-size:.72rem;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.1em">Seeding Tiers · Knockout</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:.4rem;flex-wrap:wrap;justify-content:flex-end">
+          <span class="badge bt1">Tier 1</span><span class="badge bt2">Tier 2</span><span class="badge bt3">Tier 3</span>
+          <span class="badge bp3">Knockout</span>
+        </div>
+      </div>
+      <div style="padding:1.5rem;">
+        <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.75rem">Seeding — Tier Prizes (Rounds 9–18)</div>
+        <div class="prizes-grid" style="margin-bottom:1.5rem">
+          <div class="prize-card blue">
+            <div class="prize-title"><span class="badge bt1" style="margin-bottom:.4rem;display:inline-flex">Tier 1</span> Premiership</div>
+            <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-top:.25rem">1st Place</div>
+            <div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--t1);letter-spacing:.04em;margin:.2rem 0">$400</div>
+            <hr style="border:none;border-top:1px solid var(--border);margin:.5rem 0">
+            <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)">Runner-up</div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;color:var(--t1);letter-spacing:.04em;margin:.2rem 0">$150 <span style="font-size:.9rem">+ JBFA Hat</span></div>
+            <div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div>
+          </div>
+          <div class="prize-card blue">
+            <div class="prize-title"><span class="badge bt2" style="margin-bottom:.4rem;display:inline-flex">Tier 2</span> Championship</div>
+            <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-top:.25rem">1st Place</div>
+            <div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--t2);letter-spacing:.04em;margin:.2rem 0">$200</div>
+            <hr style="border:none;border-top:1px solid var(--border);margin:.5rem 0">
+            <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)">Runner-up</div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--t2);letter-spacing:.04em;margin:.2rem 0">2027 JBFA Legends Pack</div>
+            <div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div>
+          </div>
+          <div class="prize-card blue">
+            <div class="prize-title"><span class="badge bt3" style="margin-bottom:.4rem;display:inline-flex">Tier 3</span> State Cup</div>
+            <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-top:.25rem">1st Place</div>
+            <div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--t3);letter-spacing:.04em;margin:.2rem 0">$100</div>
+            <hr style="border:none;border-top:1px solid var(--border);margin:.5rem 0">
+            <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)">Runner-up</div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--t3);letter-spacing:.04em;margin:.2rem 0">JBFA Hat &amp; T-Shirt</div>
+            <div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div>
+          </div>
+        </div>
+        <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.75rem">Knockout — Top 4 (Rounds 19–27)</div>
+        <div class="prizes-grid">
+          <div class="prize-card gold"><div class="prize-title">🥇 1st Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--accent);letter-spacing:.04em;margin:.5rem 0;">$350</div><div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div></div>
+          <div class="prize-card gold"><div class="prize-title">🥈 2nd Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--accent);letter-spacing:.04em;margin:.5rem 0;">$250</div><div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div></div>
+          <div class="prize-card gold"><div class="prize-title">🥉 3rd Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--accent);letter-spacing:.04em;margin:.5rem 0;">$150</div><div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div></div>
+          <div class="prize-card gold"><div class="prize-title">4th Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;color:var(--accent);letter-spacing:.04em;margin:.5rem 0;">2027 JBFA<br>Legends Package</div><div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SURVIVOR -->
+    <div style="border:1px solid rgba(248,113,113,.3);border-radius:16px;overflow:hidden;margin-bottom:2rem;">
+      <div style="background:linear-gradient(135deg,rgba(220,38,38,.2),rgba(220,38,38,.08));padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(248,113,113,.2);">
+        <div style="display:flex;align-items:center;gap:.75rem;">
+          <span style="font-size:1.4rem">🎯</span>
+          <div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.06em;color:#fff">Survivor</div>
+            <div style="font-size:.72rem;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.1em">Last coaches standing · Top 4 paid</div>
+          </div>
+        </div>
+        <span class="badge balive" style="font-size:.7rem">Weekly Score Only</span>
+      </div>
+      <div style="padding:1.5rem;">
+        <div class="prizes-grid">
+          <div class="prize-card green"><div class="prize-title">🥇 1st Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--green);letter-spacing:.04em;margin:.5rem 0;">$400</div><div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div></div>
+          <div class="prize-card green"><div class="prize-title">🥈 2nd Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--green);letter-spacing:.04em;margin:.5rem 0;">$300</div><div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div></div>
+          <div class="prize-card green"><div class="prize-title">🥉 3rd Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--green);letter-spacing:.04em;margin:.5rem 0;">$150</div><div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div></div>
+          <div class="prize-card green"><div class="prize-title">4th Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;color:var(--green);letter-spacing:.04em;margin:.5rem 0;">2027 JBFA<br>Legends Package</div><div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIP COMP -->
+    <div style="border:1px solid rgba(52,211,153,.3);border-radius:16px;overflow:hidden;margin-bottom:2rem;">
+      <div style="background:linear-gradient(135deg,rgba(52,211,153,.15),rgba(52,211,153,.05));padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(52,211,153,.2);">
+        <div style="display:flex;align-items:center;gap:.75rem;">
+          <span style="font-size:1.4rem">⭐</span>
+          <div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.06em;color:var(--vip)">VIP Overall Comp</div>
+            <div style="font-size:.72rem;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.1em">68 entries · Cumulative all season</div>
+          </div>
+        </div>
+        <span class="badge bvip dyn-vip-badge" style="font-size:.7rem">68 Entries</span>
+      </div>
+      <div style="padding:1.5rem;">
+        <div class="prizes-grid" style="margin-bottom:1rem">
+          <div class="prize-card purple"><div class="prize-title">⭐ VIP Season Champion</div><div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:.25rem 0">1st Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--vip);letter-spacing:.04em;margin:.2rem 0;">$500</div><div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div></div>
+          <div class="prize-card purple"><div class="prize-title">⭐ VIP Season Runner-Up</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--vip);letter-spacing:.04em;margin:.5rem 0;">$100 <span style="font-size:1rem;color:var(--muted)">JBFA Credit</span></div><div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div></div>
+        </div>
+        <div style="background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.2);border-radius:10px;padding:.85rem 1.1rem;display:flex;align-items:flex-start;gap:.75rem;">
+          <span style="font-size:1.1rem;flex-shrink:0">⭐</span>
+          <div style="font-size:.82rem;color:var(--muted);line-height:1.6"><strong style="color:var(--vip)">VIP Jackpot Bonus</strong> — VIP members who win any cash prize receive a <strong style="color:var(--vip)">25% bonus</strong> on top of their winnings. Does not apply to the VIP Overall Comp prizes.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OTHER COMPS -->
+    <div style="border:1px solid rgba(251,146,60,.35);border-radius:16px;overflow:hidden;margin-bottom:2rem;">
+      <div style="background:linear-gradient(135deg,rgba(251,146,60,.18),rgba(251,146,60,.06));padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(251,146,60,.25);">
+        <div style="display:flex;align-items:center;gap:.75rem;">
+          <span style="font-size:1.4rem">🏉</span>
+          <div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.06em;color:#fb923c">Other Comps</div>
+            <div style="font-size:.72rem;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.1em">SuperCoach · Tipping · Origin · Finals</div>
+          </div>
+        </div>
+      </div>
+      <div style="padding:1.5rem;">
+        <div class="prizes-grid">
+          <!-- SuperCoach -->
+          <div class="prize-card" style="border-top:3px solid #84cc16;">
+            <div class="prize-title" style="display:flex;align-items:center;gap:.5rem"><span style="background:#84cc16;color:#1a2e05;font-size:.65rem;font-weight:700;padding:.15rem .45rem;border-radius:4px;letter-spacing:.05em">SC</span> SuperCoach</div>
+            <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:.25rem 0">1st Place</div>
+            <div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:#84cc16;letter-spacing:.04em;margin:.2rem 0">$200</div>
+            <hr style="border:none;border-top:1px solid var(--border);margin:.5rem 0">
+            <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)">Runner-up</div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:#84cc16;letter-spacing:.04em;margin:.2rem 0">2027 JBFA Legends Pack</div>
+            <div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div>
+          </div>
+          <!-- Tipping -->
+          <div class="prize-card" style="border-top:3px solid #1a1a2e;">
+            <div class="prize-title" style="display:flex;align-items:center;gap:.5rem"><span style="background:#1a1a2e;color:#fff;font-size:.65rem;font-weight:700;padding:.15rem .45rem;border-radius:4px;letter-spacing:.05em;border:1px solid #444">TIP</span> NRL Tipping</div>
+            <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-top:.25rem">1st Place</div>
+            <div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--text);letter-spacing:.04em;margin:.2rem 0">$150</div>
+            <hr style="border:none;border-top:1px solid var(--border);margin:.5rem 0">
+            <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)">Runner-up</div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;color:var(--text);letter-spacing:.04em;margin:.2rem 0">$50</div>
+            <div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div>
+          </div>
+          <!-- Origin Fantasy -->
+          <div class="prize-card" style="border-top:3px solid #003087;">
+            <div class="prize-title" style="display:flex;align-items:center;gap:.5rem"><span style="background:linear-gradient(90deg,#003087,#c8102e);color:#fff;font-size:.65rem;font-weight:700;padding:.15rem .45rem;border-radius:4px;letter-spacing:.05em">SOO</span> Origin Fantasy</div>
+            <div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:#60a5fa;letter-spacing:.04em;margin:.4rem 0">$50 <span style="font-size:.85rem;color:var(--muted)">1st</span></div>
+            <div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div>
+          </div>
+          <!-- Finals Fantasy -->
+          <div class="prize-card" style="border-top:3px solid var(--accent);">
+            <div class="prize-title" style="display:flex;align-items:center;gap:.5rem"><span style="background:var(--accent);color:#000;font-size:.65rem;font-weight:700;padding:.15rem .45rem;border-radius:4px;letter-spacing:.05em">FIN</span> Finals Fantasy</div>
+            <div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--accent);letter-spacing:.04em;margin:.4rem 0">$50 <span style="font-size:.85rem;color:var(--muted)">1st</span></div>
+            <div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sh"><div class="sht">Winnings Leaderboard</div><div class="shl"></div></div>
+    <div class="tw"><div class="tw-scroll"><table>
+      <thead><tr><th>#</th><th>Coach</th><th>Team</th><th>Comp Won</th><th>Winnings</th></tr></thead>
+      <tbody><tr><td colspan="5" style="text-align:center;color:var(--muted);padding:2rem;font-size:.875rem">No prizes awarded yet — season in progress.</td></tr></tbody>
+    </table></div></div>
+  </div>
+<!-- PRICE PREDICTOR PANEL -->
+<div class="panel" id="panel-pp">
+  <!-- Coming Soon placeholder — shown when ENABLE_PRICE_PREDICTOR = false -->
+  <div id="pp-coming-soon">
+    <div class="cs">
+      <div class="csi">💰</div>
+      <h3>Price Predictor</h3>
+      <p>Coming soon — project in progress. This tool will let you forecast player prices and break-evens based on projected scores.</p>
+    </div>
+  </div>
+
+  <!-- Full calculator — shown when ENABLE_PRICE_PREDICTOR = true -->
+  <div id="pp-calculator" style="display:none">
+    <div class="sh" style="margin-top:0"><div class="sht">💰 Price Predictor</div><div class="shl"></div></div>
+    <p style="color:var(--muted);font-size:.875rem;margin-bottom:1.25rem;">Select a player, enter projected scores for the next 4 rounds, and see their estimated price movement and break-evens.</p>
+
+    <div class="pp-disclaimer">
+      <strong>Model accuracy:</strong> Treat projections as <strong>estimates</strong>, not official values.
+    </div>
+
+    <!-- Player Search -->
+    <div class="pp-search-wrap" id="pp-search-wrap">
+      <span class="pp-search-icon">🔍</span>
+      <input type="text" id="pp-search-input" placeholder="Search player…" autocomplete="off" oninput="ppSearch()" onfocus="ppSearch()">
+      <div class="pp-drop" id="pp-drop"></div>
+    </div>
+
+    <!-- Selected Player Card -->
+    <div id="pp-player-card" style="display:none">
+      <div class="pp-player-card">
+        <div class="pp-player-info">
+          <div class="pp-player-name" id="pp-pname">—</div>
+          <div class="pp-player-meta" id="pp-pmeta">—</div>
+        </div>
+        <div class="pp-player-stats" id="pp-pstats"></div>
+      </div>
+
+      <!-- Score Inputs -->
+      <div class="pp-inputs">
+        <div class="pp-inputs-title">Projected Scores — Next 3 Rounds</div>
+        <div class="pp-rounds-grid" id="pp-round-inputs"></div>
+      </div>
+
+      <!-- Results Table -->
+      <div class="pp-results">
+        <div class="pp-results-header">Projected Price Movement</div>
+        <div style="overflow-x:auto">
+          <table class="pp-results-table">
+            <thead>
+              <tr>
+                <th>Round</th>
+                <th>Proj. Score</th>
+                <th>Break-Even</th>
+                <th>vs BE</th>
+                <th>Proj. Price</th>
+                <th>Price Change</th>
+                <th>Total Gain/Loss</th>
+              </tr>
+            </thead>
+            <tbody id="pp-results-body">
+              <tr><td colspan="7" class="pp-empty">Enter projected scores above to see price projections</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <button onclick="ppClear()" style="background:none;border:1px solid var(--border);border-radius:8px;padding:.4rem .9rem;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:600;cursor:pointer;transition:all .15s;margin-bottom:1.5rem;">✕ Clear selection</button>
+    </div>
+
+    <div id="pp-no-player" style="text-align:center;padding:3rem 1rem;color:var(--muted);font-size:.875rem;">
+      Search for a player above to get started
+    </div>
+  </div>
+</div>
+<!-- END PRICE PREDICTOR PANEL -->
+<!-- SCORE DISTRIBUTION PANEL -->
+<div class="panel" id="panel-sd">
+  <div class="sh" style="margin-top:0"><div class="sht">📊 Score Distribution</div><div class="shl"></div></div>
+  <p style="color:var(--muted);font-size:.875rem;margin-bottom:1.25rem;">How scores are spread across all JBFA coaches for a selected round.</p>
+  <div id="sd-round-selector" style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1.25rem;"></div>
+  <div id="sd-summary" style="font-size:.82rem;color:var(--muted);margin-bottom:1.25rem;min-height:1.2em;"></div>
+  <div id="score-distribution"></div>
+</div>
+<!-- END SCORE DISTRIBUTION PANEL -->
+<!-- STATS PANEL -->
+<div class="panel" id="panel-stats">
+  <!-- Coming Soon placeholder — shown when ENABLE_STATS = false -->
+  <div id="stats-coming-soon">
+    <div class="cs">
+      <div class="csi">📈</div>
+      <h3>Stats</h3>
+      <p>Coming soon — project in progress. This tool will let you explore per-game stats, leaderboards, and rankings for all players.</p>
+    </div>
+  </div>
+
+  <!-- Full stats panel — shown when ENABLE_STATS = true -->
+  <div id="stats-content" style="display:none">
+  <div class="sh" style="margin-top:0"><div class="sht">📈 Stats</div><div class="shl"></div></div>
+  <!-- Pill tabs -->
+  <div class="stats-pills" id="stats-pills">
+    <button class="stats-pill active" data-view="player" onclick="statsShowView('player')">Player View</button>
+    <button class="stats-pill" data-view="leaderboard" onclick="statsShowView('leaderboard')">Leaderboard</button>
+  </div>
+
+  <!-- ── PLAYER VIEW ── -->
+  <div class="stats-view" id="stats-view-player">
+    <div class="stats-search-wrap" id="stats-search-wrap">
+      <span class="stats-search-icon">🔍</span>
+      <input type="text" id="stats-search-input" placeholder="Search player…" autocomplete="off" oninput="statsSearch()" onfocus="statsSearch()">
+      <div class="stats-drop" id="stats-drop"></div>
+    </div>
+    <div id="stats-player-content">
+      <div id="stats-no-player" style="text-align:center;padding:3rem 1rem;color:var(--muted);font-size:.875rem;">Search for a player above to see their stats</div>
+      <div id="stats-player-card" style="display:none"></div>
+    </div>
+  </div>
+
+  <!-- ── LEADERBOARD VIEW ── -->
+  <div class="stats-view" id="stats-view-leaderboard" style="display:none">
+    <div id="stats-lb-table-wrap" style="overflow-x:auto;margin-top:.75rem;"></div>
+  </div>
+
+  </div>
+</div>
+<!-- END STATS PANEL -->
+
+<div class="trade-info-modal" id="trade-info-modal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="trade-info-box">
+    <button class="trade-info-close" onclick="document.getElementById('trade-info-modal').classList.remove('open')">✕</button>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.06em;margin-bottom:.75rem;color:var(--text)">Understanding Trade %</div>
+    <div style="font-size:.875rem;color:var(--muted);line-height:1.7">
+      <p style="margin-bottom:.75rem"><strong style="color:var(--text)">% of field</strong> — The percentage of <em>all JBFA coaches</em> who traded this player in or out this round.</p>
+      <p style="margin-bottom:.75rem"><strong style="color:var(--text)">% eligible</strong> — The percentage of coaches who <em>could have</em> made the trade and chose to do so.</p>
+      <p style="margin-bottom:.75rem;padding:.6rem .85rem;background:rgba(240,180,41,.06);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;color:var(--text);font-size:.82rem">
+        <strong>Example:</strong> If a player was owned by 10% of coaches before the round, and 9% of all coaches traded him out, then 90% of eligible coaches chose to move him on — the % eligible tells you <em>how decisive</em> the trade move was.
+      </p>
+      <p style="font-size:.77rem;color:var(--muted);font-style:italic">Note: A coach can only trade out a player they own, so % eligible is always ≥ % of field for trades out.</p>
+    </div>
+  </div>
+</div>
+
+</main>
+
+
+
+<!-- PLAYER CARD MODAL -->
+<div id="plmodal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:3000;align-items:center;justify-content:center;padding:1rem;" onclick="if(event.target===this)closePlModal()">
+  <div class="plmodal-inner" style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.5rem;width:100%;max-width:440px;position:relative;max-height:90vh;overflow-y:auto;transform:translateY(12px);opacity:0;transition:transform .18s,opacity .18s;">
+    <button onclick="closePlModal()" style="position:absolute;top:.75rem;right:.75rem;background:none;border:none;color:var(--muted);font-size:1.1rem;cursor:pointer;line-height:1;padding:.2rem .4rem;z-index:1;">✕</button>
+    <div id="plmodal-body"></div>
+  </div>
+</div>
+
+<!-- FEEDBACK MODAL -->
+<div id="fmodal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:3000;align-items:center;justify-content:center;padding:1rem;">
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.5rem;width:100%;max-width:420px;position:relative;">
+    <button onclick="closeFeedback()" style="position:absolute;top:.75rem;right:.75rem;background:none;border:none;color:var(--muted);font-size:1.1rem;cursor:pointer;line-height:1;padding:.2rem .4rem;">✕</button>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.06em;margin-bottom:.25rem;">💬 Send Feedback</div>
+    <p style="font-size:.82rem;color:var(--muted);margin-bottom:1.25rem;line-height:1.5;">Got a bug, suggestion, or just want to say something? We read everything.</p>
+    <div id="fok" style="display:none;background:rgba(52,211,153,.12);border:1px solid rgba(52,211,153,.3);border-radius:8px;padding:.75rem 1rem;font-size:.875rem;color:var(--green);margin-bottom:1rem;">✓ Feedback sent — thanks!</div>
+    <form id="fform">
+      <div style="margin-bottom:.85rem;">
+        <label style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);display:block;margin-bottom:.35rem;">Your name (optional)</label>
+        <input name="name" type="text" placeholder="Coach name…" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.5rem .85rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.875rem;outline:none;">
+      </div>
+      <div style="margin-bottom:1rem;">
+        <label style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);display:block;margin-bottom:.35rem;">Message</label>
+        <textarea name="message" rows="4" placeholder="What's on your mind?" required style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.5rem .85rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.875rem;outline:none;resize:vertical;"></textarea>
+      </div>
+      <button id="fsubmit" type="submit" style="width:100%;background:var(--jb);border:1px solid var(--jbl);border-radius:8px;padding:.6rem 1rem;color:#fff;font-family:'DM Sans',sans-serif;font-size:.875rem;font-weight:600;cursor:pointer;">Send Feedback</button>
+    </form>
+  </div>
+</div>
+
+
+<div id="jbfa-ver" style="position:fixed;bottom:6px;right:10px;font-size:.62rem;color:rgba(255,255,255,.18);font-family:monospace;pointer-events:none;z-index:9999;letter-spacing:.05em;">JBFA 1.1.0</div>
+
+<!-- JavaScript file link (Don) -->
+<template id="stats-row-template">
+  <div class="stats-lb-row" style="display:flex;align-items:center;padding:.5rem .25rem;border-bottom:1px solid var(--border);gap:.5rem;">
+    <span class="stats-rank" style="min-width:1.75rem;font-size:.8rem;color:var(--muted);"></span>
+    <div style="flex:1;min-width:0;">
+      <div class="stats-name" style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>
+      <div class="stats-pos" style="font-size:.7rem;color:var(--muted);"></div>
+    </div>
+    <div style="text-align:right;min-width:56px;">
+      <div class="stats-score" style="font-weight:700;font-size:1rem;"></div>
+      <div class="stats-pts" style="font-size:.7rem;color:var(--muted);"></div>
+    </div>
+    <div class="stats-games" style="font-size:.75rem;color:var(--muted);min-width:32px;text-align:right;"></div>
+  </div>
+</template>
+
+<script src="dataFetcher.js"></script>
+<script src="uiRenderer.js"></script>
+<script src="app.js"></script>
+
+<script>
+function closeFeedback(){
+  document.getElementById('fmodal').style.display='none';
+  document.getElementById('fok').style.display='none';
+  document.getElementById('fform').reset();
+}
+
+var _fm = document.getElementById('fmodal');
+if (_fm) {
+  _fm.addEventListener('click', function(e){
+    if (e.target === this) closeFeedback();
+  });
+}
+
+var _ff = document.getElementById('fform');
+if (_ff) {
+  _ff.addEventListener('submit', function(e){
+    e.preventDefault();
+
+    var btn = document.getElementById('fsubmit');
+    btn.textContent = 'Sending…';
+    btn.disabled = true;
+
+    fetch('https://formspree.io/f/xlgplwnz', {
+      method: 'POST',
+      body: new FormData(this),
+      headers: { 'Accept': 'application/json' }
+    })
+    .then(function(r){
+      if (r.ok) {
+        document.getElementById('fok').style.display = 'block';
+        btn.textContent = 'Sent ✓';
+        setTimeout(closeFeedback, 2000);
+      } else {
+        btn.textContent = 'Send Feedback';
+        btn.disabled = false;
+        alert('Something went wrong — try again.');
+      }
+    })
+    .catch(function(){
+      btn.textContent = 'Send Feedback';
+      btn.disabled = false;
+      alert('Something went wrong — try again.');
+    });
+  });
+}
+</script>
+
+</body>
+</html>

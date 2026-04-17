@@ -1,0 +1,194 @@
+{
+  "meta": {
+    "currentRound": 3,
+    "roundAvg": 835,
+    "roundAvgs": {
+      "1": 926,
+      "2": 1034,
+      "3": 835
+    },
+    "totalCoaches": 300,
+    "survivorEligibleCount": 299,
+    "survivorIneligCount": 1,
+    "aliveAfterLastRound": 259,
+    "cutScore": 781,
+    "topScoreThisRound": 948,
+    "topCoachThisRound": "Example Coach",
+    "lastUpdated": "YYYY-MM-DD",
+    "tradeSummary": {
+      "in": [
+        {
+          "id": "100006093",
+          "name": "Example Player",
+          "count": 86,
+          "totalPct": 28.7,
+          "eligPct": 28.7
+        }
+      ],
+      "out": [
+        {
+          "id": "505626",
+          "name": "Example Player",
+          "count": 152,
+          "totalPct": 50.7,
+          "eligPct": 72.7
+        }
+      ]
+    },
+    "tradesBase": 36,
+    "tradesCapacity": 44,
+    "breakEvenSummary": {
+      "playersWithBE": 128,
+      "avgBE": 33.9
+    },
+    "statsDefaults": {
+      "minMinutes": 60,
+      "minGames": 2
+    }
+  },
+  "dropSchedule": [
+    { "r": 1, "d": 0 },
+    { "r": 2, "d": 20 }
+  ],
+  "coaches": [
+    {
+      "teamId": 2828,
+      "coach": "Example Coach",
+      "team": "Example Team",
+      "isVip": false,
+      "isAdmin": false,
+      "isPodcaster": false,
+      "vipEntry": false,
+      "survivorEligible": true,
+      "scores": {
+        "r1": 1079,
+        "r2": 1042,
+        "r3": 882
+      },
+      "total": 3003,
+      "wealth": {
+        "r2": 10947000,
+        "r3": 11706000
+      },
+      "platformRanks": {
+        "r1": 7,
+        "r2": 6,
+        "r3": 38
+      },
+      "survivorStatus": "alive",
+      "eliminatedRound": null,
+      "vipRank": null,
+      "rank": 1,
+      "rankHistory": {
+        "r1": 1,
+        "r2": 1,
+        "r3": 1
+      },
+      "cashInBank": 581000,
+      "wealthPct": 100,
+      "players": ["505904", "508065"],
+      "tradesUsed": 3,
+      "tradesRemaining": 33,
+      "tradesCapacity": 44
+    }
+  ],
+  "eliminatedByRound": {
+    "2": [
+      {
+        "coach": "Example Coach",
+        "team": "Example Team",
+        "score": 800
+      }
+    ]
+  },
+  "specialTags": {
+    "Don Cominos": {
+      "label": "Commissioner",
+      "icon": "⚙️"
+    },
+    "Andrew Phillipps": {
+      "label": "2025 Winner",
+      "icon": "✦",
+      "badgeClass": "bchamp"
+    }
+  },
+  "players": {
+    "500845": {
+      "name": "Example Player",
+      "cost": 606000,
+      "owned": 3,
+      "ownedPct": 1.0,
+      "tradedIn": 0,
+      "tradedOut": 0,
+      "tradedInPct": 0.0,
+      "tradedOutPct": 0.0,
+      "eligInPct": 0.0,
+      "eligOutPct": 0.0,
+      "breakEven": 47,
+      "startPrice": 643000,
+      "currentPrice": 606000,
+      "gamesPlayed": 2,
+      "scores": {
+        "1": 27,
+        "2": 53
+      },
+      "priceHistory": [
+        {
+          "round": 1,
+          "price": 643000,
+          "score": 27,
+          "breakEven": null
+        },
+        {
+          "round": 2,
+          "price": 618000,
+          "score": 53,
+          "breakEven": 68
+        },
+        {
+          "round": 3,
+          "price": 606000,
+          "score": null,
+          "breakEven": 60
+        }
+      ],
+      "orderedScores": [27, 53],
+      "historicalStats": {
+        "1": {
+          "T": 0,
+          "TS": 0,
+          "G": 2,
+          "FG": 0,
+          "TA": 1,
+          "LB": 0,
+          "LBA": 1,
+          "TCK": 9,
+          "TB": 0,
+          "MT": 3,
+          "OFH": 1,
+          "OFG": 0,
+          "ER": 0,
+          "FTF": 0,
+          "MG": 121,
+          "KM": 0,
+          "KD": 0,
+          "PC": 1,
+          "SB": 0,
+          "SO": 0,
+          "TOG": 90,
+          "FDO": 0,
+          "TO": 0,
+          "SAI": 1,
+          "EFIG": 0
+        }
+      },
+      "positions": [5]
+    }
+  },
+  "beModel": {
+    "kMagic": 13000,
+    "ppp": 1000,
+    "window": 5,
+    "currentRound": 3
+  }
+}

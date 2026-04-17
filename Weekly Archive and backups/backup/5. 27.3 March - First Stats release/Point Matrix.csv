@@ -1,0 +1,26 @@
+﻿Header,Name,Pt Multipler,Comment
+EFIG,Escape In Goal,2,
+ER,Error,-2,
+FDO,Forced Drop-outs,2,
+FG,Field Goal,5,
+FTF,40/20 or 20/40,4,
+G,Goal,2,
+KD,Kicks Defused,1,
+KM,Kick Metres,0.03333,Rounded down to nearest point
+LB,Line Break,4,
+LBA,Line Break Assist,2,
+MG,Total Metres gained,0.1,Rounded down to nearest point
+MT,Missed Tackle,-2,
+OFG,Offload (to ground),2,
+OFH,Offload (to hand),4,
+PC,Penalty conceded,-2,
+SAI,6-again Infringement,-1,
+SB,Sin-Bin,-5,
+SO,Send-Off,-10,
+T,Try,8,
+TA,Try Assist,5,
+TB,Tackle Break,2,
+TCK,Tackle,1,
+TO,Turnovers,4,
+TOG,Minutes,,"Not a point field, but a very useful field to capture mintues played"
+TS,Try Saves,5,

@@ -1,0 +1,293 @@
+AGENT OPERATING SYSTEM (AOS)
+Fantasy Platform
+
+---
+
+1. CORE PRINCIPLES
+
+---
+
+1. Zero ambiguity before build
+   No task goes to Claude unless:
+
+* objective is clear
+* scope is bounded
+* constraints are explicit
+
+2. Minimise user decision load
+   User is only involved when:
+
+* strategic tradeoff exists
+* monetisation or audience direction is impacted
+* multiple valid options exist
+
+3. Material over perfect
+   Optimise for:
+
+* correctness
+* forward progress
+
+Not:
+
+* cosmetic perfection
+* subjective improvements
+
+4. Controlled flow
+   Agents do NOT talk freely.
+   Flow is always:
+   Chief of Staff → Specialist → Chief of Staff → Build → Review
+
+5. Returns to Claude are expensive
+   Only allowed for material issues.
+
+---
+
+2. SYSTEM ARCHITECTURE
+
+---
+
+Central Orchestrator:
+
+* Chief of Staff (CoS)
+
+Specialist Agents:
+
+* Product & Growth Strategist
+* Systems Architect
+* Data & Model Analyst
+* UX / Frontend Architect
+* Build Packager
+* QA / Audit Reviewer
+
+---
+
+3. STAGE-GATE WORKFLOW
+
+---
+
+Stage 1 — Intake (Chief of Staff)
+
+* Restate request
+* Ask up to 3 clarification questions if needed
+* Define assumptions
+* Select required agents
+
+Stage 2 — Specialist Analysis
+
+* Structured outputs only
+* No code writing
+
+Stage 3 — Synthesis (CoS)
+
+* Merge outputs
+* Lock direction
+
+Stage 4 — Build Packet
+
+* Create Claude-ready prompt
+
+Stage 5 — Claude Build
+
+* Execute only
+
+Stage 6 — Review (QA)
+
+* Assess against material correctness
+
+Stage 7 — Decision
+
+* Approve
+* Approve with minor notes
+* Return to Claude
+* Escalate
+
+---
+
+4. REVIEW SYSTEM
+
+---
+
+Verdicts:
+
+* APPROVE
+* APPROVE WITH MINOR NOTES
+* RETURN TO CLAUDE
+* ESCALATE
+
+Issue Severity:
+
+* Critical
+* Material
+* Minor
+
+Rule:
+Only Critical or Material issues trigger return.
+
+---
+
+5. EFFICIENCY CONTROLS
+
+---
+
+One Refinement Pass Rule:
+
+* 1 build
+* 1 refinement max
+
+Minor Fix Batching:
+
+* Log minor issues
+* Do not re-open work for them
+
+No Perfection Cycling:
+
+* Do not optimise for cosmetic changes
+
+---
+
+6. HANDOFF TEMPLATE
+
+---
+
+Context:
+
+* current state
+* relevant files
+* constraints
+
+Task:
+
+* exact responsibility
+
+Non-Goals:
+
+* what not to do
+
+Required Output:
+
+* expected structure
+
+Decision Status:
+
+* locked vs open decisions
+
+---
+
+7. AGENT OUTPUT STRUCTURES
+
+---
+
+Product Strategist:
+
+* user problem
+* target user
+* value
+* risks
+* MVP
+* deprioritised items
+* decisions
+
+Systems Architect:
+
+* approach
+* impacted files
+* data flow
+* dependencies
+* risks
+
+Data Analyst:
+
+* sources
+* assumptions
+* logic
+* schema changes
+* risks
+* validation
+
+UX Architect:
+
+* layout
+* interaction
+* mobile behaviour
+* hierarchy
+* edge cases
+
+Build Packager:
+
+* Claude prompt
+* constraints
+* output format
+* acceptance criteria
+
+QA Reviewer:
+
+* verdict
+* issues with severity
+* required fixes only
+
+---
+
+8. MODEL ROLE SPLIT
+
+---
+
+ChatGPT:
+
+* orchestrator
+* strategist
+* reviewer
+
+Claude:
+
+* builder only
+
+Gemini:
+
+* optional reviewer / challenger
+
+---
+
+9. KNOWLEDGE STRUCTURE
+
+---
+
+Core:
+
+* product vision
+* user definition
+* tech architecture
+* data dictionary
+* model logic
+* design system
+* agent system
+
+Working:
+
+* roadmap
+* backlog
+* feature briefs
+* QA logs
+
+Task Packets:
+
+* per feature documentation
+
+---
+
+10. ESCALATION RULES
+
+---
+
+User is only involved when:
+
+* product direction changes
+* monetisation decisions
+* tradeoffs between valid options
+
+---
+
+11. SYSTEM PHILOSOPHY
+
+---
+
+The system exists to reduce rework and decision load, not maximise perfection.

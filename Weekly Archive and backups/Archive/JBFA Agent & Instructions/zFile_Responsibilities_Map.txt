@@ -1,0 +1,75 @@
+FILE RESPONSIBILITIES MAP
+Fantasy NRL Website
+
+index.html
+- Owns:
+  - UI layout
+  - navigation system
+  - JS interaction logic
+  - rendering functions
+  - inline fallback data (_INLINE_DATA)
+- Reads:
+  - data.json
+- Risks:
+  - breaking onclick bindings (must use window.*)
+  - breaking navigation sync
+  - desync with data.json
+
+generate_data.py
+- Owns:
+  - data scraping
+  - break-even logic
+  - price calculations
+  - JSON generation
+- Writes:
+  - data.json
+- Risks:
+  - incorrect BE assumptions
+  - breaking schema used by frontend
+  - drift from API values
+
+data.json
+- Owns:
+  - all frontend data
+- Used by:
+  - index.html
+- Contains:
+  - players
+  - coaches
+  - breakEven
+  - prices
+  - trades
+- Risks:
+  - schema changes breaking frontend
+  - missing fields causing UI failure
+
+_inline_data (inside index.html)
+- Owns:
+  - fallback dataset
+- Must:
+  - mirror data.json exactly
+- Risks:
+  - stale data
+  - mismatch bugs
+
+KEY CROSS-FILE DEPENDENCIES
+
+- generate_data.py → data.json → index.html
+- data.json ↔ _INLINE_DATA (must match)
+- price model logic must align across Python and frontend
+
+HIGH-RISK AREAS
+
+- break-even logic
+- price projection logic
+- navigation system
+- inline onclick bindings
+- data schema consistency
+
+SAFE CHANGE ZONES
+
+- text labels
+- small UI tweaks
+- styling changes
+- isolated functions
+

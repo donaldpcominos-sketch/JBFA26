@@ -1,0 +1,83 @@
+ARCHITECTURE + DATA FLOW
+Fantasy NRL Website
+
+OVERVIEW
+The system consists of:
+1. Python data generation (generate_data.py)
+2. JSON data layer (data.json)
+3. Frontend (index.html with embedded JS)
+4. Inline fallback data (_INLINE_DATA)
+
+DATA FLOW
+
+Step 1 — Data Generation (Python)
+- generate_data.py pulls:
+  - player stats
+  - break evens (API)
+  - scores
+- Applies model:
+  - K = 13000
+  - PPP = 1000
+  - 5-game rolling window
+- Outputs structured data.json
+
+Step 2 — JSON Layer (data.json)
+- Source of truth for frontend
+- Contains:
+  - players
+  - coaches
+  - breakEven
+  - price history
+  - trades
+  - meta (beModel, currentRound)
+
+Step 3 — Frontend (index.html)
+- Reads from data.json
+- Renders:
+  - overview tables
+  - player tables
+  - coach profile
+  - price predictor
+
+Step 4 — Inline Fallback (_INLINE_DATA)
+- Embedded JSON copy
+- Used as fallback / initial load
+- MUST match data.json
+
+CRITICAL RULES
+
+1. Source of truth
+- Current round BE = API value
+- Future BE = computed
+- data.json drives frontend
+
+2. Sync requirement
+- data.json and _INLINE_DATA must match
+- after Python run → regenerate inline data
+
+3. Model separation
+- Python = authoritative calculations
+- Frontend = display + chained projections only
+
+4. UI/JS coupling
+- index.html contains:
+  - UI
+  - logic
+  - navigation
+- Changes here can affect multiple systems
+
+COMMON FAILURE MODES
+
+- BE recalculated incorrectly in frontend
+- _INLINE_DATA out of sync with data.json
+- onclick functions not bound to window.*
+- breaking navigation mapping (_TAB_GROUP)
+- mixing SuperCoach logic into NRL model
+
+CHANGE IMPACT GUIDANCE
+
+If change affects:
+- data → check Python + JSON + frontend
+- UI → check JS logic + mobile layout
+- model → validate against expected behaviour
+
