@@ -801,6 +801,60 @@ function podHtml(c){
 
 
 // ── RANK HISTORY ─────────────────────────────────────────────────────────────
+// Builds a single JBFA rank tile (shared between inline strip and history modal)
+function jbfaRankTileHtml(rk,rh,rounds,i,total){
+  var rNum=parseInt(rk.replace('r',''));
+  var rankVal=rh[rk];
+  var col=rankVal<=Math.ceil(total*0.10)?'var(--green)':rankVal<=Math.ceil(total*0.33)?'var(--accent)':rankVal<=Math.ceil(total*0.67)?'var(--blue)':'var(--muted)';
+  var prevRk=i>0?rh[rounds[i-1]]:null;
+  var mvt='';
+  if(prevRk!==null){
+    var diff=prevRk-rankVal;
+    if(diff>0) mvt='<span style="font-size:.65rem;color:var(--green)">&#9650;'+diff+'</span>';
+    else if(diff<0) mvt='<span style="font-size:.65rem;color:var(--red)">&#9660;'+Math.abs(diff)+'</span>';
+    else mvt='<span style="font-size:.65rem;color:var(--muted)">&#8212;</span>';
+  }
+  var isCur=rNum===CUR;
+  return '<div style="background:'+(isCur?'rgba(240,180,41,.1)':'var(--surface2)')+';border:1px solid '+(isCur?'rgba(240,180,41,.3)':'var(--border)')+';border-radius:8px;padding:.5rem .75rem;min-width:76px;text-align:center;">'
+    +'<div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.15rem">R'+rNum+(isCur?' &#9668;':'')+' </div>'
+    +'<div style="font-family:Bebas Neue,sans-serif;font-size:1.5rem;color:'+col+';letter-spacing:.04em;line-height:1">#'+rankVal+'</div>'
+    +(mvt?'<div style="margin-top:.2rem">'+mvt+'</div>':'')
+    +'</div>';
+}
+
+// Inverted sparkline for JBFA rank (lower rank value = higher on chart)
+function jbfaRankSparklineSvg(rounds,rh,total){
+  if(rounds.length<2) return '';
+  var vals=rounds.map(function(rk){return rh[rk];});
+  var mx=Math.max.apply(null,vals),mn=Math.min.apply(null,vals);
+  var pad=Math.max(3,Math.round((mx-mn)*0.3));
+  var lo=Math.max(1,mn-pad),hi=Math.min(total,mx+pad);
+  var W=320,H=80,padL=8,padR=8,padT=18,padB=18;
+  var chartW=W-padL-padR,chartH=H-padT-padB;
+  // yPos: lo (best rank) maps to top (low y), hi (worst rank) maps to bottom — already inverted
+  function xPos(i){return padL+Math.round(i/(rounds.length-1||1)*chartW);}
+  function yPos(v){return padT+Math.round(((v-lo)/(hi-lo||1))*chartH);}
+  var pts=vals.map(function(v,i){return xPos(i)+','+yPos(v);});
+  var linePath='M'+pts.join(' L');
+  var fillPath='M'+xPos(0)+','+(padT+chartH)+' L'+pts.join(' L')+' L'+xPos(rounds.length-1)+','+(padT+chartH)+' Z';
+  var out='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;max-width:420px;display:block;overflow:visible;margin-bottom:.5rem">';
+  out+='<path d="'+fillPath+'" fill="rgba(240,180,41,0.08)"/>';
+  out+='<path d="'+linePath+'" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round"/>';
+  rounds.forEach(function(rk,i){
+    var rNum=parseInt(rk.replace('r',''));
+    var v=vals[i];
+    var x=xPos(i),y=yPos(v);
+    var isCur=rNum===CUR;
+    var col=isCur?'var(--accent)':'var(--blue)';
+    out+='<circle cx="'+x+'" cy="'+y+'" r="'+(isCur?4:3)+'" fill="'+col+'"/>';
+    var labelY=Math.max(10,y-6);
+    out+='<text x="'+x+'" y="'+labelY+'" text-anchor="middle" font-size="9" fill="'+col+'" font-family="DM Sans,sans-serif" font-weight="'+(isCur?'700':'400')+'">#'+v+'</text>';
+    out+='<text x="'+x+'" y="'+(padT+chartH+12)+'" text-anchor="middle" font-size="8" fill="var(--muted)" font-family="DM Sans,sans-serif">R'+rNum+'</text>';
+  });
+  out+='</svg>';
+  return out;
+}
+
 function rankHistoryHtml(c){
   var rh=c.rankHistory||{};
   var rounds=Object.keys(rh).sort(function(a,b){return parseInt(a.replace('r',''))-parseInt(b.replace('r',''));});
@@ -815,27 +869,26 @@ function rankHistoryHtml(c){
     out+='<div class="cvsec">';
     out+='<div class="cvsect">📈 JBFA Rank History</div>';
     out+='<div style="font-size:.75rem;color:var(--muted);margin-top:-.4rem;margin-bottom:.75rem">Your standing among the JBFA coaches, cumulative after each round</div>';
+
+    // Inverted rank sparkline (lower rank = higher on chart)
+    out+=jbfaRankSparklineSvg(rounds,rh,total);
+
+    // Only the last 6 rounds rendered as tiles
+    var shownR=rounds.slice(-6);
+    var shownStartIdx=rounds.length-shownR.length;
     out+='<div style="display:flex;gap:.5rem;flex-wrap:wrap;">';
-    rounds.forEach(function(rk,i){
-      var rNum=parseInt(rk.replace('r',''));
-      var rankVal=rh[rk];
-      var col=rankVal<=Math.ceil(total*0.10)?'var(--green)':rankVal<=Math.ceil(total*0.33)?'var(--accent)':rankVal<=Math.ceil(total*0.67)?'var(--blue)':'var(--muted)';
-      var prevRk=i>0?rh[rounds[i-1]]:null;
-      var mvt='';
-      if(prevRk!==null){
-        var diff=prevRk-rankVal;
-        if(diff>0) mvt='<span style="font-size:.65rem;color:var(--green)">&#9650;'+diff+'</span>';
-        else if(diff<0) mvt='<span style="font-size:.65rem;color:var(--red)">&#9660;'+Math.abs(diff)+'</span>';
-        else mvt='<span style="font-size:.65rem;color:var(--muted)">&#8212;</span>';
-      }
-      var isCur=rNum===CUR;
-      out+='<div style="background:'+(isCur?'rgba(240,180,41,.1)':'var(--surface2)')+';border:1px solid '+(isCur?'rgba(240,180,41,.3)':'var(--border)')+';border-radius:8px;padding:.5rem .75rem;min-width:76px;text-align:center;">'
-        +'<div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.15rem">R'+rNum+(isCur?' &#9668;':'')+' </div>'
-        +'<div style="font-family:Bebas Neue,sans-serif;font-size:1.5rem;color:'+col+';letter-spacing:.04em;line-height:1">#'+rankVal+'</div>'
-        +(mvt?'<div style="margin-top:.2rem">'+mvt+'</div>':'')
-        +'</div>';
+    shownR.forEach(function(rk,i){
+      var globalIdx=shownStartIdx+i;
+      out+=jbfaRankTileHtml(rk,rh,rounds,globalIdx,total);
     });
     out+='</div>';
+
+    // "See all" button when earlier rounds exist
+    if(rounds.length > shownR.length){
+      var hiddenR = rounds.length - shownR.length;
+      out+='<button onclick="showHistoryModal('+c.rank+',\'rank\')" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.45rem .85rem;color:var(--text);font-size:.8rem;cursor:pointer;width:100%;margin-top:.75rem;transition:background .12s" onmouseover="this.style.background=\'var(--border)\'" onmouseout="this.style.background=\'var(--surface2)\'">See all '+rounds.length+' rounds <span style="color:var(--muted)">(+'+hiddenR+' earlier)</span></button>';
+    }
+
     out+='</div>';
   }
 
@@ -878,18 +931,68 @@ function rankHistoryHtml(c){
   return out;
 }
 
-function sparklineHtml(c){
-  // Round averages from JSON data
+// Builds a single score-trend tile (shared between inline strip and history modal)
+function scoreTileHtml(item){
+  var diff = item.avg ? item.s - item.avg : 0;
+  var isGreen = diff >= 0;
+  var color = isGreen ? 'var(--green)' : 'var(--red)';
+  var bgColor = isGreen ? 'rgba(52,211,153,.1)' : 'rgba(248,113,113,.1)';
+  var borderColor = isGreen ? 'rgba(52,211,153,.3)' : 'rgba(248,113,113,.3)';
+  var sign = isGreen ? '+' : '';
+  return '<div style="background:'+bgColor+';border:1px solid '+borderColor+';border-radius:8px;padding:.5rem .75rem;min-width:80px;text-align:center;">'
+    + '<div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.2rem">R'+item.r+'</div>'
+    + '<div style="font-family:Bebas Neue,sans-serif;font-size:1.4rem;color:'+color+';letter-spacing:.04em;line-height:1">'+item.s+'</div>'
+    + (item.avg ? '<div style="font-size:.7rem;color:'+color+';margin-top:.15rem">'+sign+diff+' vs JBFA avg</div>' : '')
+    + '</div>';
+}
+
+// Collect a coach's score-trend series (one entry per round with a score)
+function collectScoreSeries(c){
   var ROUND_AVGS = ROUND_AVGS_FROM_DATA||{1: 926, 2: 1034};
   var scores = [];
-  if(c.r1) scores.push({r:1, s:c.r1, avg: ROUND_AVGS[1]||926});
-  if(c.r2) scores.push({r:2, s:c.r2, avg: ROUND_AVGS[2]||1034});
-  if(c.r3) scores.push({r:3, s:c.r3, avg: ROUND_AVGS[3]||0});
-  if(c.r4) scores.push({r:4, s:c.r4, avg: ROUND_AVGS[4]||0});
-  if(c.r5) scores.push({r:5, s:c.r5, avg: ROUND_AVGS[5]||0});
-  if(c.r6) scores.push({r:6, s:c.r6, avg: ROUND_AVGS[6]||0});
-  if(c.r7) scores.push({r:7, s:c.r7, avg: ROUND_AVGS[7]||0});
-  if(c.r8) scores.push({r:8, s:c.r8, avg: ROUND_AVGS[8]||0});
+  for(var r=1;r<=20;r++){
+    var key='r'+r;
+    if(c[key]) scores.push({r:r, s:c[key], avg: ROUND_AVGS[r]||0});
+  }
+  return scores;
+}
+
+// Delta-vs-avg sparkline SVG — zero baseline, dot colour = sign, current round highlighted
+function scoreDeltaSparklineSvg(scores){
+  if(scores.length<2) return ''; // sparkline only useful with 2+ points
+  var deltas=scores.map(function(s){return s.avg?s.s-s.avg:0;});
+  var absMax=Math.max.apply(null,deltas.map(function(d){return Math.abs(d);}));
+  absMax=Math.max(absMax,50); // floor so tiny deltas aren't wildly amplified
+  var hi=absMax*1.15,lo=-absMax*1.15;
+  var W=320,H=90,padL=8,padR=8,padT=18,padB=18;
+  var chartW=W-padL-padR,chartH=H-padT-padB;
+  function xPos(i){return padL+Math.round(i/(scores.length-1||1)*chartW);}
+  function yPos(v){return padT+Math.round((1-(v-lo)/(hi-lo||1))*chartH);}
+  var zeroY=yPos(0);
+  var pts=deltas.map(function(d,i){return xPos(i)+','+yPos(d);});
+  var linePath='M'+pts.join(' L');
+  var out='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;max-width:420px;display:block;overflow:visible;margin-bottom:.5rem">';
+  // dashed zero line
+  out+='<line x1="'+padL+'" y1="'+zeroY+'" x2="'+(W-padR)+'" y2="'+zeroY+'" stroke="var(--muted)" stroke-width="1" stroke-dasharray="3,3" opacity=".5"/>';
+  out+='<text x="'+(W-padR)+'" y="'+(zeroY-3)+'" text-anchor="end" font-size="8" fill="var(--muted)" font-family="DM Sans,sans-serif">avg</text>';
+  out+='<path d="'+linePath+'" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linejoin="round"/>';
+  scores.forEach(function(s,i){
+    var d=deltas[i];
+    var x=xPos(i),y=yPos(d);
+    var isCur=s.r===CUR;
+    var sign=d>=0?'+':'';
+    var col=isCur?'var(--accent)':(d>=0?'var(--green)':'var(--red)');
+    out+='<circle cx="'+x+'" cy="'+y+'" r="'+(isCur?4:3)+'" fill="'+col+'"/>';
+    var labelY=d>=0?Math.max(10,y-6):Math.min(H-2,y+12);
+    out+='<text x="'+x+'" y="'+labelY+'" text-anchor="middle" font-size="9" fill="'+col+'" font-family="DM Sans,sans-serif" font-weight="'+(isCur?'700':'400')+'">'+sign+d+'</text>';
+    out+='<text x="'+x+'" y="'+(padT+chartH+12)+'" text-anchor="middle" font-size="8" fill="var(--muted)" font-family="DM Sans,sans-serif">R'+s.r+'</text>';
+  });
+  out+='</svg>';
+  return out;
+}
+
+function sparklineHtml(c){
+  var scores = collectScoreSeries(c);
 
   var html = '<div class="cvsec"><div class="cvsect">Score Trend</div><div style="font-size:.75rem;color:var(--muted);margin-top:-.4rem;margin-bottom:.75rem">vs JBFA field average each round</div>';
 
@@ -898,22 +1001,21 @@ function sparklineHtml(c){
     return html;
   }
 
-  // Score boxes: one per round, coloured green/red vs that round's avg
+  // Sparkline first (full-season shape)
+  html += scoreDeltaSparklineSvg(scores);
+
+  // Only the last 6 rounds rendered as detailed tiles
+  var shown = scores.slice(-6);
   html += '<div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.75rem;">';
-  scores.forEach(function(item){
-    var diff = item.avg ? item.s - item.avg : 0;
-    var isGreen = diff >= 0;
-    var color = isGreen ? 'var(--green)' : 'var(--red)';
-    var bgColor = isGreen ? 'rgba(52,211,153,.1)' : 'rgba(248,113,113,.1)';
-    var borderColor = isGreen ? 'rgba(52,211,153,.3)' : 'rgba(248,113,113,.3)';
-    var sign = isGreen ? '+' : '';
-    html += '<div style="background:'+bgColor+';border:1px solid '+borderColor+';border-radius:8px;padding:.5rem .75rem;min-width:80px;text-align:center;">'
-      + '<div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.2rem">R'+item.r+'</div>'
-      + '<div style="font-family:Bebas Neue,sans-serif;font-size:1.4rem;color:'+color+';letter-spacing:.04em;line-height:1">'+item.s+'</div>'
-      + (item.avg ? '<div style="font-size:.7rem;color:'+color+';margin-top:.15rem">'+sign+diff+' vs JBFA avg</div>' : '')
-      + '</div>';
-  });
+  shown.forEach(function(item){ html += scoreTileHtml(item); });
   html += '</div>';
+
+  // "See all" button appears only when hidden rounds exist
+  if(scores.length > shown.length){
+    var hidden = scores.length - shown.length;
+    html += '<button onclick="showHistoryModal('+c.rank+',\'score\')" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.45rem .85rem;color:var(--text);font-size:.8rem;cursor:pointer;width:100%;transition:background .12s" onmouseover="this.style.background=\'var(--border)\'" onmouseout="this.style.background=\'var(--surface2)\'">See all '+scores.length+' rounds <span style="color:var(--muted)">(+'+hidden+' earlier)</span></button>';
+  }
+
   html += '</div>';
   return html;
 }
@@ -990,6 +1092,42 @@ function closePlModal(){
   m.querySelector('.plmodal-inner').style.opacity='0';
   setTimeout(function(){ m.style.display='none'; },180);
 }
+
+// ── HISTORY MODAL (full round-by-round score or rank grid) ──────────────────
+window.showHistoryModal = function showHistoryModal(rank, type){
+  var c = COACHES.find(function(x){return x.rank===rank;});
+  if(!c) return;
+  var body='';
+  if(type==='score'){
+    var scores = collectScoreSeries(c);
+    body += '<div style="font-family:Bebas Neue,sans-serif;font-size:1.4rem;letter-spacing:.04em;color:#fff;margin-bottom:.15rem">Score Trend — Full History</div>'
+      + '<div style="font-size:.85rem;color:var(--muted);margin-bottom:1rem">'+esc(c.coach)+' · '+esc(c.team)+'</div>'
+      + scoreDeltaSparklineSvg(scores)
+      + '<div style="display:flex;gap:.5rem;flex-wrap:wrap;">';
+    scores.forEach(function(item){ body += scoreTileHtml(item); });
+    body += '</div>';
+  } else if(type==='rank'){
+    var rh=c.rankHistory||{};
+    var rounds=Object.keys(rh).sort(function(a,b){return parseInt(a.replace('r',''))-parseInt(b.replace('r',''));});
+    var total=COACHES.length;
+    body += '<div style="font-family:Bebas Neue,sans-serif;font-size:1.4rem;letter-spacing:.04em;color:#fff;margin-bottom:.15rem">JBFA Rank History — Full</div>'
+      + '<div style="font-size:.85rem;color:var(--muted);margin-bottom:1rem">'+esc(c.coach)+' · '+esc(c.team)+'</div>'
+      + jbfaRankSparklineSvg(rounds,rh,total)
+      + '<div style="display:flex;gap:.5rem;flex-wrap:wrap;">';
+    rounds.forEach(function(rk,i){ body += jbfaRankTileHtml(rk,rh,rounds,i,total); });
+    body += '</div>';
+  }
+  document.getElementById('hxmodal-body').innerHTML = body;
+  var m=document.getElementById('hxmodal');
+  m.style.display='flex';
+  setTimeout(function(){ m.querySelector('.hxmodal-inner').style.transform='translateY(0)'; m.querySelector('.hxmodal-inner').style.opacity='1'; },10);
+};
+window.closeHistoryModal = function closeHistoryModal(){
+  var m=document.getElementById('hxmodal');
+  m.querySelector('.hxmodal-inner').style.transform='translateY(12px)';
+  m.querySelector('.hxmodal-inner').style.opacity='0';
+  setTimeout(function(){ m.style.display='none'; },180);
+};
 
 // Dynamic counts
 (function(){

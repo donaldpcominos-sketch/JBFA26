@@ -836,6 +836,14 @@ function dismissByePromo(){document.getElementById('bye-promo-bar').style.displa
   </div>
 </div>
 
+<!-- HISTORY MODAL (full round-by-round score / rank history) -->
+<div id="hxmodal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:3100;align-items:center;justify-content:center;padding:1rem;" onclick="if(event.target===this)closeHistoryModal()">
+  <div class="hxmodal-inner" style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.5rem;width:100%;max-width:440px;position:relative;max-height:90vh;overflow-y:auto;transform:translateY(12px);opacity:0;transition:transform .18s,opacity .18s;">
+    <button onclick="closeHistoryModal()" style="position:absolute;top:.75rem;right:.75rem;background:none;border:none;color:var(--muted);font-size:1.1rem;cursor:pointer;line-height:1;padding:.2rem .4rem;z-index:1;">✕</button>
+    <div id="hxmodal-body"></div>
+  </div>
+</div>
+
 <!-- FEEDBACK MODAL -->
 <div id="fmodal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:3000;align-items:center;justify-content:center;padding:1rem;">
   <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.5rem;width:100%;max-width:420px;position:relative;">
