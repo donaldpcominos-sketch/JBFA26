@@ -1,4 +1,4 @@
-var CACHE = 'jbfa-v1';
+var CACHE = 'jbfa-v2';
 var APP_SHELL = [
   './',
   './index.html',
@@ -74,19 +74,17 @@ self.addEventListener('fetch', function(e) {
     return;
   }
 
-  // Cache-first for everything else (app shell, fonts, images)
+  // Network-first for app shell — always serve fresh when online, fall back to cache when offline
   e.respondWith(
-    caches.match(e.request).then(function(cached) {
-      if (cached) return cached;
-      return fetch(e.request).then(function(fresh) {
-        // Cache successful GET responses for offline use
-        if (e.request.method === 'GET' && fresh.status === 200) {
-          caches.open(CACHE).then(function(cache) {
-            cache.put(e.request, fresh.clone());
-          });
-        }
-        return fresh;
-      });
+    fetch(e.request).then(function(fresh) {
+      if (e.request.method === 'GET' && fresh.status === 200) {
+        caches.open(CACHE).then(function(cache) {
+          cache.put(e.request, fresh.clone());
+        });
+      }
+      return fresh;
+    }).catch(function() {
+      return caches.match(e.request);
     })
   );
 });
