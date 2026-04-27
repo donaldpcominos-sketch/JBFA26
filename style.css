@@ -340,19 +340,6 @@ td{padding:.6rem 1rem;vertical-align:middle;}
 .scel > *{position:relative;z-index:1;}
 .heat-label{font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-top:.15rem;}
 
-/* TIER BOUNDARY */
-.tier-boundary{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:1rem;}
-.tb-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem;}
-.tb-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);}
-.tb-badge{}
-.tb-bar-wrap{background:var(--bg);border-radius:6px;height:8px;overflow:hidden;margin-bottom:.5rem;}
-.tb-bar{height:100%;border-radius:6px;transition:width .4s;}
-.tb-stats{display:flex;gap:.5rem;flex-wrap:wrap;font-size:.72rem;margin-top:.4rem;}
-.tb-pill{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.2rem .6rem;white-space:nowrap;}
-.tb-pill strong{font-weight:700;}
-.tb-danger{color:var(--red);}
-.tb-safe{color:var(--green);}
-.tb-mid{color:var(--accent);}
 
 /* SPARKLINE */
 .spark-wrap{margin-top:.5rem;}

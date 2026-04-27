@@ -264,7 +264,6 @@ window.showCoach = function showCoach(rank){
       var sr=c.seedRank||'—';
       return'<div class="cvsec"><div class="cvsect">Main Season — Seeding</div><p style="font-size:.875rem;color:var(--muted);line-height:1.65">Qualified into <strong style="color:var(--text)">'+tname+'</strong> (R8 rank: <strong style="color:var(--text)">#'+qr+'</strong>). Seeding rank: <strong style="color:var(--accent)">#'+sr+'</strong> of '+ts+' with <strong style="color:var(--text)">'+ss+' pts</strong> (R9–R'+CUR+').</p></div>';
     })()+
-    tierBoundaryHtml(rank, c)+
     (function(){
     var isElim3 = c.survivorStatus === 'eliminated';
     var isInelig3 = c.survivorStatus === 'ineligible';
@@ -743,78 +742,6 @@ function dPager(id,total,cur,cb){
   el.innerHTML=h;
 }
 
-
-// ── TIER BOUNDARY ─────────────────────────────────────────────────────────
-function tierBoundaryHtml(rank, c){
-  var ROUNDS_LEFT = 8 - CUR;
-  var phase = CUR <= 8 ? 1 : CUR <= 18 ? 2 : 3;
-  if(phase !== 1) return '';
-
-  var t = getTier(rank);
-  var html = '<div class="cvsec"><div class="cvsect">⚠️ Tier Boundary Alert</div>';
-
-  // Helper: get total score for coach at a given rank
-  function scoreAt(r){
-    var cx = COACHES.find(function(x){return x.rank===r;});
-    return cx ? (cx.total||cx.r1||0) : 0;
-  }
-  var myScore = c.total || c.r1 || 0;
-
-  if(t === 1){
-    // Already in Tier 1 — show buffer (places inside the cut)
-    var bufferPlaces = T1 - rank;
-    var t1cutScore = scoreAt(T1);
-    var ptsBuffer = myScore - t1cutScore;
-    var barW1 = Math.min(95, Math.max(5, Math.round((bufferPlaces/T1)*100)));
-    var bufLabel = bufferPlaces === 0 ? '⚠️ On the cut' : ('✓ '+bufferPlaces+' place'+(bufferPlaces!==1?'s':'')+' inside');
-    var bufStyle = bufferPlaces === 0 ? 'background:rgba(240,180,41,.15);color:var(--accent);border-color:rgba(240,180,41,.3)' : 'background:rgba(52,211,153,.15);color:var(--green);border-color:rgba(52,211,153,.3)';
-    var pillCol = bufferPlaces === 0 ? 'var(--accent)' : 'var(--green)';
-    html += '<div class="tier-boundary">'
-      +'<div class="tb-header"><span class="tb-title">Tier 1 — Premiership</span><span class="badge bt1" style="'+bufStyle+'">'+bufLabel+'</span></div>'
-      +'<div class="tb-bar-wrap"><div class="tb-bar" style="width:'+barW1+'%;background:linear-gradient(90deg,var(--green),rgba(52,211,153,.3))"></div></div>'
-      +'<div class="tb-stats">'
-      +(bufferPlaces===0
-        ? '<span class="tb-pill" style="color:var(--accent)"><strong>Right on the T1 boundary</strong></span>'
-        : '<span class="tb-pill" style="color:'+pillCol+'"><strong>'+bufferPlaces+' place'+(bufferPlaces!==1?'s':'')+' buffer</strong></span>')
-      +'<span class="tb-pill" style="color:'+pillCol+'"><strong>+'+ptsBuffer+' pts over the cut</strong></span>'
-      +'<span class="tb-pill" style="color:var(--muted)">'+ROUNDS_LEFT+' round'+(ROUNDS_LEFT!==1?'s':'')+' left</span>'
-      +'</div>'
-      +'</div>';
-
-  } else if(t === 2){
-    var toT1 = rank - T1;
-    var t1cutScore = scoreAt(T1);
-    var ptsToT1 = t1cutScore - myScore;
-    var barW2 = Math.min(95, Math.max(5, 100 - Math.round((toT1/100)*100)));
-    html += '<div class="tier-boundary">'
-      +'<div class="tb-header"><span class="tb-title">Tier 1 — Premiership</span><span class="badge bt1">'+toT1+' place'+(toT1!==1?'s':'')+' away ↑</span></div>'
-      +'<div class="tb-bar-wrap"><div class="tb-bar" style="width:'+barW2+'%;background:linear-gradient(90deg,var(--t1),rgba(240,180,41,.3))"></div></div>'
-      +'<div class="tb-stats">'
-      +'<span class="tb-pill" style="color:var(--accent)"><strong>'+toT1+' place'+(toT1!==1?'s':'')+' needed</strong></span>'
-      +'<span class="tb-pill" style="color:var(--accent)"><strong>'+ptsToT1+' pt'+(ptsToT1!==1?'s':'')+' needed</strong></span>'
-      +'<span class="tb-pill" style="color:var(--muted)">'+ROUNDS_LEFT+' round'+(ROUNDS_LEFT!==1?'s':'')+' left</span>'
-      +'</div>'
-      +'</div>';
-
-  } else {
-    // Tier 3 — show distance to Tier 2 only
-    var toT2climb = rank - T2;
-    var t2topScore = scoreAt(T2);
-    var ptsToT2 = t2topScore - myScore;
-    html += '<div class="tier-boundary">'
-      +'<div class="tb-header"><span class="tb-title">Tier 2 — Championship</span><span class="badge bt2">'+toT2climb+' place'+(toT2climb!==1?'s':'')+' away ↑</span></div>'
-      +'<div class="tb-bar-wrap"><div class="tb-bar" style="width:'+Math.max(5,100-Math.round((toT2climb/100)*100))+'%;background:linear-gradient(90deg,var(--t2),rgba(96,165,250,.3))"></div></div>'
-      +'<div class="tb-stats">'
-      +'<span class="tb-pill" style="color:var(--blue)"><strong>'+toT2climb+' place'+(toT2climb!==1?'s':'')+' needed</strong></span>'
-      +'<span class="tb-pill" style="color:var(--blue)"><strong>'+ptsToT2+' pt'+(ptsToT2!==1?'s':'')+' needed</strong></span>'
-      +'<span class="tb-pill" style="color:var(--muted)">'+ROUNDS_LEFT+' round'+(ROUNDS_LEFT!==1?'s':'')+' left</span>'
-      +'</div>'
-      +'</div>';
-  }
-
-  html += '</div>';
-  return html;
-}
 
 // ── SPARKLINE ─────────────────────────────────────────────────────────────
 // ── POD (Point of Difference) ────────────────────────────────────────────────
