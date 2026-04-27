@@ -476,7 +476,7 @@ for _, row in master.iterrows():
         "wealthPct":        50,
         "players":          [],
         "tradesUsed":       used,
-        "tradesRemaining":  TRADES_BASE - used,
+        "tradesRemaining":  (TRADES_CAPACITY if CURRENT_ROUND >= 19 else TRADES_BASE) - used,
         "tradesCapacity":   TRADES_CAPACITY,
     })
 
@@ -494,6 +494,33 @@ for r in range(1, CURRENT_ROUND + 1):
     )
     for i, c in enumerate(sorted_r):
         c["rankHistory"][f"r{r}"] = i + 1
+
+# ── SEEDING PHASE (R9+) ──────────────────────────────────────────────────────
+if CURRENT_ROUND >= 9:
+    qual_sorted = sorted(
+        coaches,
+        key=lambda c: sum(c["scores"].get(f"r{x}", 0) for x in range(1, 9)),
+        reverse=True,
+    )
+    for i, c in enumerate(qual_sorted):
+        c["qualifyingRank"] = i + 1
+        c["tier"] = 1 if i + 1 <= 100 else 2 if i + 1 <= 200 else 3
+    for c in coaches:
+        c["seedScore"] = sum(c["scores"].get(f"r{x}", 0) for x in range(9, CURRENT_ROUND + 1))
+    for tier_num in [1, 2, 3]:
+        tier_group = sorted(
+            [c for c in coaches if c["tier"] == tier_num],
+            key=lambda c: c["seedScore"],
+            reverse=True,
+        )
+        for i, c in enumerate(tier_group):
+            c["seedRank"] = i + 1
+else:
+    for c in coaches:
+        c["qualifyingRank"] = None
+        c["tier"] = None
+        c["seedScore"] = None
+        c["seedRank"] = None
 
 vip_entries = sorted(
     [c for c in coaches if c["vipEntry"]],

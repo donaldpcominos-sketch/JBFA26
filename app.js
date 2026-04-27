@@ -154,7 +154,7 @@ VIP_LIST.forEach(function(c,i){c.vipRankCalc=i+1;});
 window.showCoach = function showCoach(rank){
   var c=COACHES.find(function(x){return x.rank===rank;});
   if(!c) return;
-  var t=getTier(rank),tname=['Tier 1 — Premiership','Tier 2 — Championship','Tier 3 — State Cup'][t-1];
+  var t=(CUR>=9&&c.tier)?c.tier:getTier(rank),tname=['Tier 1 — Premiership','Tier 2 — Championship','Tier 3 — State Cup'][t-1];
   var diff2=((c.scores&&c.scores['r'+CUR])||0)-AVG,pct=Math.round((rank/COACHES.length)*100);
   var allE=COACHES.filter(function(x){return x.coach===c.coach;});
   var vipE=VIP_LIST.find(function(x){return x.coach===c.coach;});
@@ -233,14 +233,16 @@ window.showCoach = function showCoach(rank){
         '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;">'+
           '<div class="cvstat"><div class="cvsl">Overall Rank</div><div class="cvsv" style="color:var(--accent)">#'+rank+'</div><div style="font-size:.68rem;color:var(--muted)">of '+COACHES.length+'</div></div>'+
           '<div class="cvstat"><div class="cvsl">Total Points</div><div class="cvsv" style="color:var(--text)">'+(c.total||curRoundScore)+'</div></div>'+
-          '<div class="cvstat"><div class="cvsl">Proj. Seeding</div><div class="cvsv" style="font-size:.9rem;padding-top:.25rem">'+tb(rank,true)+'</div></div>'+
+          (CUR<=8
+            ?'<div class="cvstat"><div class="cvsl">Proj. Seeding</div><div class="cvsv" style="font-size:.9rem;padding-top:.25rem">'+tb(rank,true)+'</div></div>'
+            :(function(){var ts=t===1?T1:t===2?(T2-T1):(COACHES.length-T2);return'<div class="cvstat"><div class="cvsl">Seed Rank</div><div class="cvsv" style="color:var(--accent)">#'+(c.seedRank||'—')+'</div><div style="font-size:.68rem;color:var(--muted)">of '+ts+'</div></div>';}()))+
         '</div>'+
       '</div>'+
       '<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:.85rem 1rem;">'+
         '<div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:700;margin-bottom:.65rem">Team &amp; Survival</div>'+
         '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;">'+
           (wealthStr?'<div class="cvstat"><div class="cvsl">Team Value</div><div class="cvsv" style="color:var(--green)">'+wealthStr+(c.wealthPct!==undefined?' <span style="font-size:.7rem;color:'+(c.wealthPct>=75?'var(--green)':c.wealthPct>=50?'var(--accent)':'var(--muted)')+';">(Top '+(100-c.wealthPct+1)+'%)</span>':'')+'</div></div>':'')+
-          (function(){var tr=c.tradesRemaining,tc=c.tradesCapacity;if(tr===undefined)return'';var tc2=tc!==undefined?tc:(_D.meta.tradesRules&&_D.meta.tradesRules.capacity)||44;return'<div class="cvstat"><div class="cvsl">Trades Left</div><div class="cvsv" style="color:'+tradeClr(tr)+'">'+tr+' <span style="font-size:.7rem;color:var(--muted);">('+tc2+')</span></div></div>';})()+
+          (function(){var tr=c.tradesRemaining;if(tr===undefined)return'';var inner=CUR>=19?''+tr:tr+' <span style="font-size:.7rem;color:var(--muted);">(+'+(tr+8)+')</span>';return'<div class="cvstat"><div class="cvsl">Trades Left</div><div class="cvsv" style="color:'+tradeClr(tr)+'">'+inner+'</div></div>';})()+
     (function(){
     var isElim2 = c.survivorStatus === 'eliminated';
     var isInelig2 = c.survivorStatus === 'ineligible';
@@ -252,7 +254,16 @@ window.showCoach = function showCoach(rank){
     sparklineHtml(c)+
     rankHistoryHtml(c)+
     podHtml(c)+
-    '<div class="cvsec"><div class="cvsect">Main Season — Qualifying</div><p style="font-size:.875rem;color:var(--muted);line-height:1.65">Ranked <strong style="color:var(--text)">#'+rank+'</strong> of '+COACHES.length+'. Projected into <strong style="color:var(--text)">'+tname+'</strong> for Seeding. '+buf+' Qualifying runs until Round 8.</p></div>'+
+    (function(){
+      if(CUR<=8){
+        return'<div class="cvsec"><div class="cvsect">Main Season — Qualifying</div><p style="font-size:.875rem;color:var(--muted);line-height:1.65">Ranked <strong style="color:var(--text)">#'+rank+'</strong> of '+COACHES.length+'. Projected into <strong style="color:var(--text)">'+tname+'</strong> for Seeding. '+buf+' Qualifying runs until Round 8.</p></div>';
+      }
+      var qr=c.qualifyingRank||rank;
+      var ts=t===1?T1:t===2?(T2-T1):(COACHES.length-T2);
+      var ss=c.seedScore||0;
+      var sr=c.seedRank||'—';
+      return'<div class="cvsec"><div class="cvsect">Main Season — Seeding</div><p style="font-size:.875rem;color:var(--muted);line-height:1.65">Qualified into <strong style="color:var(--text)">'+tname+'</strong> (R8 rank: <strong style="color:var(--text)">#'+qr+'</strong>). Seeding rank: <strong style="color:var(--accent)">#'+sr+'</strong> of '+ts+' with <strong style="color:var(--text)">'+ss+' pts</strong> (R9–R'+CUR+').</p></div>';
+    })()+
     tierBoundaryHtml(rank, c)+
     (function(){
     var isElim3 = c.survivorStatus === 'eliminated';
@@ -439,10 +450,15 @@ function fP1(){
   p1p=1;dP1();
 }
 function dP1(){
-  var pg=p1l.slice((p1p-1)*P1N,p1p*P1N),lt=0,rows='';
+  // When qualifying is locked (R9+), sort by qualifyingRank so the table
+  // reflects the frozen R8 standings rather than the evolving cumulative rank.
+  var locked=CUR>=9;
+  var sortedList=locked?p1l.slice().sort(function(a,b){return(a.qualifyingRank||a.rank)-(b.qualifyingRank||b.rank);}):p1l;
+  var pg=sortedList.slice((p1p-1)*P1N,p1p*P1N),lt=0,rows='';
   document.getElementById('p1ct').textContent=p1l.length+' coaches';
   pg.forEach(function(c){
-    var t=getTier(c.rank);
+    var dispRank=locked?(c.qualifyingRank||c.rank):c.rank;
+    var t=getTier(dispRank);
     if(t!==lt){
       rows+='<tr class="tdiv"><td colspan="5">'+['Tier 1 — Premiership (Top 100)','Tier 2 — Championship (101–200)','Tier 3 — State Cup (201+)'][t-1]+'</td></tr>';
       lt=t;
@@ -451,7 +467,7 @@ function dP1(){
     var tr=c.tradesRemaining;
     var trClr=tradeClr(tr);
     rows+='<tr onclick="showCoach('+c.rank+')">'+
-      '<td class="trk">'+(c.rank<=3?medals[c.rank-1]:c.rank)+'</td>'+
+      '<td class="trk">'+(dispRank<=3?medals[dispRank-1]:dispRank)+'</td>'+
       '<td><div class="tco">'+esc(c.coach)+vipTag(c)+'</div><div class="tte">'+esc(c.team)+'</div></td>'+
       '<td style="text-align:center;vertical-align:middle;padding-bottom:4px"><div class="tsc hi">'+(c.total||c.r1)+'</div><div style="font-size:.7rem;color:var(--muted);font-weight:500;margin-top:4px">'+(c['r'+CUR]||'—')+'</div></td>'+
       '<td style="font-size:.82rem;font-weight:700;color:var(--text)">'+wv+'</td>'+
@@ -459,13 +475,51 @@ function dP1(){
       '</tr>';
   });
   document.getElementById('p1b').innerHTML=rows;
-  // Easter egg — only shows on the last page, after the final coach
-  var totalPages = Math.ceil(p1l.length/P1N);
-  if(p1p === totalPages){
-    document.getElementById('p1b').innerHTML += '<tr><td colspan="5" style="text-align:center;padding:1.5rem 1rem;border-top:1px dashed var(--border)"><span style="font-size:.78rem;color:var(--border);font-style:italic;opacity:.5">If you\'re reading this… we need to talk about your team. 🏳️</span></td></tr>';
+  var totalPages=Math.ceil(p1l.length/P1N);
+  if(p1p===totalPages){
+    document.getElementById('p1b').innerHTML+='<tr><td colspan="5" style="text-align:center;padding:1.5rem 1rem;border-top:1px dashed var(--border)"><span style="font-size:.78rem;color:var(--border);font-style:italic;opacity:.5">If you\'re reading this… we need to talk about your team. 🏳️</span></td></tr>';
   }
   dPager('p1pg',Math.ceil(p1l.length/P1N),p1p,function(p){p1p=p;dP1();});
 }
+
+// ── SEEDING TABLE (Phase 2) ───────────────────────────────────────────────
+var p2ActiveTier=1;
+function dP2(){
+  var el=document.getElementById('panel-p2');
+  if(!el) return;
+  if(CUR<9){
+    el.innerHTML='<div class="cs"><div class="csi">🏆</div><h3>Seeding — Tier Groups</h3><p>Begins Round 9. Tier splits determined by Qualifying ranking after Round 8.</p></div>';
+    return;
+  }
+  var tNames=['Premiership','Championship','State Cup'];
+  var tBadges=['bt1','bt2','bt3'];
+  var tSizes=[T1,T2-T1,COACHES.length-T2];
+  var tabs=[1,2,3].map(function(n){
+    var a=n===p2ActiveTier;
+    return'<button onclick="setP2Tier('+n+')" style="display:flex;align-items:center;gap:.4rem;padding:.45rem .85rem;border-radius:8px;border:1px solid '+(a?'var(--border)':'transparent')+';background:'+(a?'var(--surface2)':'transparent')+';cursor:pointer;font-size:.82rem;font-weight:'+(a?'700':'500')+';color:'+(a?'var(--text)':'var(--muted)')+'"><span class="badge '+tBadges[n-1]+'" style="font-size:.62rem;padding:.15rem .45rem">T'+n+'</span>'+tNames[n-1]+' <span style="color:var(--muted);font-size:.75rem">('+tSizes[n-1]+')</span></button>';
+  }).join('');
+  var tierCoaches=COACHES.filter(function(c){return c.tier===p2ActiveTier;}).sort(function(a,b){return(a.seedRank||9999)-(b.seedRank||9999);});
+  var rows=tierCoaches.map(function(c){
+    var tr=c.tradesRemaining;
+    return'<tr onclick="showCoach('+c.rank+')">'
+      +'<td class="trk">'+(c.seedRank&&c.seedRank<=3?medals[c.seedRank-1]:c.seedRank||'—')+'</td>'
+      +'<td><div class="tco">'+esc(c.coach)+vipTag(c)+'</div><div class="tte">'+esc(c.team)+'</div></td>'
+      +'<td style="text-align:center;vertical-align:middle;padding-bottom:4px"><div class="tsc hi">'+(c.seedScore||0)+'</div></td>'
+      +'<td style="font-size:.82rem;font-weight:700;color:var(--text)">'+fmtWealth(c)+'</td>'
+      +'<td style="font-size:.82rem;font-weight:700;color:'+tradeClr(tr)+';text-align:center">'+(tr!==undefined?tr:'—')+'</td>'
+      +'</tr>';
+  }).join('');
+  el.innerHTML=
+    '<div class="sh" style="margin-top:0"><div class="sht">Seeding — Tier Groups</div><div class="shl"></div><span class="badge bt2" style="font-size:.68rem">Rounds 9–18</span></div>'
+    +'<p style="color:var(--muted);font-size:.875rem;margin-bottom:1.25rem">Standings from Round 9. Points reset to zero at R9. Click any row for coach profile.</p>'
+    +'<div style="display:flex;gap:.4rem;margin-bottom:1.25rem;flex-wrap:wrap">'+tabs+'</div>'
+    +'<div class="tw"><div class="tw-scroll"><table id="p2t">'
+    +'<colgroup><col style="width:38px"><col><col style="width:72px"><col style="width:88px"><col style="width:60px"></colgroup>'
+    +'<thead><tr><th>#</th><th>Coach</th><th style="text-align:center">Score</th><th>Value</th><th>Trades</th></tr></thead>'
+    +'<tbody>'+rows+'</tbody>'
+    +'</table></div></div>';
+}
+window.setP2Tier=function(t){p2ActiveTier=t;dP2();};
 
 // ── VIP TABLE ─────────────────────────────────────────────────────────────
 var vipp=1,VIPN=50,vipl=VIP_LIST.slice();
@@ -950,7 +1004,7 @@ function sparklineHtml(c){
 
 
 // ── INIT ──────────────────────────────────────────────────────────────────
-renderOvTop();renderOvVip();renderPodcasters();renderSched();dP1();dVip();dC2();buildPlList();fPlayers();renderTradeSummary();
+renderOvTop();renderOvVip();renderPodcasters();renderSched();dP1();dP2();dVip();dC2();buildPlList();fPlayers();renderTradeSummary();
 // Dismiss loading overlay now that data is rendered
 (function(){var lo=document.getElementById('app-loading');if(lo)lo.style.display='none';})();
 
@@ -1136,7 +1190,7 @@ function closePlModal(){
   var plBadge=document.getElementById('pl-round-badge');
   if(plBadge) plBadge.textContent='Round '+CUR+' data';
   var standingsSub=document.getElementById('standings-sub');
-  if(standingsSub) standingsSub.textContent='Standings after Round '+CUR+'. Click any row for coach profile.';
+  if(standingsSub) standingsSub.textContent=CUR>=9?'Final Qualifying Standings — locked after Round 8. Click any row for coach profile.':'Standings after Round '+CUR+'. Click any row for coach profile.';
 })();
 
 // ── TAP TOOLTIPS ──────────────────────────────────────────────────────────
