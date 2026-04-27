@@ -255,8 +255,11 @@ window.showCoach = function showCoach(rank){
     rankHistoryHtml(c)+
     podHtml(c)+
     (function(){
-      if(CUR<=8){
+      if(CUR<8){
         return'<div class="cvsec"><div class="cvsect">Main Season — Qualifying</div><p style="font-size:.875rem;color:var(--muted);line-height:1.65">Ranked <strong style="color:var(--text)">#'+rank+'</strong> of '+COACHES.length+'. Projected into <strong style="color:var(--text)">'+tname+'</strong> for Seeding. '+buf+' Qualifying runs until Round 8.</p></div>';
+      }
+      if(CUR===8){
+        return'<div class="cvsec"><div class="cvsect">Main Season — Qualifying</div><p style="font-size:.875rem;color:var(--muted);line-height:1.65">Ranked <strong style="color:var(--text)">#'+rank+'</strong> of '+COACHES.length+'. Qualified into <strong style="color:var(--text)">'+tname+'</strong> after Round 8.</p></div>';
       }
       var qr=c.qualifyingRank||rank;
       var ts=t===1?T1:t===2?(T2-T1):(COACHES.length-T2);
