@@ -972,6 +972,16 @@ td{padding:.6rem 1rem;vertical-align:middle;}
 .error-retry{background:rgba(248,113,113,.2);border:1px solid rgba(248,113,113,.4);border-radius:6px;padding:.2rem .65rem;color:var(--red);font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:600;cursor:pointer;transition:background .15s;}
 .error-retry:hover{background:rgba(248,113,113,.35);}
 
+/* ── Round update banner ─────────────────────────────────────── */
+#round-update-banner{display:none;background:linear-gradient(90deg,rgba(240,180,41,.18),rgba(240,180,41,.10));border-bottom:1px solid rgba(240,180,41,.45);color:var(--accent);font-size:.9rem;font-weight:600;padding:.7rem 1.25rem;text-align:center;gap:.85rem;align-items:center;justify-content:center;letter-spacing:.01em;}
+#round-update-banner.visible{display:flex;}
+.rub-msg{flex:0 1 auto;}
+.rub-btn{background:var(--accent);border:none;border-radius:6px;padding:.35rem .85rem;color:#000;font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:700;cursor:pointer;transition:filter .15s;}
+.rub-btn:hover{filter:brightness(1.1);}
+.rub-close{background:none;border:none;color:var(--muted);font-size:1.15rem;line-height:1;cursor:pointer;padding:0 .25rem;}
+.rub-close:hover{color:var(--text);}
+@media(max-width:520px){#round-update-banner{font-size:.82rem;padding:.6rem .85rem;gap:.6rem;}.rub-btn{padding:.3rem .65rem;font-size:.78rem;}}
+
 /* ── Bye Planner player filter ───────────────────────────────── */
 #pf-results .pf-row{padding:.4rem 0;border-bottom:1px solid var(--border);font-size:.8rem;}
 #pf-results .pf-row-header{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;}

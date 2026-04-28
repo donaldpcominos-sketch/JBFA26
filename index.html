@@ -31,6 +31,13 @@
   <button class="error-retry" onclick="location.reload()">Retry</button>
 </div>
 
+<!-- Round update banner — shown when a newer round is detected on origin -->
+<div id="round-update-banner" role="alert">
+  <span class="rub-msg">A newer round is now available</span>
+  <button class="rub-btn" onclick="hardRefresh()">Update now</button>
+  <button class="rub-close" onclick="document.getElementById('round-update-banner').classList.remove('visible')" aria-label="Dismiss">×</button>
+</div>
+
 <header>
   <div class="hdr">
     <div class="logo-wrap" onclick="goHome()">

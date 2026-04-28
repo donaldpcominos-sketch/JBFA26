@@ -54,7 +54,14 @@ function fetchLeagueData() {
     .then(function(data) {
       if (typeof window._initApp === 'function') window._initApp(data);
       if (typeof window._initPricePredictor === 'function') window._initPricePredictor(data.beModel || null);
-      
+
+      var loadedRound = data && data.meta && data.meta.currentRound;
+      if (loadedRound) {
+        window._loadedRound = loadedRound;
+        // Side-channel freshness check — bypasses any stale SW/HTTP cache
+        // because the unique query string can never match a cached entry.
+        setTimeout(checkForNewerRound, 1500);
+      }
     })
     .catch(function(err) {
       console.error('Remote fetch failed: ' + err);
@@ -63,4 +70,45 @@ function fetchLeagueData() {
       var lo=document.getElementById('app-loading');
       if(lo) lo.style.display='none';
     });
+}
+
+function checkForNewerRound() {
+  fetch('./data.json?freshcheck=' + Date.now(), { cache: 'no-store' })
+    .then(function(r) { return r.ok ? r.json() : null; })
+    .then(function(fresh) {
+      if (!fresh) return;
+      var freshRound = fresh.meta && fresh.meta.currentRound;
+      if (freshRound && window._loadedRound && freshRound > window._loadedRound) {
+        var banner = document.getElementById('round-update-banner');
+        if (banner) {
+          var msg = banner.querySelector('.rub-msg');
+          if (msg) msg.textContent = 'Round ' + freshRound + ' is now available';
+          banner.classList.add('visible');
+        }
+      }
+    })
+    .catch(function() {});
+}
+
+function hardRefresh() {
+  var done = function() {
+    // Cache-bust the reload URL too, in case the browser tries to serve
+    // the HTML itself from disk cache on iOS PWA.
+    var u = new URL(window.location.href);
+    u.searchParams.set('_r', Date.now());
+    window.location.replace(u.toString());
+  };
+  var p = Promise.resolve();
+  if ('caches' in window) {
+    p = caches.keys().then(function(keys) {
+      return Promise.all(keys.map(function(k) { return caches.delete(k); }));
+    }).catch(function() {});
+  }
+  p.then(function() {
+    if ('serviceWorker' in navigator) {
+      return navigator.serviceWorker.getRegistrations().then(function(regs) {
+        return Promise.all(regs.map(function(r) { return r.unregister(); }));
+      }).catch(function() {});
+    }
+  }).then(done, done);
 }
