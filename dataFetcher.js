@@ -42,7 +42,7 @@ function setupFeedbackForm() {
 }
 
 function getDataUrl() {
-  return './data.json';
+  return './data.json?v=' + Date.now();
 }
 
 function fetchLeagueData() {

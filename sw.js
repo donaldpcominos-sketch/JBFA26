@@ -1,4 +1,4 @@
-var CACHE = 'jbfa-v2';
+var CACHE = 'jbfa-v3';
 var APP_SHELL = [
   './',
   './index.html',
@@ -38,38 +38,26 @@ self.addEventListener('activate', function(e) {
 self.addEventListener('fetch', function(e) {
   var url = new URL(e.request.url);
 
-  // Stale-while-revalidate for data.json:
-  // Respond instantly from cache, then fetch fresh in background.
-  // If the fresh copy differs, notify all open tabs.
+  // Network-first for data.json — bypass the HTTP cache so we always
+  // see the freshest copy from origin. Fall back to the SW cache only
+  // when offline / network fails. Normalize the cache key so cache-bust
+  // query strings (?v=timestamp) don't fragment the offline fallback.
   if (url.pathname.endsWith('data.json')) {
+    var cacheKey = new Request(url.origin + url.pathname);
     e.respondWith(
-      caches.open(CACHE).then(function(cache) {
-        return cache.match(e.request).then(function(cached) {
-          var fetchPromise = fetch(e.request.clone()).then(function(fresh) {
-            if (cached) {
-              // Compare to detect round updates
-              Promise.all([cached.clone().text(), fresh.clone().text()])
-                .then(function(texts) {
-                  if (texts[0] !== texts[1]) {
-                    self.clients.matchAll({ includeUncontrolled: true }).then(function(clients) {
-                      clients.forEach(function(c) {
-                        c.postMessage({ type: 'DATA_UPDATED' });
-                      });
-                    });
-                  }
-                })
-                .catch(function() {});
-            }
-            cache.put(e.request, fresh.clone());
-            return fresh;
-          }).catch(function() {
-            return cached;
-          });
-
-          // Serve cached immediately if available, otherwise wait for network
-          return cached || fetchPromise;
-        });
-      })
+      fetch(e.request, { cache: 'no-store' })
+        .then(function(fresh) {
+          if (fresh && fresh.status === 200) {
+            var clone = fresh.clone();
+            caches.open(CACHE).then(function(cache) {
+              cache.put(cacheKey, clone);
+            });
+          }
+          return fresh;
+        })
+        .catch(function() {
+          return caches.match(cacheKey);
+        })
     );
     return;
   }
