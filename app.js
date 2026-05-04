@@ -44,11 +44,12 @@ function vipTag(c){
 }
 function tradeClr(tr){return tr===undefined||tr===null?'var(--muted)':tr>=20?'var(--green)':tr>=10?'var(--accent)':'var(--red)';}
 function getTier(r){return r<=T1?1:r<=T2?2:3;}
-function tb(r,l){
-  var t=getTier(r),cls=['bt1','bt2','bt3'][t-1];
+function tb(r,l,tOverride){
+  var t=tOverride||getTier(r),cls=['bt1','bt2','bt3'][t-1];
   var lbl=l?['Tier 1 — Premiership','Tier 2 — Championship','Tier 3 — State Cup'][t-1]:['T1','T2','T3'][t-1];
   return '<span class="badge '+cls+'">'+lbl+'</span>';
 }
+function lockedTier(c,fallbackRank){return(CUR>=9&&c&&c.tier)?c.tier:getTier(fallbackRank!==undefined?fallbackRank:(c?c.rank:0));}
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function ini(n){return n.split(' ').map(function(w){return w[0]||''}).join('').slice(0,2).toUpperCase();}
 function winnings(coachName){
@@ -215,7 +216,7 @@ window.showCoach = function showCoach(rank){
       :isEH
       ?'<span class="badge" style="background:rgba(248,113,113,.15);color:var(--red);border:1px solid rgba(248,113,113,.3)">✗ Eliminated R'+(c.eliminatedRound||'')+'</span>'
       :'<span class="badge balive">✓ Survivor: Alive</span>';
-    return '<div class="cvtags">'+tb(rank,true)+survH+'<span class="badge" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.2)">#'+rank+' of '+COACHES.length+'</span>'+(c.vipEntry?'<span class="badge bvip">★ VIP Entry</span>':'')+'</div>';
+    return '<div class="cvtags">'+tb(rank,true,t)+survH+'<span class="badge" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.2)">#'+rank+' of '+COACHES.length+'</span>'+(c.vipEntry?'<span class="badge bvip">★ VIP Entry</span>':'')+'</div>';
   })()+
       '</div>'+
     '</div>'+
@@ -234,8 +235,14 @@ window.showCoach = function showCoach(rank){
           '<div class="cvstat"><div class="cvsl">Overall Rank</div><div class="cvsv" style="color:var(--accent)">#'+rank+'</div><div style="font-size:.68rem;color:var(--muted)">of '+COACHES.length+'</div></div>'+
           '<div class="cvstat"><div class="cvsl">Total Points</div><div class="cvsv" style="color:var(--text)">'+(c.total||curRoundScore)+'</div></div>'+
           (CUR<=8
-            ?'<div class="cvstat"><div class="cvsl">Proj. Seeding</div><div class="cvsv" style="font-size:.9rem;padding-top:.25rem">'+tb(rank,true)+'</div></div>'
-            :(function(){var ts=t===1?T1:t===2?(T2-T1):(COACHES.length-T2);return'<div class="cvstat"><div class="cvsl">Seed Rank</div><div class="cvsv" style="color:var(--accent)">#'+(c.seedRank||'—')+'</div><div style="font-size:.68rem;color:var(--muted)">of '+ts+'</div></div>';}()))+
+            ?'<div class="cvstat"><div class="cvsl">Proj. Seeding</div><div class="cvsv" style="font-size:.9rem;padding-top:.25rem">'+tb(rank,true,t)+'</div></div>'
+            :(function(){
+                var ts=t===1?T1:t===2?(T2-T1):(COACHES.length-T2);
+                var leader=COACHES.filter(function(x){return x.tier===t;}).sort(function(a,b){return(a.seedRank||9999)-(b.seedRank||9999);})[0];
+                var behind=(leader&&c.seedRank&&c.seedRank>1)?((leader.seedScore||0)-(c.seedScore||0)):0;
+                var behindStr=c.seedRank===1?'Tier leader':(behind>0?'−'+behind+' pts to #1':'—');
+                return'<div class="cvstat"><div class="cvsl">Seed Rank</div><div class="cvsv" style="color:var(--accent)">#'+(c.seedRank||'—')+'</div><div style="font-size:.68rem;color:var(--muted)">of '+ts+'</div><div style="font-size:.68rem;color:'+(c.seedRank===1?'var(--green)':'var(--muted)')+';margin-top:.15rem;font-weight:600">'+behindStr+'</div></div>';
+              }()))+
         '</div>'+
       '</div>'+
       '<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:.85rem 1rem;">'+
@@ -299,7 +306,7 @@ gs.addEventListener('input',function(){
   sd.innerHTML=hits.map(function(c){
     return '<div class="sdi" onclick="document.getElementById(\'gs\').value=\'\';document.getElementById(\'sdrop\').style.display=\'none\';showCoach('+c.rank+')">'+
       '<div><div class="sdi-name">'+esc(c.coach)+vipTag(c)+'</div><div class="sdi-team">'+esc(c.team)+'</div></div>'+
-      '<div style="display:flex;gap:.3rem;align-items:center">'+tb(c.rank,false)+'</div>'+
+      '<div style="display:flex;gap:.3rem;align-items:center">'+tb(c.rank,false,lockedTier(c))+'</div>'+
       '</div>';
   }).join('');
   sd.style.display='block';
@@ -486,6 +493,11 @@ function dP1(){
 
 // ── SEEDING TABLE (Phase 2) ───────────────────────────────────────────────
 var p2ActiveTier=1;
+var TIER_PRIZES=[
+  {name:'Premiership',first:'$400',second:'$150 + JBFA Hat',badge:'bt1',colorVar:'var(--t1)'},
+  {name:'Championship',first:'$200',second:'2027 JBFA Legends Pack',badge:'bt2',colorVar:'var(--t2)'},
+  {name:'State Cup',first:'$100',second:'JBFA Hat & T-Shirt',badge:'bt3',colorVar:'var(--t3)'}
+];
 function dP2(){
   var el=document.getElementById('panel-p2');
   if(!el) return;
@@ -496,27 +508,58 @@ function dP2(){
   var tNames=['Premiership','Championship','State Cup'];
   var tBadges=['bt1','bt2','bt3'];
   var tSizes=[T1,T2-T1,COACHES.length-T2];
+
+  // Cash-position cards: 1st & 2nd of each tier
+  var cashCards=[1,2,3].map(function(n){
+    var pz=TIER_PRIZES[n-1];
+    var sorted=COACHES.filter(function(c){return c.tier===n;}).sort(function(a,b){return(a.seedRank||9999)-(b.seedRank||9999);});
+    var first=sorted[0],second=sorted[1];
+    function row(c,place,prize){
+      if(!c) return '<div style="display:flex;justify-content:space-between;align-items:center;padding:.45rem .6rem;border-radius:6px;background:rgba(255,255,255,.02)"><div style="font-size:.78rem;color:var(--muted)">'+place+' — —</div><div style="font-size:.78rem;font-weight:700;color:var(--muted)">'+prize+'</div></div>';
+      return '<div onclick="showCoach('+c.rank+')" style="display:flex;justify-content:space-between;align-items:center;gap:.5rem;padding:.5rem .6rem;border-radius:6px;background:rgba(255,255,255,.03);cursor:pointer">'
+        +'<div style="min-width:0;flex:1">'
+          +'<div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700">'+place+'</div>'
+          +'<div style="font-size:.85rem;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(c.coach)+'</div>'
+          +'<div style="font-size:.7rem;color:var(--muted)">'+(c.seedScore||0)+' pts</div>'
+        +'</div>'
+        +'<div style="font-size:.82rem;font-weight:700;color:'+pz.colorVar+';text-align:right;white-space:nowrap">'+prize+'</div>'
+      +'</div>';
+    }
+    return '<div class="prize-card" style="border-top:3px solid '+pz.colorVar+';padding:.85rem">'
+      +'<div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.6rem"><span class="badge '+pz.badge+'" style="font-size:.62rem;padding:.15rem .45rem">T'+n+'</span><div style="font-weight:700;font-size:.95rem">'+pz.name+'</div></div>'
+      +'<div style="display:flex;flex-direction:column;gap:.4rem">'
+        +row(first,'🥇 1st',pz.first)
+        +row(second,'🥈 2nd',pz.second)
+      +'</div>'
+    +'</div>';
+  }).join('');
+
   var tabs=[1,2,3].map(function(n){
     var a=n===p2ActiveTier;
     return'<button onclick="setP2Tier('+n+')" style="display:flex;align-items:center;gap:.4rem;padding:.45rem .85rem;border-radius:8px;border:1px solid '+(a?'var(--border)':'transparent')+';background:'+(a?'var(--surface2)':'transparent')+';cursor:pointer;font-size:.82rem;font-weight:'+(a?'700':'500')+';color:'+(a?'var(--text)':'var(--muted)')+'"><span class="badge '+tBadges[n-1]+'" style="font-size:.62rem;padding:.15rem .45rem">T'+n+'</span>'+tNames[n-1]+' <span style="color:var(--muted);font-size:.75rem">('+tSizes[n-1]+')</span></button>';
   }).join('');
   var tierCoaches=COACHES.filter(function(c){return c.tier===p2ActiveTier;}).sort(function(a,b){return(a.seedRank||9999)-(b.seedRank||9999);});
+  var leaderScore=tierCoaches[0]?(tierCoaches[0].seedScore||0):0;
   var rows=tierCoaches.map(function(c){
     var tr=c.tradesRemaining;
+    var behind=c.seedRank===1?'—':'−'+(leaderScore-(c.seedScore||0));
     return'<tr onclick="showCoach('+c.rank+')">'
       +'<td class="trk">'+(c.seedRank&&c.seedRank<=3?medals[c.seedRank-1]:c.seedRank||'—')+'</td>'
       +'<td><div class="tco">'+esc(c.coach)+vipTag(c)+'</div><div class="tte">'+esc(c.team)+'</div></td>'
-      +'<td style="text-align:center;vertical-align:middle;padding-bottom:4px"><div class="tsc hi">'+(c.seedScore||0)+'</div></td>'
+      +'<td style="text-align:center;vertical-align:middle;padding-bottom:4px"><div class="tsc hi">'+(c.seedScore||0)+'</div><div style="font-size:.68rem;color:var(--muted);margin-top:2px">'+behind+'</div></td>'
       +'<td style="font-size:.82rem;font-weight:700;color:var(--text)">'+fmtWealth(c)+'</td>'
       +'<td style="font-size:.82rem;font-weight:700;color:'+tradeClr(tr)+';text-align:center">'+(tr!==undefined?tr:'—')+'</td>'
       +'</tr>';
   }).join('');
   el.innerHTML=
     '<div class="sh" style="margin-top:0"><div class="sht">Seeding — Tier Groups</div><div class="shl"></div><span class="badge bt2" style="font-size:.68rem">Rounds 9–18</span></div>'
-    +'<p style="color:var(--muted);font-size:.875rem;margin-bottom:1.25rem">Standings from Round 9. Points reset to zero at R9. Click any row for coach profile.</p>'
-    +'<div style="display:flex;gap:.4rem;margin-bottom:1.25rem;flex-wrap:wrap">'+tabs+'</div>'
+    +'<p style="color:var(--muted);font-size:.875rem;margin-bottom:1rem">Standings from Round 9. Points reset to zero at R9. Click any row for coach profile.</p>'
+    +'<div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.5rem">Currently in cash-prize positions <span style="color:var(--muted);font-weight:500;text-transform:none;letter-spacing:0">— not yet final, prizes awarded after R18</span></div>'
+    +'<div class="prizes-grid" style="margin-bottom:1.5rem">'+cashCards+'</div>'
+    +'<div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.5rem">Full tier standings</div>'
+    +'<div style="display:flex;gap:.4rem;margin-bottom:1rem;flex-wrap:wrap">'+tabs+'</div>'
     +'<div class="tw"><div class="tw-scroll"><table id="p2t">'
-    +'<colgroup><col style="width:38px"><col><col style="width:72px"><col style="width:88px"><col style="width:60px"></colgroup>'
+    +'<colgroup><col style="width:38px"><col><col style="width:88px"><col style="width:88px"><col style="width:60px"></colgroup>'
     +'<thead><tr><th>#</th><th>Coach</th><th style="text-align:center">Score</th><th>Value</th><th>Trades</th></tr></thead>'
     +'<tbody>'+rows+'</tbody>'
     +'</table></div></div>';
