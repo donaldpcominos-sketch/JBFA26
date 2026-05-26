@@ -14,7 +14,11 @@
       "Bash(git add:*)",
       "Bash(git commit -m ':*)",
       "Bash(python3 -c \"import json; d=json.load\\(open\\('C:/Users/donal/Desktop/JBFA/data.json'\\)\\); print\\(json.dumps\\(d['meta'], indent=2\\)\\)\")",
-      "Bash(python -c \"import json; d=json.load\\(open\\('C:/Users/donal/Desktop/JBFA/data.json'\\)\\); c=[x for x in d['coaches'] if 'Oskar' in x.get\\('name',''\\)]; print\\(json.dumps\\(c,indent=2\\)[:2000]\\)\")"
+      "Bash(python -c \"import json; d=json.load\\(open\\('C:/Users/donal/Desktop/JBFA/data.json'\\)\\); c=[x for x in d['coaches'] if 'Oskar' in x.get\\('name',''\\)]; print\\(json.dumps\\(c,indent=2\\)[:2000]\\)\")",
+      "Bash(CURRENT_ROUND=11 python *)",
+      "Bash(PYTHONIOENCODING=utf-8 CURRENT_ROUND=11 python *)",
+      "Bash(powershell *)",
+      "Bash(python extract_be_history.py)"
     ]
   }
 }

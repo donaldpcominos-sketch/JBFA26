@@ -185,7 +185,7 @@ def merge_and_save(players, fc_stats):
 # ── WRITE CSV ─────────────────────────────────────────────────────────────────
 
 def _i(d, *keys):
-    """Safe int lookup — tries both str and int keys."""
+    """Safe int lookup — tries both str and int keys. Returns None if value is non-numeric."""
     for k in keys:
         v = (d or {}).get(str(k))
         if v is None:
@@ -194,7 +194,7 @@ def _i(d, *keys):
             try:
                 return int(v)
             except (TypeError, ValueError):
-                return v
+                return None
     return None
 
 def write_csv(merged):

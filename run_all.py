@@ -146,7 +146,7 @@ def main() -> None:
     print("-" * 68)
 
     cookie = input("Paste cookie: ").strip()
-    round_value = prompt_with_default("Current round", default_round)
+    round_value = prompt_with_default("Round to pull stats for", default_round)
 
     env = os.environ.copy()
     env["CURRENT_ROUND"] = round_value

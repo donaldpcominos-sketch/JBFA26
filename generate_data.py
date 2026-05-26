@@ -306,10 +306,12 @@ if os.path.exists("players.json"):
         fc_bes = fc.get("break_evens", {})
         api_be = fc_bes.get(str(BE_ROUND)) or fc_bes.get(BE_ROUND)
 
-        if api_be is not None:
-            be = int(api_be)
-        else:
-            # Fallback: compute from rolling window formula
+        try:
+            be = int(api_be) if api_be is not None else None
+        except (TypeError, ValueError):
+            be = None
+        if be is None:
+            # Fallback: compute from rolling window formula (also handles BYE strings)
             be = compute_break_even(display_price, games_played, ordered_scores)
 
         # ── Price history with per-round BEs ──────────────────────────────
@@ -323,13 +325,13 @@ if os.path.exists("players.json"):
 
             # Historical BE: use API if available, else rolling-window formula
             hist_api_be = fc_bes.get(str(r_int)) or fc_bes.get(r_int)
-            if hist_api_be is not None:
-                hist_be = int(hist_api_be)
-            elif cumulative_scores:
+            try:
+                hist_be = int(hist_api_be) if hist_api_be is not None else None
+            except (TypeError, ValueError):
+                hist_be = None
+            if hist_be is None and cumulative_scores:
                 hist_be = compute_break_even(round_price, len(cumulative_scores),
                                              cumulative_scores)
-            else:
-                hist_be = None
 
             price_history.append({
                 "round":     r_int,
@@ -366,7 +368,11 @@ master_ids = set(master["Team ID"].astype(int).tolist())
 scrapes_full  = {}
 scrapes_dedup = {}
 for r in range(1, CURRENT_ROUND + 1):
-    df = pd.read_csv(f"JBFA_R{r}_Master_Scrape.csv")
+    csv_path = f"JBFA_R{r}_Master_Scrape.csv"
+    if not os.path.exists(csv_path):
+        print(f"  Skipping R{r} — no master scrape CSV found (bye round?)")
+        continue
+    df = pd.read_csv(csv_path)
     scrapes_full[r]  = df[df["team_id"].isin(master_ids)]
     scrapes_dedup[r] = scrapes_full[r].drop_duplicates("team_id", keep="first")
 
@@ -582,6 +588,8 @@ for tid in master_ids:
 
 pname_map = {}
 for r in range(1, CURRENT_ROUND + 1):
+    if r not in scrapes_full:
+        continue
     for _, row in (
         scrapes_full[r][["player_id", "player_name", "player_cost"]]
         .drop_duplicates("player_id").iterrows()
@@ -595,6 +603,8 @@ for r in range(1, CURRENT_ROUND + 1):
 # Scrape-seen IDs (numeric) — ownership/trade maps are keyed by these
 scrape_pids_int = set()
 for r in range(1, CURRENT_ROUND + 1):
+    if r not in scrapes_full:
+        continue
     scrape_pids_int |= set(int(p) for p in scrapes_full[r]["player_id"].unique())
 
 # Full universe (string-keyed for output) — union of all sources
