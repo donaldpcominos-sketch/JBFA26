@@ -593,42 +593,38 @@ function dVip(){
 }
 
 // ── C2 ────────────────────────────────────────────────────────────────────
-var c2p=1,C2N=50,c2l=SURVIVOR_COACHES.slice().sort(function(a,b){return (a['r'+CUR]||0)-(b['r'+CUR]||0);});
+var c2p=1,C2N=50;
+var _c2Alive=SURVIVOR_COACHES.filter(function(c){return c.survivorStatus==='alive';});
+var c2l=_c2Alive.slice().sort(function(a,b){return (a.rank||0)-(b.rank||0);});
 function fC2(){
   var q=document.getElementById('c2fi').value.toLowerCase();
-  c2l=SURVIVOR_COACHES.filter(function(c){return c.coach.toLowerCase().indexOf(q)>=0||c.team.toLowerCase().indexOf(q)>=0;}).sort(function(a,b){return (a['r'+CUR]||0)-(b['r'+CUR]||0);});
+  var sortEl=document.getElementById('c2sort');
+  var sort=sortEl?sortEl.value:'rank';
+  c2l=_c2Alive.filter(function(c){return c.coach.toLowerCase().indexOf(q)>=0||c.team.toLowerCase().indexOf(q)>=0;});
+  if(sort==='scoreAsc') c2l.sort(function(a,b){return (a['r'+CUR]||0)-(b['r'+CUR]||0);});
+  else if(sort==='scoreDesc') c2l.sort(function(a,b){return (b['r'+CUR]||0)-(a['r'+CUR]||0);});
+  else if(sort==='name') c2l.sort(function(a,b){return a.coach.localeCompare(b.coach);});
+  else c2l.sort(function(a,b){return (a.rank||0)-(b.rank||0);});
   c2p=1;dC2();
 }
 function dC2(){
-  var c2Body = document.getElementById('c2b');
+  var c2Body=document.getElementById('c2b');
   if(!c2Body) return;
-
-  var allSorted=c2l;
-  var totalElim=_D.coaches.filter(function(c){return c.survivorStatus==='eliminated';}).length;
-  var cutScore=_D.meta.cutScore||0;
-  var pg=allSorted.slice((c2p-1)*C2N,c2p*C2N);
-  var rows='',shownDiv=false;
+  var badge=document.getElementById('alive-count-badge');
+  if(badge) badge.textContent=_c2Alive.length+' alive';
+  var hdr=document.getElementById('c2-score-hdr');
+  if(hdr) hdr.textContent='R'+CUR+' Score';
+  var pg=c2l.slice((c2p-1)*C2N,c2p*C2N);
   var pageStart=(c2p-1)*C2N;
-
-  pg.forEach(function(c,i){
-    var globalIdx=pageStart+i;
-    var isDead=globalIdx<totalElim;
-    if(!isDead && !shownDiv){
-      shownDiv=true;
-      rows+='<tr><td colspan="4" style="text-align:center;padding:.5rem 1rem;background:rgba(52,211,153,.06);border-top:2px solid rgba(52,211,153,.3);border-bottom:1px solid rgba(52,211,153,.2);font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--green)">✓ Safe — '+(_D.meta.aliveAfterLastRound)+' Coaches Alive</td></tr>';
-    }
-    var badge=isDead
-      ?'<span class="badge" style="background:rgba(248,113,113,.15);color:var(--red);border:1px solid rgba(248,113,113,.3)">✗ Eliminated R'+(c.eliminatedRound||'?')+'</span>'
-      :'<span class="badge balive">✓ Alive</span>';
-    var rowStyle=isDead?'opacity:.7;':'';
-    rows+='<tr onclick="showCoach('+c.rank+')" style="'+rowStyle+'">'+
-      '<td class="tsc" style="color:'+(isDead?'var(--red)':'var(--text)')+'">'+( c['r'+CUR]||'—')+'</td>'+
-      '<td><div class="tco">'+esc(c.coach)+vipTag(c)+'</div><div class="tte">'+esc(c.team)+'</div></td>'+
-      '<td>'+badge+'</td>'+
-      '</tr>';
-  });
-
-  c2Body.innerHTML=rows;
+  var rows=pg.map(function(c,i){
+    return '<tr onclick="showCoach('+c.rank+')" style="cursor:pointer;border-bottom:1px solid var(--border)">'
+      +'<td style="padding:.4rem .6rem;font-size:.8rem;color:var(--muted);width:36px">'+(pageStart+i+1)+'</td>'
+      +'<td style="padding:.4rem .6rem"><div class="tco">'+esc(c.coach)+vipTag(c)+'</div><div class="tte">'+esc(c.team)+'</div></td>'
+      +'<td style="padding:.4rem .6rem;font-size:.85rem;font-weight:600;text-align:right;color:var(--muted)">#'+(c.rank||'—')+'</td>'
+      +'<td style="padding:.4rem .6rem;font-size:.9rem;font-weight:700;text-align:right;color:var(--green)">'+(c['r'+CUR]||'—')+'</td>'
+      +'</tr>';
+  }).join('');
+  c2Body.innerHTML=rows||'<tr><td colspan="4" style="padding:1rem;text-align:center;color:var(--muted)">No coaches found.</td></tr>';
   dPager('c2pg',Math.ceil(c2l.length/C2N),c2p,function(p){c2p=p;dC2();});
 }
 
