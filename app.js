@@ -593,7 +593,6 @@ function dVip(){
 }
 
 // ── C2 ────────────────────────────────────────────────────────────────────
-var c2p=1,C2N=50;
 var _c2Alive=SURVIVOR_COACHES.filter(function(c){return c.survivorStatus==='alive';});
 var c2l=_c2Alive.slice().sort(function(a,b){return (a.rank||0)-(b.rank||0);});
 function fC2(){
@@ -605,7 +604,7 @@ function fC2(){
   else if(sort==='scoreDesc') c2l.sort(function(a,b){return (b['r'+CUR]||0)-(a['r'+CUR]||0);});
   else if(sort==='name') c2l.sort(function(a,b){return a.coach.localeCompare(b.coach);});
   else c2l.sort(function(a,b){return (a.rank||0)-(b.rank||0);});
-  c2p=1;dC2();
+  dC2();
 }
 function dC2(){
   var c2Body=document.getElementById('c2b');
@@ -614,18 +613,15 @@ function dC2(){
   if(badge) badge.textContent=_c2Alive.length+' alive';
   var hdr=document.getElementById('c2-score-hdr');
   if(hdr) hdr.textContent='R'+CUR+' Score';
-  var pg=c2l.slice((c2p-1)*C2N,c2p*C2N);
-  var pageStart=(c2p-1)*C2N;
-  var rows=pg.map(function(c,i){
+  var rows=c2l.map(function(c,i){
     return '<tr onclick="showCoach('+c.rank+')" style="cursor:pointer;border-bottom:1px solid var(--border)">'
-      +'<td style="padding:.4rem .6rem;font-size:.8rem;color:var(--muted);width:36px">'+(pageStart+i+1)+'</td>'
+      +'<td style="padding:.4rem .6rem;font-size:.8rem;color:var(--muted);width:36px">'+(i+1)+'</td>'
       +'<td style="padding:.4rem .6rem"><div class="tco">'+esc(c.coach)+vipTag(c)+'</div><div class="tte">'+esc(c.team)+'</div></td>'
       +'<td style="padding:.4rem .6rem;font-size:.85rem;font-weight:600;text-align:right;color:var(--muted)">#'+(c.rank||'—')+'</td>'
       +'<td style="padding:.4rem .6rem;font-size:.9rem;font-weight:700;text-align:right;color:var(--green)">'+(c['r'+CUR]||'—')+'</td>'
       +'</tr>';
   }).join('');
   c2Body.innerHTML=rows||'<tr><td colspan="4" style="padding:1rem;text-align:center;color:var(--muted)">No coaches found.</td></tr>';
-  dPager('c2pg',Math.ceil(c2l.length/C2N),c2p,function(p){c2p=p;dC2();});
 }
 
 // ── PAGER ─────────────────────────────────────────────────────────────────
