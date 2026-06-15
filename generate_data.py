@@ -172,7 +172,10 @@ def compute_price_next(current_price: float, score: float,
 #  No formula needed — it's already there.
 # ════════════════════════════════════════════════════════════════
 
-BE_ROUND = CURRENT_ROUND + 1   # The round we're predicting BE for
+# With stats_week+1 convention, CURRENT_ROUND already IS the upcoming round
+# (e.g. CURRENT_ROUND=15 means round 14 is the last completed round, round 15
+# is upcoming). The FC API publishes BEs keyed by the upcoming round = CURRENT_ROUND.
+BE_ROUND = CURRENT_ROUND   # The round we're predicting BE for
 
 fc_stats_data: dict = {}   # pid → full FC stats dict
 fc_exact_prices: dict = {} # pid → exact_price (float)
@@ -367,14 +370,37 @@ master_ids = set(master["Team ID"].astype(int).tolist())
 
 scrapes_full  = {}
 scrapes_dedup = {}
-for r in range(1, CURRENT_ROUND + 1):
-    csv_path = f"JBFA_R{r}_Master_Scrape.csv"
-    if not os.path.exists(csv_path):
-        print(f"  Skipping R{r} — no master scrape CSV found (bye round?)")
-        continue
-    df = pd.read_csv(csv_path)
-    scrapes_full[r]  = df[df["team_id"].isin(master_ids)]
-    scrapes_dedup[r] = scrapes_full[r].drop_duplicates("team_id", keep="first")
+
+# ── SEQUENTIAL SCRAPE→STATS MAPPING ──────────────────────────────────────────
+# The stats_week+1 convention means CURRENT_ROUND may be ahead of the last
+# completed stats round (e.g. CURRENT_ROUND=15 entered after round 14, causing
+# JBFA_R14 = round 13 data and JBFA_R15 = round 14 data when R13 was skipped).
+# Fix: count available scrape files sequentially to derive the true stats round.
+#   Files: R1, R2, ..., R12, R14, R15  →  stats rounds: 1, 2, ..., 12, 13, 14
+_available_scrape_rounds = sorted([
+    r for r in range(1, CURRENT_ROUND + 1)
+    if os.path.exists(f"JBFA_R{r}_Master_Scrape.csv")
+])
+_scrape_to_stats = {sr: i + 1 for i, sr in enumerate(_available_scrape_rounds)}
+print(f"  Scrape→stats mapping: {_scrape_to_stats}")
+
+for _scrape_r in _available_scrape_rounds:
+    _stats_r = _scrape_to_stats[_scrape_r]
+    df = pd.read_csv(f"JBFA_R{_scrape_r}_Master_Scrape.csv")
+    scrapes_full[_stats_r]  = df[df["team_id"].isin(master_ids)]
+    scrapes_dedup[_stats_r] = scrapes_full[_stats_r].drop_duplicates("team_id", keep="first")
+
+# Remap ROUND_AVGS from scrape-round keys to sequential stats-round keys
+_raw_avgs = ROUND_AVGS.copy()
+ROUND_AVGS = {
+    _scrape_to_stats[sr]: avg
+    for sr, avg in _raw_avgs.items()
+    if sr in _scrape_to_stats
+}
+
+# Reassign CURRENT_ROUND to the true number of completed stats rounds
+CURRENT_ROUND = len(_available_scrape_rounds)
+print(f"  True STATS_ROUND = {CURRENT_ROUND}  (ROUND_AVGS[{CURRENT_ROUND}] = {ROUND_AVGS.get(CURRENT_ROUND, 'MISSING')})")
 
 # R1 platform rank fix
 # R1 platform rank fix
@@ -395,6 +421,16 @@ else:
     print("No trades state file found — starting fresh from R1")
 
 already_counted_up_to = trades_state["lastRound"]
+
+# If trades_state was saved under the old inflated scrape-round numbering
+# (e.g. lastRound=15 when true STATS_ROUND=14), reset and reprocess so
+# the round keys stored in byTeam match the corrected stats-round scheme.
+if already_counted_up_to > CURRENT_ROUND:
+    print(f"  NOTE: trades_state.lastRound={already_counted_up_to} > STATS_ROUND={CURRENT_ROUND}. "
+          "Resetting to reprocess with correct stats-round keys.")
+    trades_state = {"lastRound": 0, "byTeam": {}}
+    already_counted_up_to = 0
+
 rounds_to_process = range(max(2, already_counted_up_to + 1), CURRENT_ROUND + 1)
 
 for r in rounds_to_process:
@@ -737,6 +773,7 @@ top_coach = max(coaches, key=lambda c: c["scores"].get(cur_rkey, 0))
 output = {
     "meta": {
         "currentRound":          CURRENT_ROUND,
+        "statsRound":            CURRENT_ROUND,  # same: sequential remapping resolved the offset
         "roundAvg":              ROUND_AVGS[CURRENT_ROUND],
         "roundAvgs":             ROUND_AVGS,
         "totalCoaches":          len(coaches),
@@ -774,9 +811,15 @@ compact = json.dumps(output, separators=(",", ":"))
 with open("data.json", "w") as f:
     f.write(compact)
 
-print(
-    f"R{CURRENT_ROUND} | {len(coaches)} coaches | {alive_count} alive | "
-    f"cut: {cut_score} | top: {top_coach['scores'].get(cur_rkey, 0)} ({top_coach['coach']})"
-)
+try:
+    print(
+        f"R{CURRENT_ROUND} | {len(coaches)} coaches | {alive_count} alive | "
+        f"cut: {cut_score} | top: {top_coach['scores'].get(cur_rkey, 0)} ({top_coach['coach']})"
+    )
+except UnicodeEncodeError:
+    print(
+        f"R{CURRENT_ROUND} | {len(coaches)} coaches | {alive_count} alive | "
+        f"cut: {cut_score} | top: {top_coach['scores'].get(cur_rkey, 0)} ({top_coach['coach'].encode('ascii', 'replace').decode('ascii')})"
+    )
 print(f"Players: {len(players_global)} | BEs calculated: {len(be_values)} | "
       f"JSON: {len(compact):,} chars ({len(compact)//1024} KB)")

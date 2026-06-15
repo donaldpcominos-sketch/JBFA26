@@ -1528,6 +1528,7 @@ function _initPricePredictor(beModel) {
 // ── STATS INIT ───────────────────────────────────────────────────────────────
 // Requires PLAYERS to be populated by _initApp first.
 function _initStats() {
+  var _stickyNameObs = null;
 
   // ── Feature flag — show/hide coming-soon vs live content ─────────────────
   document.getElementById('stats-coming-soon').style.display = ENABLE_STATS ? 'none' : '';
@@ -2471,12 +2472,17 @@ function _initStats() {
       + '<input id="stats-magic-input" type="number" value="'+magic+'" min="1000" max="99999" step="500" oninput="statsRefreshPlayerCard()">'
       + '</div>';
 
+    // ── Sticky name bar prep ─────────────────────────────────────────────
+    var stickyBarHtml = '<div class="stats-sticky-name" id="stats-sticky-namebar">'+esc(sp.name)+'</div>';
+    if (_stickyNameObs) { _stickyNameObs.disconnect(); _stickyNameObs = null; }
+
     // ── Insufficient sample ───────────────────────────────────────────────
     if (!qualRounds.length) {
-      cardEl.innerHTML = headerHtml + histToggleHtml + magicHtml
+      cardEl.innerHTML = stickyBarHtml + headerHtml + histToggleHtml + magicHtml
         + '<div class="stats-empty" style="padding:1.5rem;text-align:center;color:var(--muted);font-size:.875rem;">'
         + 'Insufficient sample \u2014 no qualifying rounds at \u2265'+togMin+' min.'
         + '</div>';
+      _setupStickyNameBar(cardEl);
       return;
     }
 
@@ -2492,7 +2498,18 @@ function _initStats() {
     // ── Category stat groups (new grouped card) ───────────────────────────
     var groupsHtml = renderCategoryGroups(sp, togMin);
 
-    cardEl.innerHTML = headerHtml + histToggleHtml + magicHtml + posRankHtml + groupsHtml;
+    cardEl.innerHTML = stickyBarHtml + headerHtml + histToggleHtml + magicHtml + posRankHtml + groupsHtml;
+    _setupStickyNameBar(cardEl);
+  }
+
+  function _setupStickyNameBar(cardEl) {
+    var nameEl = cardEl.querySelector('.stats-player-header-name');
+    var stickyBar = document.getElementById('stats-sticky-namebar');
+    if (!nameEl || !stickyBar || !window.IntersectionObserver) return;
+    _stickyNameObs = new IntersectionObserver(function(entries) {
+      stickyBar.classList.toggle('visible', !entries[0].isIntersecting);
+    }, { rootMargin: '-64px 0px 0px 0px', threshold: 0 });
+    _stickyNameObs.observe(nameEl);
   }
 
   function renderGameHistory(sp, allRounds, togMin) {

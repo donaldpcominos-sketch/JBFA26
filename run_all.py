@@ -104,6 +104,27 @@ def calculate_and_store_round_avg(round_num: int) -> int:
     scrape["team_id"] = pd.to_numeric(scrape["team_id"], errors="coerce")
     scrape["round_score"] = pd.to_numeric(scrape["round_score"], errors="coerce")
 
+    # The NRL Fantasy platform zeroes out round_score for the upcoming round.
+    # When round_num is entered as stats_week+1, round_score will be all 0s.
+    # Backfill from cumulative_points difference vs the previous round's scrape.
+    prev_scrape_file = BASE_DIR / f"JBFA_R{round_num - 1}_Master_Scrape.csv"
+    if (
+        scrape["round_score"].fillna(0).eq(0).all()
+        and "cumulative_points" in scrape.columns
+        and prev_scrape_file.exists()
+    ):
+        print(f"  round_score is all zeros — backfilling from cumulative_points diff vs R{round_num - 1}")
+        prev = pd.read_csv(prev_scrape_file)
+        prev.columns = [str(c).strip() for c in prev.columns]
+        prev["team_id"] = pd.to_numeric(prev["team_id"], errors="coerce")
+        prev_cum = prev.drop_duplicates("team_id").set_index("team_id")["cumulative_points"].to_dict()
+        scrape["round_score"] = scrape.apply(
+            lambda row: row["cumulative_points"] - prev_cum.get(row["team_id"], row["cumulative_points"]),
+            axis=1,
+        ).astype(int)
+        scrape.to_csv(scrape_file, index=False)
+        print(f"  Backfill complete — {(scrape['round_score'] > 0).sum()} non-zero scores written to CSV")
+
     filtered = scrape[scrape["team_id"].notna() & scrape["round_score"].notna()].copy()
     filtered["team_id"] = filtered["team_id"].astype(int)
 
@@ -144,9 +165,17 @@ def main() -> None:
     print("Leave cookie blank only if you already maintain a cookie.txt file.")
     print("The round average is now calculated automatically after fetch_rosters.py.")
     print("-" * 68)
+    print("ROUND NUMBER NOTE:")
+    print("  Enter stats_week + 1 (one ahead of the last completed round).")
+    print("  e.g. After Round 12 is scored -> enter 13")
+    print("       After Round 13 is scored -> enter 14")
+    print("  The NRL Fantasy platform shows the upcoming round as 'current',")
+    print("  so the scrape captures that round number but contains the last")
+    print("  completed round's scores. round_score is backfilled automatically.")
+    print("-" * 68)
 
     cookie = input("Paste cookie: ").strip()
-    round_value = prompt_with_default("Round to pull stats for", default_round)
+    round_value = prompt_with_default("Enter stats_week+1 (e.g. 13 for Round 12 data)", default_round)
 
     env = os.environ.copy()
     env["CURRENT_ROUND"] = round_value

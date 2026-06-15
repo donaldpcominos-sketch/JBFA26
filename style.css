@@ -852,6 +852,23 @@ td{padding:.6rem 1rem;vertical-align:middle;}
 .stats-hist-section,.sh-row-summary,.stats-hist-header{
   min-width:0;max-width:100%;
 }
+
+/* ── Sticky player name bar (shows when header scrolls out of view) ── */
+.stats-sticky-name{
+  position:sticky;
+  top:64px;
+  z-index:150;
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  padding:.45rem 1.1rem;
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.1rem;
+  letter-spacing:.05em;
+  color:var(--text);
+  display:none;
+  margin-bottom:.5rem;
+}
+.stats-sticky-name.visible{display:block;}
 @media(max-width:420px){
   .stats-hist-header,.stats-hist-header-7,
   .sh-row-summary,.sh-row-summary-7{

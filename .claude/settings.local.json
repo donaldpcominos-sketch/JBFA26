@@ -18,7 +18,24 @@
       "Bash(CURRENT_ROUND=11 python *)",
       "Bash(PYTHONIOENCODING=utf-8 CURRENT_ROUND=11 python *)",
       "Bash(powershell *)",
-      "Bash(python extract_be_history.py)"
+      "Bash(python extract_be_history.py)",
+      "Bash(python generate_data.py)",
+      "Bash(python -c \"import os; size = os.path.getsize\\(r'C:\\\\Users\\\\donal\\\\Desktop\\\\JBFA\\\\data.json'\\); print\\(f'data.json size: {size} bytes'\\)\")",
+      "Bash(python -c \"import json; d=json.load\\(open\\('round_avgs.json'\\)\\); print\\(d\\)\")",
+      "Bash(rename \"JBFA_R13_Master_Scrape.csv\" \"JBFA_R12_Master_Scrape.csv\")",
+      "PowerShell(Rename-Item \"C:\\\\Users\\\\donal\\\\Desktop\\\\JBFA\\\\JBFA_R13_Master_Scrape.csv\" \"JBFA_R12_Master_Scrape.csv\")",
+      "Bash(python -c ' *)",
+      "PowerShell($env:PYTHONIOENCODING = \"utf-8\"; cd \"C:\\\\Users\\\\donal\\\\Desktop\\\\JBFA\"; python generate_data.py 2>&1)",
+      "Bash(python -c \"import json; f=open\\('C:/Users/donal/Desktop/JBFA/data.json'\\); data=json.load\\(f\\); print\\('currentRound:', data['meta']['currentRound']\\); print\\('roundAvg:', data['meta']['roundAvg']\\); f.close\\(\\)\")",
+      "Bash(python -c \"import sys,csv; r=csv.DictReader\\(sys.stdin\\); rows=list\\(r\\); print\\('Rows:', len\\(rows\\)\\); print\\('Cols:', r.fieldnames\\); scores=[int\\(row['round_score']\\) for row in rows if row['round_score']]; print\\('round_score sample:', scores[:5]\\); print\\('Non-zero scores:', sum\\(1 for s in scores if s > 0\\)\\)\")",
+      "Bash(git restore *)",
+      "Bash(del \"C:\\\\Users\\\\donal\\\\Desktop\\\\JBFA\\\\JBFA_R13_Master_Scrape.csv\")",
+      "Bash(python \"C:\\\\Users\\\\donal\\\\Desktop\\\\JBFA\\\\generate_data.py\")",
+      "Bash(grep -n \"getRealScore\\\\|CUR_ROUND\\\\|statsRound\\\\|curRound\\\\|cur_round\" /mnt/c/Users/donal/Desktop/JBFA/app.js | head -50)",
+      "Bash(python3 -c ' *)",
+      "Bash(grep -v \"//\\\\|archive\\\\|Weekly\\\\|backup\\\\|Week\")",
+      "Bash(ls \"C:\\\\Users\\\\donal\\\\Desktop\\\\JBFA\\\\\")",
+      "Bash(git merge *)"
     ]
   }
 }
