@@ -288,6 +288,7 @@ window.showCoach = function showCoach(rank){
   document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
   document.getElementById('cv').classList.add('open');
   window.scrollTo(0,0);
+  setTimeout(function(){document.querySelectorAll('#cvc .chart-scroll').forEach(function(el){el.scrollLeft=el.scrollWidth;});},0);
 }
 
 window.closeCv = function closeCv(){
@@ -827,15 +828,16 @@ function jbfaRankSparklineSvg(rounds,rh,total){
   var mx=Math.max.apply(null,vals),mn=Math.min.apply(null,vals);
   var pad=Math.max(3,Math.round((mx-mn)*0.3));
   var lo=Math.max(1,mn-pad),hi=Math.min(total,mx+pad);
-  var W=320,H=80,padL=8,padR=8,padT=18,padB=18;
-  var chartW=W-padL-padR,chartH=H-padT-padB;
-  // yPos: lo (best rank) maps to top (low y), hi (worst rank) maps to bottom — already inverted
-  function xPos(i){return padL+Math.round(i/(rounds.length-1||1)*chartW);}
+  var COL=52,H=80,padT=18,padB=18;
+  var n=rounds.length;
+  var W=COL*n;
+  var chartH=H-padT-padB;
+  function xPos(i){return Math.round(COL*i+COL/2);}
   function yPos(v){return padT+Math.round(((v-lo)/(hi-lo||1))*chartH);}
   var pts=vals.map(function(v,i){return xPos(i)+','+yPos(v);});
   var linePath='M'+pts.join(' L');
-  var fillPath='M'+xPos(0)+','+(padT+chartH)+' L'+pts.join(' L')+' L'+xPos(rounds.length-1)+','+(padT+chartH)+' Z';
-  var out='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;max-width:420px;display:block;overflow:visible;margin-bottom:.5rem">';
+  var fillPath='M'+xPos(0)+','+(padT+chartH)+' L'+pts.join(' L')+' L'+xPos(n-1)+','+(padT+chartH)+' Z';
+  var out='<svg viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" style="display:block;overflow:visible;margin-bottom:.5rem">';
   out+='<path d="'+fillPath+'" fill="rgba(240,180,41,0.08)"/>';
   out+='<path d="'+linePath+'" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round"/>';
   rounds.forEach(function(rk,i){
@@ -850,7 +852,7 @@ function jbfaRankSparklineSvg(rounds,rh,total){
     out+='<text x="'+x+'" y="'+(padT+chartH+12)+'" text-anchor="middle" font-size="8" fill="var(--muted)" font-family="DM Sans,sans-serif">R'+rNum+'</text>';
   });
   out+='</svg>';
-  return out;
+  return '<div class="chart-scroll" style="overflow-x:auto;-webkit-overflow-scrolling:touch;padding:0 2px 2px">'+out+'</div>';
 }
 
 function rankHistoryHtml(c){
@@ -878,32 +880,36 @@ function rankHistoryHtml(c){
     var prMin=Math.min.apply(null,prVals);
     var prPad=Math.max(500,Math.round((prMax-prMin)*0.3));
     var lo=Math.max(1,prMin-prPad),hi=prMax+prPad;
-    var W=320,H=80,padL=8,padR=8,padT=20,padB=20;
-    var chartW=W-padL-padR,chartH=H-padT-padB;
-    function xPos(i){return padL+Math.round(i/(prRounds.length-1||1)*chartW);}
-    function yPos(v){return padT+Math.round(((v-lo)/(hi-lo||1))*chartH);}
-    var pts=prVals.map(function(v,i){return xPos(i)+','+yPos(v);});
+    var prCOL=52,prH=80,prPadT=20,prPadB=20;
+    var prN=prRounds.length;
+    var prW=prCOL*prN;
+    var prChartH=prH-prPadT-prPadB;
+    function prXPos(i){return Math.round(prCOL*i+prCOL/2);}
+    function prYPos(v){return prPadT+Math.round(((v-lo)/(hi-lo||1))*prChartH);}
+    var pts=prVals.map(function(v,i){return prXPos(i)+','+prYPos(v);});
     var linePath='M'+pts.join(' L');
-    var fillPath='M'+xPos(0)+','+(padT+chartH)+' L'+pts.join(' L')+' L'+xPos(prRounds.length-1)+','+(padT+chartH)+' Z';
+    var fillPath='M'+prXPos(0)+','+(prPadT+prChartH)+' L'+pts.join(' L')+' L'+prXPos(prN-1)+','+(prPadT+prChartH)+' Z';
 
     out+='<div class="cvsec">';
     out+='<div class="cvsect">🌐 NRL Fantasy Platform Rank</div>';
     out+='<div style="font-size:.75rem;color:var(--muted);margin-top:-.4rem;margin-bottom:.85rem">Your rank across all NRL Fantasy users nationwide — not just JBFA. Lower = better.</div>';
-    out+='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;max-width:420px;display:block;overflow:visible">';
+    out+='<div class="chart-scroll" style="overflow-x:auto;-webkit-overflow-scrolling:touch;padding:0 2px 2px">';
+    out+='<svg viewBox="0 0 '+prW+' '+prH+'" width="'+prW+'" height="'+prH+'" style="display:block;overflow:visible">';
     out+='<path d="'+fillPath+'" fill="rgba(96,165,250,0.08)"/>';
     out+='<path d="'+linePath+'" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linejoin="round"/>';
     prRounds.forEach(function(rk,i){
       var rNum=parseInt(rk.replace('r',''));
       var v=prVals[i];
-      var x=xPos(i),y=yPos(v);
+      var x=prXPos(i),y=prYPos(v);
       var isCur=rNum===CUR;
       var col=isCur?'var(--accent)':'var(--blue)';
       out+='<circle cx="'+x+'" cy="'+y+'" r="'+(isCur?4:3)+'" fill="'+col+'"/>';
       var labelY=Math.max(12,y-6);
       out+='<text x="'+x+'" y="'+labelY+'" text-anchor="middle" font-size="9" fill="'+col+'" font-family="DM Sans,sans-serif" font-weight="'+(isCur?'700':'400')+'">#'+v.toLocaleString()+'</text>';
-      out+='<text x="'+x+'" y="'+(padT+chartH+12)+'" text-anchor="middle" font-size="8" fill="var(--muted)" font-family="DM Sans,sans-serif">R'+rNum+'</text>';
+      out+='<text x="'+x+'" y="'+(prPadT+prChartH+12)+'" text-anchor="middle" font-size="8" fill="var(--muted)" font-family="DM Sans,sans-serif">R'+rNum+'</text>';
     });
     out+='</svg>';
+    out+='</div>';
     out+='</div>';
   }
 
@@ -923,22 +929,23 @@ function collectScoreSeries(c){
 
 // Delta-vs-avg sparkline SVG — zero baseline, dot colour = sign, current round highlighted
 function scoreDeltaSparklineSvg(scores){
-  if(scores.length<2) return ''; // sparkline only useful with 2+ points
+  if(scores.length<2) return '';
   var deltas=scores.map(function(s){return s.avg?s.s-s.avg:0;});
   var absMax=Math.max.apply(null,deltas.map(function(d){return Math.abs(d);}));
-  absMax=Math.max(absMax,50); // floor so tiny deltas aren't wildly amplified
+  absMax=Math.max(absMax,50);
   var hi=absMax*1.15,lo=-absMax*1.15;
-  var W=320,H=90,padL=8,padR=8,padT=18,padB=18;
-  var chartW=W-padL-padR,chartH=H-padT-padB;
-  function xPos(i){return padL+Math.round(i/(scores.length-1||1)*chartW);}
+  var COL=52,H=90,padT=18,padB=18;
+  var n=scores.length;
+  var W=COL*n;
+  var chartH=H-padT-padB;
+  function xPos(i){return Math.round(COL*i+COL/2);}
   function yPos(v){return padT+Math.round((1-(v-lo)/(hi-lo||1))*chartH);}
   var zeroY=yPos(0);
   var pts=deltas.map(function(d,i){return xPos(i)+','+yPos(d);});
   var linePath='M'+pts.join(' L');
-  var out='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;max-width:420px;display:block;overflow:visible;margin-bottom:.5rem">';
-  // dashed zero line
-  out+='<line x1="'+padL+'" y1="'+zeroY+'" x2="'+(W-padR)+'" y2="'+zeroY+'" stroke="var(--muted)" stroke-width="1" stroke-dasharray="3,3" opacity=".5"/>';
-  out+='<text x="'+(W-padR)+'" y="'+(zeroY-3)+'" text-anchor="end" font-size="8" fill="var(--muted)" font-family="DM Sans,sans-serif">avg</text>';
+  var out='<svg viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" style="display:block;overflow:visible;margin-bottom:.5rem">';
+  out+='<line x1="'+COL/2+'" y1="'+zeroY+'" x2="'+(W-COL/2)+'" y2="'+zeroY+'" stroke="var(--muted)" stroke-width="1" stroke-dasharray="3,3" opacity=".5"/>';
+  out+='<text x="'+(W-COL/2)+'" y="'+(zeroY-3)+'" text-anchor="end" font-size="8" fill="var(--muted)" font-family="DM Sans,sans-serif">avg</text>';
   out+='<path d="'+linePath+'" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linejoin="round"/>';
   scores.forEach(function(s,i){
     var d=deltas[i];
@@ -952,7 +959,7 @@ function scoreDeltaSparklineSvg(scores){
     out+='<text x="'+x+'" y="'+(padT+chartH+12)+'" text-anchor="middle" font-size="8" fill="var(--muted)" font-family="DM Sans,sans-serif">R'+s.r+'</text>';
   });
   out+='</svg>';
-  return out;
+  return '<div class="chart-scroll" style="overflow-x:auto;-webkit-overflow-scrolling:touch;padding:0 2px 2px">'+out+'</div>';
 }
 
 function sparklineHtml(c){

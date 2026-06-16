@@ -35,7 +35,8 @@
       "Bash(python3 -c ' *)",
       "Bash(grep -v \"//\\\\|archive\\\\|Weekly\\\\|backup\\\\|Week\")",
       "Bash(ls \"C:\\\\Users\\\\donal\\\\Desktop\\\\JBFA\\\\\")",
-      "Bash(git merge *)"
+      "Bash(git merge *)",
+      "Bash(grep -E \"\\\\.\\(js|html|css\\)$\")"
     ]
   }
 }

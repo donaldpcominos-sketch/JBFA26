@@ -86,6 +86,10 @@ main{max-width:1400px;margin:0 auto;padding:1.5rem;}
 .cvsv{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:.04em;line-height:1.1;}
 .cvsec{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:1rem;}
 .cvsect{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.06em;color:var(--muted);margin-bottom:.85rem;text-transform:uppercase;}
+.chart-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
+.chart-scroll::-webkit-scrollbar{height:3px;}
+.chart-scroll::-webkit-scrollbar-track{background:transparent;}
+.chart-scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
 .schips{display:flex;gap:.4rem;flex-wrap:wrap;}
 .schip{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:.25rem .65rem;font-size:.82rem;font-weight:600;}
 
