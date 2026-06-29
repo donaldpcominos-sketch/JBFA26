@@ -36,7 +36,14 @@
       "Bash(grep -v \"//\\\\|archive\\\\|Weekly\\\\|backup\\\\|Week\")",
       "Bash(ls \"C:\\\\Users\\\\donal\\\\Desktop\\\\JBFA\\\\\")",
       "Bash(git merge *)",
-      "Bash(grep -E \"\\\\.\\(js|html|css\\)$\")"
+      "Bash(grep -E \"\\\\.\\(js|html|css\\)$\")",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\('currentRound:',d['meta']['currentRound'],'statsRound:',d['meta']['statsRound'],'lastUpdated:',d['meta']['lastUpdated'],'roundAvg:',d['meta']['roundAvg']\\)\")",
+      "Bash(CURRENT_ROUND=17 python fetch_rosters.py)",
+      "Bash(PYTHONIOENCODING=utf-8 python -c ' *)",
+      "Bash(PYTHONIOENCODING=utf-8 python fetch_master_players.py)",
+      "Bash(PYTHONIOENCODING=utf-8 CURRENT_ROUND=17 python fetch_fantasy_coach.py)",
+      "Bash(git commit -q -m ' *)",
+      "Bash(python -c \"from config import get_current_round; print\\('current round:', get_current_round\\(\\)\\)\")"
     ]
   }
 }
