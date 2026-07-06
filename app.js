@@ -555,7 +555,7 @@ function dP2(){
   el.innerHTML=
     '<div class="sh" style="margin-top:0"><div class="sht">Seeding — Tier Groups</div><div class="shl"></div><span class="badge bt2" style="font-size:.68rem">Rounds 9–18</span></div>'
     +'<p style="color:var(--muted);font-size:.875rem;margin-bottom:1rem">Standings from Round 9. Points reset to zero at R9. Click any row for coach profile.</p>'
-    +'<div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.5rem">Currently in cash-prize positions <span style="color:var(--muted);font-weight:500;text-transform:none;letter-spacing:0">— not yet final, prizes awarded after R18</span></div>'
+    +'<div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.5rem">Final cash-prize positions <span style="color:var(--green,#34d399);font-weight:700;text-transform:none;letter-spacing:0">— ✓ confirmed after R18</span></div>'
     +'<div class="prizes-grid" style="margin-bottom:1.5rem">'+cashCards+'</div>'
     +'<div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.5rem">Full tier standings</div>'
     +'<div style="display:flex;gap:.4rem;margin-bottom:1rem;flex-wrap:wrap">'+tabs+'</div>'
@@ -566,6 +566,185 @@ function dP2(){
     +'</table></div></div>';
 }
 window.setP2Tier=function(t){p2ActiveTier=t;dP2();};
+
+// ── KNOCKOUT (Phase 3) ────────────────────────────────────────────────────
+// One combined seeded bracket. Seed = block by tier: (tier-1)*100 + seedRank.
+// Standard fill to next power of two → top (POW2-FIELD) seeds get a R19 bye;
+// remaining seeds play a mirror-paired play-in (seed s vs POW2+1-s).
+var KO_START=19, KO_FINAL=27;
+var KO_POW2=(function(n){var p=1;while(p<n)p*=2;return p;})(COACHES.length); // 512 for 300
+var KO_FIELD=COACHES.length;
+var KO_BYES=KO_POW2-KO_FIELD;                 // 212
+var KO_PLAYIN=KO_FIELD-KO_BYES;               // 88 coaches play the R19 play-in
+// Withdrawn coaches (quit the season). Keyed by teamId — their opponent gets a
+// walkover bye and they're removed from the bracket. Extend as needed.
+var KO_EXCLUDED={ '77':true };  // Scott Fulcher — quit after R2
+function koExcluded(c){return !!(c&&KO_EXCLUDED[String(c.teamId)]);}
+function koSeed(c){return (c.tier-1)*100+(c.seedRank||9999);}
+function koHasBye(seed){return seed<=KO_BYES;}                 // structural top-seed bye
+function koOppSeed(seed){return koHasBye(seed)?null:(KO_POW2+1-seed);} // mirror pair
+var _KO_BY_SEED=null;
+function koBySeed(){
+  if(_KO_BY_SEED) return _KO_BY_SEED;
+  _KO_BY_SEED={};
+  COACHES.forEach(function(c){ if(c.seedRank) _KO_BY_SEED[koSeed(c)]=c; });
+  return _KO_BY_SEED;
+}
+// Resolve a coach's R19 situation: top-seed bye, walkover (opponent withdrew),
+// a live play-in match, or withdrawn themselves.
+function koMatchup(c){
+  var seed=koSeed(c);
+  if(koExcluded(c)) return {type:'withdrawn',seed:seed};
+  if(koHasBye(seed)) return {type:'bye-seed',seed:seed};
+  var opp=koBySeed()[koOppSeed(seed)];
+  if(!opp||koExcluded(opp)) return {type:'bye-walkover',seed:seed,oppName:opp?opp.coach:null};
+  return {type:'vs',seed:seed,opp:opp};
+}
+var _KO_STATS=null;
+function koStats(){
+  if(_KO_STATS) return _KO_STATS;
+  var field=0,byeSeed=0,walkover=0,vs=0;
+  COACHES.forEach(function(c){
+    if(!c.seedRank||koExcluded(c)) return;
+    field++;
+    var m=koMatchup(c);
+    if(m.type==='bye-seed') byeSeed++;
+    else if(m.type==='bye-walkover') walkover++;
+    else if(m.type==='vs') vs++;
+  });
+  _KO_STATS={field:field,byes:byeSeed+walkover,byeSeed:byeSeed,walkover:walkover,playinMatches:vs/2};
+  return _KO_STATS;
+}
+var KO_TIER_NAMES=['Premiership','Championship','State Cup'];
+function koTierBadge(c){return '<span class="badge bt'+c.tier+'" style="font-size:.6rem;padding:.1rem .4rem">'+KO_TIER_NAMES[c.tier-1]+'</span>';}
+
+function koSideHtml(c,label,labelClr){
+  var seed=koSeed(c);
+  return '<div class="ko-side" onclick="showCoach('+c.rank+')">'
+    +'<div class="ko-side-lbl" style="color:'+(labelClr||'var(--muted)')+'">'+label+'</div>'
+    +'<div class="ko-seed">Seed #'+seed+'</div>'
+    +'<div class="ko-side-coach">'+esc(c.coach)+'</div>'
+    +'<div class="ko-side-team">'+esc(c.team)+'</div>'
+    +'<div style="margin-top:.4rem">'+koTierBadge(c)+' <span style="font-size:.68rem;color:var(--muted)">'+(c.seedScore||0)+' seed pts</span></div>'
+  +'</div>';
+}
+function koMatchCard(c){
+  var m=koMatchup(c);
+  if(m.type==='withdrawn'){
+    return '<div class="ko-card"><div class="ko-card-head"><span class="badge bp3">Round '+KO_START+'</span><span class="ko-card-note">Withdrawn</span></div>'
+      +koSideHtml(c,'WITHDRAWN','var(--muted)')
+      +'<div class="ko-card-foot">This team has withdrawn from the season and is not in the knockout bracket.</div></div>';
+  }
+  if(m.type==='bye-seed'||m.type==='bye-walkover'){
+    var walk=m.type==='bye-walkover';
+    var note=walk?'Opponent withdrew':'You\'re a top seed';
+    var sub=walk?'Opponent withdrew — you advance':'Auto-advances to Round 20';
+    var foot=walk?('Your Round '+KO_START+' opponent'+(m.oppName?' ('+esc(m.oppName)+')':'')+' has withdrawn from the season, so you get a walkover into the Round of 256.'):('Seeds 1–'+KO_BYES+' rest in R19. You re-enter in the Round of 256.');
+    return '<div class="ko-card ko-card-bye">'
+      +'<div class="ko-card-head"><span class="badge bp3">Round '+KO_START+'</span><span class="ko-card-note">'+note+'</span></div>'
+      +'<div class="ko-bye-body">'
+        +koSideHtml(c,'YOUR TEAM','var(--accent)')
+        +'<div class="ko-bye-badge"><div style="font-size:1.6rem">🎟️</div><div class="ko-bye-title">BYE</div><div class="ko-bye-sub">'+sub+'</div></div>'
+      +'</div>'
+      +'<div class="ko-card-foot">'+foot+'</div>'
+    +'</div>';
+  }
+  return '<div class="ko-card">'
+    +'<div class="ko-card-head"><span class="badge bp3">Round '+KO_START+' · Play-in</span><span class="ko-card-note">Win to reach the Round of 256</span></div>'
+    +'<div class="ko-vs-body">'
+      +koSideHtml(c,'YOUR TEAM','var(--accent)')
+      +'<div class="ko-vs">VS</div>'
+      +koSideHtml(m.opp,'OPPONENT','var(--red)')
+    +'</div>'
+    +'<div class="ko-card-foot">Higher Round '+KO_START+' score advances. Lose and your season ends here.</div>'
+  +'</div>';
+}
+
+var _koPlayins=null;   // list of {a,b} play-in matches, low seed first
+function koPlayins(){
+  if(_koPlayins) return _koPlayins;
+  _koPlayins=[]; var by=koBySeed();
+  for(var s=KO_BYES+1;s<=KO_BYES+KO_PLAYIN/2;s++){
+    var a=by[s],b=by[koOppSeed(s)];
+    if(koExcluded(a)||koExcluded(b)) continue; // withdrawn → walkover, not a play-in
+    _koPlayins.push({a:a,b:b});
+  }
+  return _koPlayins;
+}
+var koPg=1, KO_PGN=20;
+function koRow(c){ return c?('<div class="ko-mini-coach">#'+koSeed(c)+' '+esc(c.coach)+'</div><div class="ko-mini-team">'+esc(c.team)+'</div>'):'<span style="color:var(--muted)">TBD</span>'; }
+function dKoFixtures(){
+  var all=koPlayins(), tot=Math.ceil(all.length/KO_PGN);
+  var pg=all.slice((koPg-1)*KO_PGN,koPg*KO_PGN);
+  var rows=pg.map(function(m,i){
+    var n=(koPg-1)*KO_PGN+i+1;
+    return '<tr><td class="trk">'+n+'</td>'
+      +'<td onclick="'+(m.a?'showCoach('+m.a.rank+')':'')+'">'+koRow(m.a)+'</td>'
+      +'<td style="text-align:center;color:var(--muted);font-weight:700;font-size:.7rem">vs</td>'
+      +'<td onclick="'+(m.b?'showCoach('+m.b.rank+')':'')+'" style="text-align:right">'+koRow(m.b)+'</td></tr>';
+  }).join('');
+  var el=document.getElementById('ko-fixtures'); if(el) el.innerHTML=rows;
+  dPager('ko-pager',tot,koPg,'setKoPage');
+}
+window.setKoPage=function(p){koPg=p;dKoFixtures();};
+
+function dP3(){
+  var el=document.getElementById('panel-p3'); if(!el) return;
+  var chips=document.getElementById('ko-chips');
+  if(chips){
+    var pre=CUR<KO_START, st=koStats();
+    chips.innerHTML=[
+      ['Field',st.field+' coaches'],
+      ['R19 Byes',st.byes+' advance'],
+      ['R19 Play-in',st.playinMatches+' matches'],
+      [(pre?'Status':'This Round'),(pre?'Locked · begins R'+KO_START:'R'+CUR)],
+      ['Grand Final','R'+KO_FINAL],
+      ['Prizes','Top 4 paid']
+    ].map(function(x){return '<div class="ko-chip"><div class="ko-chip-l">'+x[0]+'</div><div class="ko-chip-v">'+x[1]+'</div></div>';}).join('');
+  }
+  var def=document.getElementById('koDefault');
+  if(def){
+    def.innerHTML=
+      '<div class="ko-hint">👆 Search your team above to see your Round '+KO_START+' matchup and bye status.</div>'
+      +'<div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:1.25rem 0 .6rem">Round '+KO_START+' play-in fixtures <span style="font-weight:500;text-transform:none;letter-spacing:0">— lower seeds; top '+koStats().byes+' advance on a bye</span></div>'
+      +'<div class="tw"><div class="tw-scroll"><table>'
+      +'<colgroup><col style="width:34px"><col><col style="width:34px"><col></colgroup>'
+      +'<thead><tr><th>#</th><th>Higher seed</th><th></th><th style="text-align:right">Lower seed</th></tr></thead>'
+      +'<tbody id="ko-fixtures"></tbody></table></div></div>'
+      +'<div class="pager" id="ko-pager"></div>';
+    dKoFixtures();
+  }
+}
+
+// live search dropdown
+function koFilter(){
+  var inp=document.getElementById('koSearch'), drop=document.getElementById('koDrop');
+  if(!inp||!drop) return;
+  var q=inp.value.trim().toLowerCase();
+  if(!q){drop.style.display='none';drop.innerHTML='';
+    document.getElementById('koResult').innerHTML='';
+    var d=document.getElementById('koDefault'); if(d) d.style.display='';
+    return;}
+  var matches=COACHES.filter(function(c){return c.seedRank&&!koExcluded(c)&&(c.coach.toLowerCase().indexOf(q)>=0||c.team.toLowerCase().indexOf(q)>=0);})
+    .sort(function(a,b){return koSeed(a)-koSeed(b);}).slice(0,8);
+  if(!matches.length){drop.innerHTML='<div class="ko-di" style="color:var(--muted);cursor:default">No coach found.</div>';drop.style.display='block';return;}
+  drop.innerHTML=matches.map(function(c){
+    return '<div class="ko-di" onclick="koShow('+c.rank+')"><div><div class="ko-di-coach">'+esc(c.coach)+'</div><div class="ko-di-team">'+esc(c.team)+'</div></div><span class="rpill">#'+koSeed(c)+'</span></div>';
+  }).join('');
+  drop.style.display='block';
+}
+window.koFilter=koFilter;
+window.koShow=function(rank){
+  var c=COACHES.filter(function(x){return x.rank===rank;})[0]; if(!c) return;
+  document.getElementById('koSearch').value=c.coach;
+  document.getElementById('koDrop').style.display='none';
+  document.getElementById('koResult').innerHTML=koMatchCard(c);
+  var def=document.getElementById('koDefault'); if(def) def.style.display='none';
+};
+document.addEventListener('click',function(e){
+  var w=document.querySelector('.ko-search-wrap'); var drop=document.getElementById('koDrop');
+  if(w&&drop&&!w.contains(e.target)) drop.style.display='none';
+});
 
 // ── VIP TABLE ─────────────────────────────────────────────────────────────
 var vipp=1,VIPN=50,vipl=VIP_LIST.slice();
@@ -976,7 +1155,7 @@ function sparklineHtml(c){
 
 
 // ── INIT ──────────────────────────────────────────────────────────────────
-renderOvTop();renderOvVip();renderPodcasters();renderSched();dP1();dP2();dVip();dC2();buildPlList();fPlayers();renderTradeSummary();
+renderOvTop();renderOvVip();renderPodcasters();renderSched();dP1();dP2();dP3();dVip();dC2();buildPlList();fPlayers();renderTradeSummary();
 // Dismiss loading overlay now that data is rendered
 (function(){var lo=document.getElementById('app-loading');if(lo)lo.style.display='none';})();
 

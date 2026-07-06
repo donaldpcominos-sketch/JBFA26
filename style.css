@@ -119,6 +119,8 @@ main{max-width:1400px;margin:0 auto;padding:1.5rem;}
 .prize-winner{margin-top:auto;padding-top:.75rem;}
 .prize-pill{display:inline-flex;align-items:center;gap:.35rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;padding:.2rem .6rem;font-size:.72rem;color:var(--muted);font-weight:600;}
 .prize-pill-dot{width:6px;height:6px;border-radius:50%;background:var(--border);flex-shrink:0;}
+.prize-pill-won{background:rgba(52,211,153,.12);border-color:rgba(52,211,153,.45);color:var(--green,#34d399);}
+.prize-pill-won .prize-pill-dot{background:var(--green,#34d399);}
 .prizes-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-bottom:1.5rem;}
 
 /* STAT CARDS */
@@ -191,6 +193,43 @@ td{padding:.6rem 1rem;vertical-align:middle;}
 .pg{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:.3rem .7rem;color:var(--muted);font-size:.82rem;font-weight:600;cursor:pointer;transition:all .15s;}
 .pg:hover,.pg.on{background:var(--jb);color:#fff;border-color:var(--jb);}
 .pgd{color:var(--muted);font-size:.82rem;}
+
+/* KNOCKOUT (Phase 3) */
+.ko-chips{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.25rem;}
+.ko-chip{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.5rem .8rem;flex:1 1 auto;min-width:100px;}
+.ko-chip-l{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:700;}
+.ko-chip-v{font-size:.95rem;font-weight:700;color:var(--text);margin-top:.15rem;}
+.ko-search-wrap{position:relative;margin-bottom:1rem;}
+.ko-search{width:100%;font-size:.9rem;padding:.65rem 1rem;}
+.ko-drop{display:none;position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;z-index:60;box-shadow:0 8px 32px rgba(0,0,0,.6);max-height:340px;overflow-y:auto;}
+.ko-di{display:flex;justify-content:space-between;align-items:center;gap:.6rem;padding:.6rem .85rem;cursor:pointer;border-bottom:1px solid var(--border);}
+.ko-di:last-child{border-bottom:none;}
+.ko-di:hover{background:var(--surface2);}
+.ko-di-coach{font-size:.88rem;font-weight:700;color:var(--text);}
+.ko-di-team{font-size:.75rem;color:var(--muted);}
+.ko-card{background:var(--surface);border:1px solid var(--border);border-top:3px solid var(--purple,#a78bfa);border-radius:14px;padding:1.1rem;margin-bottom:1rem;}
+.ko-card-head{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap;}
+.ko-card-note{font-size:.72rem;color:var(--muted);}
+.ko-vs-body,.ko-bye-body{display:flex;align-items:stretch;gap:.75rem;}
+.ko-side{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:.85rem;cursor:pointer;transition:border-color .15s;min-width:0;}
+.ko-side:hover{border-color:rgba(255,255,255,.28);}
+.ko-side-lbl{font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-bottom:.35rem;}
+.ko-seed{font-family:'Bebas Neue',sans-serif;font-size:1.35rem;letter-spacing:.03em;color:var(--text);line-height:1;}
+.ko-side-coach{font-size:.95rem;font-weight:700;color:var(--text);margin-top:.25rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ko-side-team{font-size:.76rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ko-vs{display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:1.3rem;color:var(--muted);flex-shrink:0;padding:0 .2rem;}
+.ko-bye-badge{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.35);border-radius:12px;padding:.85rem;}
+.ko-bye-title{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:.06em;color:var(--green);line-height:1;}
+.ko-bye-sub{font-size:.72rem;color:var(--muted);margin-top:.25rem;}
+.ko-card-foot{font-size:.75rem;color:var(--muted);margin-top:.9rem;padding-top:.75rem;border-top:1px solid var(--border);}
+.ko-hint{background:var(--surface2);border:1px dashed var(--border);border-radius:10px;padding:.85rem 1rem;font-size:.85rem;color:var(--muted);text-align:center;}
+.ko-mini-coach{font-size:.82rem;font-weight:700;color:var(--text);}
+.ko-mini-team{font-size:.7rem;color:var(--muted);}
+@media(max-width:560px){
+  .ko-vs-body,.ko-bye-body{flex-direction:column;}
+  .ko-vs{padding:.15rem 0;}
+  .ko-chip{min-width:calc(50% - .25rem);}
+}
 
 /* FILTER */
 .fr{display:flex;gap:.75rem;margin-bottom:1rem;align-items:center;flex-wrap:wrap;}

@@ -1,4 +1,4 @@
-var CACHE = 'jbfa-v3';
+var CACHE = 'jbfa-v4';
 var APP_SHELL = [
   './',
   './index.html',

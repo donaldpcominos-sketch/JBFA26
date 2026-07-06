@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JBFA — Seeding Prize Winners (R9–R18)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0e1a; --surface:#111827; --surface2:#1a2236; --border:#1e2d4a;
+    --accent:#f0b429; --jb:#1a3a8f; --jbl:#2451b3;
+    --green:#34d399; --text:#e8edf5; --muted:#5a7090;
+    --t1:#f0b429; --t2:#60a5fa; --t3:#a78bfa;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;line-height:1.5;padding:0 0 3rem;
+    background-image:radial-gradient(circle at 15% -5%,rgba(26,58,143,.35),transparent 45%),radial-gradient(circle at 90% 0%,rgba(240,180,41,.12),transparent 40%);
+    background-attachment:fixed;}
+  .wrap{max-width:960px;margin:0 auto;padding:0 1.1rem;}
+
+  header{background:linear-gradient(135deg,var(--jb),#12295f);border-bottom:3px solid var(--accent);
+    box-shadow:0 6px 30px rgba(0,0,0,.5);padding:1.6rem 0 1.4rem;margin-bottom:2rem;text-align:center;}
+  .kicker{font-size:.72rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);margin-bottom:.55rem;}
+  h1{font-family:'Bebas Neue',sans-serif;font-size:2.9rem;line-height:.95;letter-spacing:.03em;color:#fff;}
+  .sub{color:rgba(255,255,255,.72);font-size:.95rem;margin-top:.5rem;}
+  .final-badge{display:inline-flex;align-items:center;gap:.4rem;margin-top:.9rem;background:rgba(52,211,153,.15);
+    border:1px solid rgba(52,211,153,.45);color:var(--green);font-size:.72rem;font-weight:700;
+    letter-spacing:.1em;text-transform:uppercase;padding:.35rem .8rem;border-radius:999px;}
+
+  .intro{color:var(--muted);font-size:.9rem;text-align:center;max-width:640px;margin:0 auto 2rem;line-height:1.65;}
+  .intro strong{color:var(--text);}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.1rem;margin-bottom:2rem;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;}
+  .card-head{padding:.9rem 1.1rem;display:flex;align-items:center;gap:.6rem;border-bottom:1px solid var(--border);}
+  .tbadge{font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:.05em;padding:.15rem .55rem;border-radius:6px;color:#0a0e1a;font-weight:400;}
+  .t1 .tbadge{background:var(--t1);} .t2 .tbadge{background:var(--t2);} .t3 .tbadge{background:var(--t3);}
+  .t1{border-top:3px solid var(--t1);} .t2{border-top:3px solid var(--t2);} .t3{border-top:3px solid var(--t3);}
+  .comp-name{font-family:'Bebas Neue',sans-serif;font-size:1.35rem;letter-spacing:.03em;color:#fff;line-height:1;}
+  .comp-sub{font-size:.66rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-top:.2rem;}
+  .card-body{padding:.4rem 1.1rem 1.1rem;}
+
+  .place{padding:.85rem 0;border-bottom:1px dashed var(--border);}
+  .place:last-child{border-bottom:none;}
+  .place-label{font-size:.66rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);display:flex;align-items:center;gap:.4rem;margin-bottom:.35rem;}
+  .place-prize{font-family:'Bebas Neue',sans-serif;letter-spacing:.03em;margin-bottom:.5rem;}
+  .t1 .place-prize{color:var(--t1);} .t2 .place-prize{color:var(--t2);} .t3 .place-prize{color:var(--t3);}
+  .prize-1{font-size:1.7rem;line-height:1;} .prize-2{font-size:1.2rem;line-height:1;}
+  .winner{display:flex;align-items:center;gap:.55rem;background:rgba(52,211,153,.09);border:1px solid rgba(52,211,153,.35);
+    border-radius:9px;padding:.5rem .7rem;}
+  .winner-dot{width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0;box-shadow:0 0 8px rgba(52,211,153,.7);}
+  .winner-name{font-weight:700;font-size:.95rem;color:var(--text);}
+  .winner-team{font-size:.75rem;color:var(--muted);}
+  .vip-tag{font-size:.58rem;font-weight:700;letter-spacing:.08em;color:var(--green);border:1px solid rgba(52,211,153,.4);border-radius:4px;padding:.05rem .3rem;margin-left:.3rem;vertical-align:middle;}
+
+  .board{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;}
+  .board-head{font-family:'Bebas Neue',sans-serif;font-size:1.25rem;letter-spacing:.04em;color:#fff;padding:.9rem 1.1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.5rem;}
+  table{width:100%;border-collapse:collapse;font-size:.86rem;}
+  th{text-align:left;font-size:.64rem;text-transform:uppercase;letter-spacing:.11em;color:var(--muted);padding:.6rem 1.1rem;border-bottom:1px solid var(--border);font-weight:700;}
+  td{padding:.65rem 1.1rem;border-bottom:1px solid var(--border);}
+  tr:last-child td{border-bottom:none;}
+  .rk{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--muted);width:34px;}
+  .cn{font-weight:700;color:var(--text);}
+  .ct{font-size:.75rem;color:var(--muted);}
+  .cw{font-size:.8rem;color:var(--muted);white-space:nowrap;}
+  .amt{font-weight:700;color:var(--accent);text-align:right;white-space:nowrap;}
+  .amt.nc{color:var(--text);}
+  .foot{text-align:center;color:var(--muted);font-size:.75rem;margin-top:2rem;line-height:1.7;}
+  .sec-title{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin:0 0 .9rem;text-align:center;}
+  @media(max-width:520px){h1{font-size:2.2rem;} .cw{white-space:normal;}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="kicker">JBFA 2026 · Main Season</div>
+    <h1>Seeding Prize Winners</h1>
+    <div class="sub">Rounds 9–18 · Tier Group Competitions</div>
+    <div class="final-badge">✓ Final — Winners Confirmed</div>
+  </div>
+</header>
+
+<div class="wrap">
+  <p class="intro">
+    The <strong>Seeding phase</strong> ran across Rounds 9–18 with points reset to zero at R9.
+    All 300 coaches competed in three separate tier competitions — determined by their Qualifying rank after Round 8.
+    Congratulations to the winners below.
+  </p>
+
+  <div class="grid">
+    <!-- TIER 1 -->
+    <div class="card t1">
+      <div class="card-head">
+        <span class="tbadge">T1</span>
+        <div><div class="comp-name">Premiership</div><div class="comp-sub">Tier 1 · Top 100 seeds</div></div>
+      </div>
+      <div class="card-body">
+        <div class="place">
+          <div class="place-label">🥇 1st Place · $400</div>
+          <div class="winner"><span class="winner-dot"></span><div><div class="winner-name">Kane Flemming</div><div class="winner-team">Coochiemen</div></div></div>
+        </div>
+        <div class="place">
+          <div class="place-label">🥈 Runner-up · $150 + JBFA Hat</div>
+          <div class="winner"><span class="winner-dot"></span><div><div class="winner-name">Zakk Patterson</div><div class="winner-team">Nick Politis Budget</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TIER 2 -->
+    <div class="card t2">
+      <div class="card-head">
+        <span class="tbadge">T2</span>
+        <div><div class="comp-name">Championship</div><div class="comp-sub">Tier 2 · Seeds 101–200</div></div>
+      </div>
+      <div class="card-body">
+        <div class="place">
+          <div class="place-label">🥇 1st Place · $200</div>
+          <div class="winner"><span class="winner-dot"></span><div><div class="winner-name">Peter Harding</div><div class="winner-team">Pistols Panthers</div></div></div>
+        </div>
+        <div class="place">
+          <div class="place-label">🥈 Runner-up · 2027 JBFA Legends Pack</div>
+          <div class="winner"><span class="winner-dot"></span><div><div class="winner-name">Kye Beck <span class="vip-tag">VIP</span></div><div class="winner-team">Kyeskillersss</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TIER 3 -->
+    <div class="card t3">
+      <div class="card-head">
+        <span class="tbadge">T3</span>
+        <div><div class="comp-name">State Cup</div><div class="comp-sub">Tier 3 · Seeds 201–300</div></div>
+      </div>
+      <div class="card-body">
+        <div class="place">
+          <div class="place-label">🥇 1st Place · $100</div>
+          <div class="winner"><span class="winner-dot"></span><div><div class="winner-name">David Mckenzie</div><div class="winner-team">DMack Entertainers</div></div></div>
+        </div>
+        <div class="place">
+          <div class="place-label">🥈 Runner-up · JBFA Hat &amp; T-Shirt</div>
+          <div class="winner"><span class="winner-dot"></span><div><div class="winner-name">Les Farah</div><div class="winner-team">Nathan Ramjet</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-title">Winnings Leaderboard</div>
+  <div class="board">
+    <div class="board-head">🏆 Seeding Payouts</div>
+    <table>
+      <thead><tr><th>#</th><th>Coach</th><th>Comp Won</th><th style="text-align:right">Prize</th></tr></thead>
+      <tbody>
+        <tr><td class="rk">1</td><td><div class="cn">Kane Flemming</div><div class="ct">Coochiemen</div></td><td class="cw">Premiership (T1) — 🥇 1st</td><td class="amt">$400</td></tr>
+        <tr><td class="rk">2</td><td><div class="cn">Peter Harding</div><div class="ct">Pistols Panthers</div></td><td class="cw">Championship (T2) — 🥇 1st</td><td class="amt">$200</td></tr>
+        <tr><td class="rk">3</td><td><div class="cn">Zakk Patterson</div><div class="ct">Nick Politis Budget</div></td><td class="cw">Premiership (T1) — 🥈 2nd</td><td class="amt">$150 + Hat</td></tr>
+        <tr><td class="rk">4</td><td><div class="cn">David Mckenzie</div><div class="ct">DMack Entertainers</div></td><td class="cw">State Cup (T3) — 🥇 1st</td><td class="amt">$100</td></tr>
+        <tr><td class="rk">5</td><td><div class="cn">Kye Beck</div><div class="ct">Kyeskillersss</div></td><td class="cw">Championship (T2) — 🥈 2nd</td><td class="amt nc">2027 Legends Pack</td></tr>
+        <tr><td class="rk">6</td><td><div class="cn">Les Farah</div><div class="ct">Nathan Ramjet</div></td><td class="cw">State Cup (T3) — 🥈 2nd</td><td class="amt nc">Hat &amp; T-Shirt</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="foot">
+    Total cash paid out across the Seeding phase: <strong style="color:var(--accent)">$850</strong> + merchandise &amp; packs.<br>
+    Knockout (R19–R27), Survivor, Overall Points, VIP &amp; Other Comps still to be decided.<br>
+    <span style="opacity:.7">JBFA 2026 · Seeding results locked after Round 18.</span>
+  </p>
+</div>
+</body>
+</html>

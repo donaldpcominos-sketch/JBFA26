@@ -280,7 +280,15 @@ function dismissByePromo(){document.getElementById('bye-promo-bar').style.displa
 
   <!-- PHASE 3 -->
   <div class="panel" id="panel-p3">
-    <div class="cs"><div class="csi">⚔️</div><h3>Knockout</h3><p>Begins Round 19. All coaches re-enter a seeded bracket based on Seeding results.</p></div>
+    <div class="sh" style="margin-top:0"><div class="sht">Knockout — Seeded Bracket</div><div class="shl"></div><span class="badge bp3" style="font-size:.68rem">Rounds 19–27</span></div>
+    <p style="color:var(--muted);font-size:.875rem;margin-bottom:1rem">All coaches re-enter one seeded knockout. Seeds come from the final Seeding results — Premiership seeds 1–100, Championship 101–200, State Cup 201–300. Higher weekly score advances; lose once and you're out.</p>
+    <div class="ko-chips" id="ko-chips"></div>
+    <div class="ko-search-wrap">
+      <input class="fi ko-search" id="koSearch" placeholder="🔍 Search your coach or team to see your matchup…" oninput="koFilter()" onfocus="koFilter()" autocomplete="off">
+      <div class="ko-drop" id="koDrop"></div>
+    </div>
+    <div id="koResult"></div>
+    <div id="koDefault"></div>
   </div>
 
   <!-- SURVIVAL -->
@@ -443,34 +451,37 @@ function dismissByePromo(){document.getElementById('bye-promo-bar').style.displa
         </div>
       </div>
       <div style="padding:1.5rem;">
-        <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.75rem">Seeding — Tier Prizes (Rounds 9–18)</div>
+        <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin-bottom:.75rem"><span style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)">Seeding — Tier Prizes (Rounds 9–18)</span><span class="badge" style="background:rgba(52,211,153,.15);color:var(--green,#34d399);border:1px solid rgba(52,211,153,.4);font-size:.62rem">✓ Final — Winners Confirmed</span></div>
         <div class="prizes-grid" style="margin-bottom:1.5rem">
           <div class="prize-card blue">
             <div class="prize-title"><span class="badge bt1" style="margin-bottom:.4rem;display:inline-flex">Tier 1</span> Premiership</div>
             <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-top:.25rem">1st Place</div>
             <div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--t1);letter-spacing:.04em;margin:.2rem 0">$400</div>
+            <div style="margin-top:.4rem"><span class="prize-pill prize-pill-won"><span class="prize-pill-dot"></span>Kane Flemming <span style="opacity:.6">· Coochiemen</span></span></div>
             <hr style="border:none;border-top:1px solid var(--border);margin:.5rem 0">
             <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)">Runner-up</div>
             <div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;color:var(--t1);letter-spacing:.04em;margin:.2rem 0">$150 <span style="font-size:.9rem">+ JBFA Hat</span></div>
-            <div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div>
+            <div style="margin-top:.4rem"><span class="prize-pill prize-pill-won"><span class="prize-pill-dot"></span>Zakk Patterson <span style="opacity:.6">· Nick Politis Budget</span></span></div>
           </div>
           <div class="prize-card blue">
             <div class="prize-title"><span class="badge bt2" style="margin-bottom:.4rem;display:inline-flex">Tier 2</span> Championship</div>
             <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-top:.25rem">1st Place</div>
             <div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--t2);letter-spacing:.04em;margin:.2rem 0">$200</div>
+            <div style="margin-top:.4rem"><span class="prize-pill prize-pill-won"><span class="prize-pill-dot"></span>Peter Harding <span style="opacity:.6">· Pistols Panthers</span></span></div>
             <hr style="border:none;border-top:1px solid var(--border);margin:.5rem 0">
             <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)">Runner-up</div>
             <div style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--t2);letter-spacing:.04em;margin:.2rem 0">2027 JBFA Legends Pack</div>
-            <div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div>
+            <div style="margin-top:.4rem"><span class="prize-pill prize-pill-won"><span class="prize-pill-dot"></span>Kye Beck <span style="opacity:.6">· Kyeskillersss</span></span></div>
           </div>
           <div class="prize-card blue">
             <div class="prize-title"><span class="badge bt3" style="margin-bottom:.4rem;display:inline-flex">Tier 3</span> State Cup</div>
             <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-top:.25rem">1st Place</div>
             <div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--t3);letter-spacing:.04em;margin:.2rem 0">$100</div>
+            <div style="margin-top:.4rem"><span class="prize-pill prize-pill-won"><span class="prize-pill-dot"></span>David Mckenzie <span style="opacity:.6">· DMack Entertainers</span></span></div>
             <hr style="border:none;border-top:1px solid var(--border);margin:.5rem 0">
             <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)">Runner-up</div>
             <div style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--t3);letter-spacing:.04em;margin:.2rem 0">JBFA Hat &amp; T-Shirt</div>
-            <div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div>
+            <div style="margin-top:.4rem"><span class="prize-pill prize-pill-won"><span class="prize-pill-dot"></span>Les Farah <span style="opacity:.6">· Nathan Ramjet</span></span></div>
           </div>
         </div>
         <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.75rem">Knockout — Top 4 (Rounds 19–27)</div>
@@ -581,7 +592,14 @@ function dismissByePromo(){document.getElementById('bye-promo-bar').style.displa
     <div class="sh"><div class="sht">Winnings Leaderboard</div><div class="shl"></div></div>
     <div class="tw"><div class="tw-scroll"><table>
       <thead><tr><th>#</th><th>Coach</th><th>Team</th><th>Comp Won</th><th>Winnings</th></tr></thead>
-      <tbody><tr><td colspan="5" style="text-align:center;color:var(--muted);padding:2rem;font-size:.875rem">No prizes awarded yet — season in progress.</td></tr></tbody>
+      <tbody>
+        <tr><td class="trk">1</td><td><div class="tco">Kane Flemming</div></td><td><div class="tte">Coochiemen</div></td><td>Premiership (T1) — 🥇 1st</td><td style="font-weight:700;color:var(--accent)">$400</td></tr>
+        <tr><td class="trk">2</td><td><div class="tco">Peter Harding</div></td><td><div class="tte">Pistols Panthers</div></td><td>Championship (T2) — 🥇 1st</td><td style="font-weight:700;color:var(--accent)">$200</td></tr>
+        <tr><td class="trk">3</td><td><div class="tco">Zakk Patterson</div></td><td><div class="tte">Nick Politis Budget</div></td><td>Premiership (T1) — 🥈 2nd</td><td style="font-weight:700;color:var(--accent)">$150 + Hat</td></tr>
+        <tr><td class="trk">4</td><td><div class="tco">David Mckenzie</div></td><td><div class="tte">DMack Entertainers</div></td><td>State Cup (T3) — 🥇 1st</td><td style="font-weight:700;color:var(--accent)">$100</td></tr>
+        <tr><td class="trk">5</td><td><div class="tco">Kye Beck</div></td><td><div class="tte">Kyeskillersss</div></td><td>Championship (T2) — 🥈 2nd</td><td style="font-weight:700;color:var(--text)">2027 Legends Pack</td></tr>
+        <tr><td class="trk">6</td><td><div class="tco">Les Farah</div></td><td><div class="tte">Nathan Ramjet</div></td><td>State Cup (T3) — 🥈 2nd</td><td style="font-weight:700;color:var(--text)">Hat &amp; T-Shirt</td></tr>
+      </tbody>
     </table></div></div>
   </div>
 <!-- PRICE PREDICTOR PANEL -->
