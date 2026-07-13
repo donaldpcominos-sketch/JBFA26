@@ -600,6 +600,66 @@ function koMatchup(c){
   if(!opp||koExcluded(opp)) return {type:'bye-walkover',seed:seed,oppName:opp?opp.coach:null};
   return {type:'vs',seed:seed,opp:opp};
 }
+// ── ROUND 20: fixed reseeded bracket tree ─────────────────────────────────
+// R19 was just the play-in/bye round. From here the bracket is a STANDARD
+// single-elimination tree: every seed gets a fixed slot (1..KO_POW2) via the
+// classic reseeding algorithm (same method NCAA-style brackets use), so a
+// top seed's path stays easier for longer — seed 1 can't meet seed 2 until
+// the final, seed 1 vs seed 4 not until the semis, etc. Round-1 pairs from
+// that tree are exactly the R19 mirror pairs (seed vs POW2+1-seed) already
+// computed above; Round 20 pairs are the next level up (winner of each R19
+// pair vs the winner of its sibling pair).
+function koBuildOrder(n){
+  var order=[1,2];
+  while(order.length<n){
+    var size=order.length*2, next=[];
+    for(var i=0;i<order.length;i++) next.push(order[i], size+1-order[i]);
+    order=next;
+  }
+  return order;
+}
+var _KO_ORDER=null;
+function koOrder(){ if(!_KO_ORDER) _KO_ORDER=koBuildOrder(KO_POW2); return _KO_ORDER; }
+function koSeedTeam(seed){ return koBySeed()[seed]||null; }
+// Resolve who advances out of a given seed's R19 slot: the bye/walkover team,
+// or (for an actual play-in) whoever scored higher in R19 — tie broken by R18
+// score, then by better (lower) original seed number.
+function koR19Winner(seed){
+  var c=koSeedTeam(seed);
+  if(!c||koExcluded(c)) return null;
+  var m=koMatchup(c);
+  if(m.type==='bye-seed'||m.type==='bye-walkover') return c;
+  if(m.type==='vs'){
+    var cs=(c.scores&&c.scores.r19)||0, os=(m.opp.scores&&m.opp.scores.r19)||0;
+    if(cs!==os) return cs>os?c:m.opp;
+    var cp=(c.scores&&c.scores.r18)||0, op=(m.opp.scores&&m.opp.scores.r18)||0;
+    if(cp!==op) return cp>op?c:m.opp;
+    return seed<koSeed(m.opp)?c:m.opp;
+  }
+  return null; // withdrawn
+}
+var _KO_R20=null;
+// Build the Round 20 draw: walk the fixed order in blocks of 4 (= two sibling
+// R19 pairs); each block becomes one Round 20 match between the two winners.
+function koR20Matches(){
+  if(_KO_R20) return _KO_R20;
+  var ord=koOrder(), matches=[];
+  for(var i=0;i<ord.length;i+=4){
+    var a=koR19Winner(ord[i])||koR19Winner(ord[i+1]);
+    var b=koR19Winner(ord[i+2])||koR19Winner(ord[i+3]);
+    if(!a&&!b) continue;
+    matches.push({a:a,b:b});
+  }
+  _KO_R20=matches;
+  return matches;
+}
+// Find this coach's Round 20 matchup (they must have won/advanced through R19).
+function koR20MatchFor(c){
+  var seed=koSeed(c);
+  return koR20Matches().filter(function(m){
+    return (m.a&&koSeed(m.a)===seed)||(m.b&&koSeed(m.b)===seed);
+  })[0]||null;
+}
 var _KO_STATS=null;
 function koStats(){
   if(_KO_STATS) return _KO_STATS;
@@ -659,6 +719,52 @@ function koMatchCard(c){
     +'<div class="ko-card-foot">Higher Round '+KO_START+' score advances. Lose and your season ends here.</div>'
   +'</div>';
 }
+// Round 20 onward: R19 is fully scored, so play-ins are resolved. Show either
+// the elimination result (lost the play-in) or the live Round 20 matchup.
+function koMatchCardR20(c){
+  var m=koMatchup(c);
+  if(m.type==='withdrawn'){
+    return '<div class="ko-card"><div class="ko-card-head"><span class="badge bp3">Round 20</span><span class="ko-card-note">Withdrawn</span></div>'
+      +koSideHtml(c,'WITHDRAWN','var(--muted)')
+      +'<div class="ko-card-foot">This team withdrew from the season and is not in the knockout bracket.</div></div>';
+  }
+  if(m.type==='vs' && koR19Winner(koSeed(c))!==c){
+    var cs=(c.scores&&c.scores.r19)||0, os=(m.opp.scores&&m.opp.scores.r19)||0;
+    return '<div class="ko-card">'
+      +'<div class="ko-card-head"><span class="badge bp3">Round '+KO_START+' · Play-in</span><span class="ko-card-note">Eliminated</span></div>'
+      +'<div class="ko-vs-body">'
+        +koSideHtml(c,'YOUR TEAM','var(--muted)')
+        +'<div class="ko-vs">'+cs+' – '+os+'</div>'
+        +koSideHtml(m.opp,'OPPONENT · WON','var(--accent)')
+      +'</div>'
+      +'<div class="ko-card-foot">'+esc(m.opp.coach)+' scored higher in Round '+KO_START+' ('+os+' to '+cs+') and advances. Your season ends here.</div>'
+    +'</div>';
+  }
+  var recap = m.type==='vs' ? ('Won Round '+KO_START+' '+((c.scores&&c.scores.r19)||0)+'–'+((m.opp.scores&&m.opp.scores.r19)||0)+'. ')
+    : m.type==='bye-walkover' ? 'Advanced on a walkover. '
+    : 'Top seed — Round '+KO_START+' bye. ';
+  var r20=koR20MatchFor(c);
+  var opp = r20 ? ((r20.a&&koSeed(r20.a)===koSeed(c))?r20.b:r20.a) : null;
+  if(!opp){
+    return '<div class="ko-card ko-card-bye">'
+      +'<div class="ko-card-head"><span class="badge bp3">Round 20</span><span class="ko-card-note">Bye</span></div>'
+      +'<div class="ko-bye-body">'
+        +koSideHtml(c,'YOUR TEAM','var(--accent)')
+        +'<div class="ko-bye-badge"><div style="font-size:1.6rem">🎟️</div><div class="ko-bye-title">BYE</div><div class="ko-bye-sub">No Round 20 opponent</div></div>'
+      +'</div>'
+      +'<div class="ko-card-foot">'+recap+'Your side of the draw has no opponent this round — you advance straight to Round 21.</div>'
+    +'</div>';
+  }
+  return '<div class="ko-card">'
+    +'<div class="ko-card-head"><span class="badge bp3">Round 20</span><span class="ko-card-note">Round of 256</span></div>'
+    +'<div class="ko-vs-body">'
+      +koSideHtml(c,'YOUR TEAM','var(--accent)')
+      +'<div class="ko-vs">VS</div>'
+      +koSideHtml(opp,'OPPONENT','var(--red)')
+    +'</div>'
+    +'<div class="ko-card-foot">'+recap+'Higher Round 20 score advances. Lose and your season ends here.</div>'
+  +'</div>';
+}
 
 var _koPlayins=null;   // list of {a,b} play-in matches, low seed first
 function koPlayins(){
@@ -686,33 +792,68 @@ function dKoFixtures(){
   var el=document.getElementById('ko-fixtures'); if(el) el.innerHTML=rows;
   dPager('ko-pager',tot,koPg,'setKoPage');
 }
-window.setKoPage=function(p){koPg=p;dKoFixtures();};
+// Round 20 draw: sort matches by the lower (better) seed involved so the
+// listing reads top-seed-first, same convention as the R19 play-in table.
+function dKoR20Fixtures(){
+  var all=koR20Matches().map(function(m){
+    if(m.a&&m.b&&koSeed(m.a)>koSeed(m.b)) return {a:m.b,b:m.a};
+    return m;
+  }).sort(function(x,y){
+    var xs=x.a?koSeed(x.a):(x.b?koSeed(x.b):999999);
+    var ys=y.a?koSeed(y.a):(y.b?koSeed(y.b):999999);
+    return xs-ys;
+  });
+  var tot=Math.ceil(all.length/KO_PGN);
+  var pg=all.slice((koPg-1)*KO_PGN,koPg*KO_PGN);
+  var rows=pg.map(function(m,i){
+    var n=(koPg-1)*KO_PGN+i+1;
+    return '<tr><td class="trk">'+n+'</td>'
+      +'<td onclick="'+(m.a?'showCoach('+m.a.rank+')':'')+'">'+koRow(m.a)+'</td>'
+      +'<td style="text-align:center;color:var(--muted);font-weight:700;font-size:.7rem">vs</td>'
+      +'<td onclick="'+(m.b?'showCoach('+m.b.rank+')':'')+'" style="text-align:right">'+koRow(m.b)+'</td></tr>';
+  }).join('');
+  var el=document.getElementById('ko-fixtures'); if(el) el.innerHTML=rows;
+  dPager('ko-pager',tot,koPg,'setKoPage');
+}
+window.setKoPage=function(p){koPg=p; if(CUR>=KO_START) dKoR20Fixtures(); else dKoFixtures();};
 
 function dP3(){
   var el=document.getElementById('panel-p3'); if(!el) return;
   var chips=document.getElementById('ko-chips');
+  var pre=CUR<KO_START, postR19=CUR>=KO_START, st=koStats();
   if(chips){
-    var pre=CUR<KO_START, st=koStats();
     chips.innerHTML=[
       ['Field',st.field+' coaches'],
-      ['R19 Byes',st.byes+' advance'],
-      ['R19 Play-in',st.playinMatches+' matches'],
-      [(pre?'Status':'This Round'),(pre?'Locked · begins R'+KO_START:'R'+CUR)],
+      ['R19 Byes',st.byes+' advanced'],
+      ['R19 Play-in',st.playinMatches+' played'],
+      [(pre?'Status':'This Round'),(pre?'Locked · begins R'+KO_START:(postR19?'R20':'R'+CUR))],
       ['Grand Final','R'+KO_FINAL],
       ['Prizes','Top 4 paid']
     ].map(function(x){return '<div class="ko-chip"><div class="ko-chip-l">'+x[0]+'</div><div class="ko-chip-v">'+x[1]+'</div></div>';}).join('');
   }
   var def=document.getElementById('koDefault');
   if(def){
-    def.innerHTML=
-      '<div class="ko-hint">👆 Search your team above to see your Round '+KO_START+' matchup and bye status.</div>'
-      +'<div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:1.25rem 0 .6rem">Round '+KO_START+' play-in fixtures <span style="font-weight:500;text-transform:none;letter-spacing:0">— lower seeds; top '+koStats().byes+' advance on a bye</span></div>'
-      +'<div class="tw"><div class="tw-scroll"><table>'
-      +'<colgroup><col style="width:34px"><col><col style="width:34px"><col></colgroup>'
-      +'<thead><tr><th>#</th><th>Higher seed</th><th></th><th style="text-align:right">Lower seed</th></tr></thead>'
-      +'<tbody id="ko-fixtures"></tbody></table></div></div>'
-      +'<div class="pager" id="ko-pager"></div>';
-    dKoFixtures();
+    if(postR19){
+      def.innerHTML=
+        '<div class="ko-hint">👆 Search your team above to see your Round 20 matchup.</div>'
+        +'<div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:1.25rem 0 .6rem">Round 20 draw — Round of 256 <span style="font-weight:500;text-transform:none;letter-spacing:0">— seeded from Round '+KO_START+' results; top seeds keep the easier side of the bracket</span></div>'
+        +'<div class="tw"><div class="tw-scroll"><table>'
+        +'<colgroup><col style="width:34px"><col><col style="width:34px"><col></colgroup>'
+        +'<thead><tr><th>#</th><th>Higher seed</th><th></th><th style="text-align:right">Lower seed</th></tr></thead>'
+        +'<tbody id="ko-fixtures"></tbody></table></div></div>'
+        +'<div class="pager" id="ko-pager"></div>';
+      dKoR20Fixtures();
+    } else {
+      def.innerHTML=
+        '<div class="ko-hint">👆 Search your team above to see your Round '+KO_START+' matchup and bye status.</div>'
+        +'<div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:1.25rem 0 .6rem">Round '+KO_START+' play-in fixtures <span style="font-weight:500;text-transform:none;letter-spacing:0">— lower seeds; top '+koStats().byes+' advance on a bye</span></div>'
+        +'<div class="tw"><div class="tw-scroll"><table>'
+        +'<colgroup><col style="width:34px"><col><col style="width:34px"><col></colgroup>'
+        +'<thead><tr><th>#</th><th>Higher seed</th><th></th><th style="text-align:right">Lower seed</th></tr></thead>'
+        +'<tbody id="ko-fixtures"></tbody></table></div></div>'
+        +'<div class="pager" id="ko-pager"></div>';
+      dKoFixtures();
+    }
   }
 }
 
@@ -738,7 +879,7 @@ window.koShow=function(rank){
   var c=COACHES.filter(function(x){return x.rank===rank;})[0]; if(!c) return;
   document.getElementById('koSearch').value=c.coach;
   document.getElementById('koDrop').style.display='none';
-  document.getElementById('koResult').innerHTML=koMatchCard(c);
+  document.getElementById('koResult').innerHTML=(CUR>=KO_START?koMatchCardR20(c):koMatchCard(c));
   var def=document.getElementById('koDefault'); if(def) def.style.display='none';
 };
 document.addEventListener('click',function(e){

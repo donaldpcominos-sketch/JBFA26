@@ -44,7 +44,20 @@
       "Bash(PYTHONIOENCODING=utf-8 CURRENT_ROUND=17 python fetch_fantasy_coach.py)",
       "Bash(git commit -q -m ' *)",
       "Bash(python -c \"from config import get_current_round; print\\('current round:', get_current_round\\(\\)\\)\")",
-      "Bash(py -c ' *)"
+      "Bash(py -c ' *)",
+      "Bash(ls .claude)",
+      "Bash(cat .claude/launch.json)",
+      "Bash(ls index.html app.js)",
+      "Bash(py -c \"import sys; print\\(sys.version\\)\")",
+      "Bash(py -c \"import pandas, openpyxl; print\\('deps ok'\\)\")",
+      "Bash(node -e ' *)",
+      "Bash(py generate_data.py)",
+      "Bash(PYTHONIOENCODING=utf-8 py generate_data.py)",
+      "Bash(node -e \"const d=require\\('./data.json'\\); console.log\\(d.meta.currentRound\\);\")",
+      "Bash(node --check app.js)",
+      "Bash(netstat -ano)",
+      "Bash(wmic process *)",
+      "Bash(curl -s http://localhost:8137/app.js)"
     ]
   }
 }
