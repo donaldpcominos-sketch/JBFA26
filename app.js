@@ -43,6 +43,10 @@ function vipTag(c){
   return tags;
 }
 function tradeClr(tr){return tr===undefined||tr===null?'var(--muted)':tr>=20?'var(--green)':tr>=10?'var(--accent)':'var(--red)';}
+// Trades are estimated by diffing each team's roster round-to-round, so a trade
+// made and reversed before the next snapshot is invisible to the count. Shown
+// wherever a trades stat is displayed so it doesn't read as exact.
+var TRADE_TIP=' <span class="tip" onclick="tipTap(this)"><span class="tiptext">Estimated from roster changes — may undercount trades made and reversed before the next snapshot.</span><span class="cat-info-icon" style="font-size:.85em;opacity:.75">ⓘ</span></span>';
 function getTier(r){return r<=T1?1:r<=T2?2:3;}
 function tb(r,l,tOverride){
   var t=tOverride||getTier(r),cls=['bt1','bt2','bt3'][t-1];
@@ -249,7 +253,7 @@ window.showCoach = function showCoach(rank){
         '<div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:700;margin-bottom:.65rem">Team &amp; Survival</div>'+
         '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;">'+
           (wealthStr?'<div class="cvstat"><div class="cvsl">Team Value</div><div class="cvsv" style="color:var(--green)">'+wealthStr+(c.wealthPct!==undefined?' <span style="font-size:.7rem;color:'+(c.wealthPct>=75?'var(--green)':c.wealthPct>=50?'var(--accent)':'var(--muted)')+';">(Top '+(100-c.wealthPct+1)+'%)</span>':'')+'</div></div>':'')+
-          (function(){var tr=c.tradesRemaining;if(tr===undefined)return'';var inner=CUR>=19?''+tr:tr+' <span style="font-size:.7rem;color:var(--muted);">(+'+(tr+8)+')</span>';return'<div class="cvstat"><div class="cvsl">Trades Left</div><div class="cvsv" style="color:'+tradeClr(tr)+'">'+inner+'</div></div>';})()+
+          (function(){var tr=c.tradesRemaining;if(tr===undefined)return'';var inner=CUR>=19?''+tr:tr+' <span style="font-size:.7rem;color:var(--muted);">(+'+(tr+8)+')</span>';return'<div class="cvstat"><div class="cvsl">Trades Left'+TRADE_TIP+'</div><div class="cvsv" style="color:'+tradeClr(tr)+'">'+inner+'</div></div>';})()+
     (function(){
     var isElim2 = c.survivorStatus === 'eliminated';
     var isInelig2 = c.survivorStatus === 'ineligible';
@@ -561,7 +565,7 @@ function dP2(){
     +'<div style="display:flex;gap:.4rem;margin-bottom:1rem;flex-wrap:wrap">'+tabs+'</div>'
     +'<div class="tw"><div class="tw-scroll"><table id="p2t">'
     +'<colgroup><col style="width:38px"><col><col style="width:88px"><col style="width:88px"><col style="width:60px"></colgroup>'
-    +'<thead><tr><th>#</th><th>Coach</th><th style="text-align:center">Score</th><th>Value</th><th>Trades</th></tr></thead>'
+    +'<thead><tr><th>#</th><th>Coach</th><th style="text-align:center">Score</th><th>Value</th><th>Trades'+TRADE_TIP+'</th></tr></thead>'
     +'<tbody>'+rows+'</tbody>'
     +'</table></div></div>';
 }

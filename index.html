@@ -117,13 +117,13 @@ function dismissByePromo(){document.getElementById('bye-promo-bar').style.displa
     <div class="sh"><div class="sht">Overall Leaders</div><div class="shl"></div><span class="badge bt1">Live</span></div>
     <div class="tw"><div class="tw-scroll"><table id="ovt">
       <colgroup><col style="width:38px"><col><col style="width:72px"><col style="width:88px"><col style="width:60px"></colgroup>
-      <thead><tr><th>#</th><th>Coach</th><th style="text-align:center">Score</th><th>Value</th><th>Trades</th></tr></thead>
+      <thead><tr><th>#</th><th>Coach</th><th style="text-align:center">Score</th><th>Value</th><th>Trades <span class="tip" onclick="tipTap(this)"><span class="tiptext">Estimated from roster changes — may undercount trades made and reversed before the next snapshot.</span><span class="cat-info-icon" style="font-size:.85em;opacity:.75">ⓘ</span></span></th></tr></thead>
       <tbody id="ov-top"></tbody>
     </table></div></div>
     <div class="sh"><div class="sht">🎙️ Podcaster Rankings</div><div class="shl"></div></div>
     <div class="tw"><div class="tw-scroll"><table id="ovp">
       <colgroup><col style="width:38px"><col><col style="width:72px"><col style="width:88px"><col style="width:60px"></colgroup>
-      <thead><tr><th>#</th><th>Coach</th><th style="text-align:center">Score</th><th>Value</th><th>Trades</th></tr></thead>
+      <thead><tr><th>#</th><th>Coach</th><th style="text-align:center">Score</th><th>Value</th><th>Trades <span class="tip" onclick="tipTap(this)"><span class="tiptext">Estimated from roster changes — may undercount trades made and reversed before the next snapshot.</span><span class="cat-info-icon" style="font-size:.85em;opacity:.75">ⓘ</span></span></th></tr></thead>
       <tbody id="ov-pod"></tbody>
     </table></div></div>
     <div class="sh"><div class="sht">🔄 Trades This Round</div><div class="shl"></div><span id="ov-trade-rnd" style="font-size:.75rem;color:var(--muted)"></span></div>
@@ -267,7 +267,7 @@ function dismissByePromo(){document.getElementById('bye-promo-bar').style.displa
     </div>
     <div class="tw"><div class="tw-scroll"><table id="p1t">
       <colgroup><col style="width:38px"><col><col style="width:72px"><col style="width:88px"><col style="width:60px"></colgroup>
-      <thead><tr><th>#</th><th>Coach</th><th style="text-align:center">Score</th><th>Value</th><th>Trades</th></tr></thead>
+      <thead><tr><th>#</th><th>Coach</th><th style="text-align:center">Score</th><th>Value</th><th>Trades <span class="tip" onclick="tipTap(this)"><span class="tiptext">Estimated from roster changes — may undercount trades made and reversed before the next snapshot.</span><span class="cat-info-icon" style="font-size:.85em;opacity:.75">ⓘ</span></span></th></tr></thead>
       <tbody id="p1b"></tbody>
     </table></div></div>
     <div class="pager" id="p1pg"></div>
@@ -402,7 +402,7 @@ function dismissByePromo(){document.getElementById('bye-promo-bar').style.displa
     <div class="fr"><span class="fil">Filter:</span><input class="fi" id="vipfi" placeholder="Search VIP coach or team…" oninput="fVip()"></div>
     <div class="tw"><div class="tw-scroll"><table id="vipt">
       <colgroup><col style="width:38px"><col><col style="width:72px"><col style="width:88px"><col style="width:60px"></colgroup>
-      <thead><tr><th>#</th><th>Coach</th><th style="text-align:center">Score</th><th>Value</th><th>Trades</th></tr></thead>
+      <thead><tr><th>#</th><th>Coach</th><th style="text-align:center">Score</th><th>Value</th><th>Trades <span class="tip" onclick="tipTap(this)"><span class="tiptext">Estimated from roster changes — may undercount trades made and reversed before the next snapshot.</span><span class="cat-info-icon" style="font-size:.85em;opacity:.75">ⓘ</span></span></th></tr></thead>
       <tbody id="vipb"></tbody>
     </table></div></div>
     <div class="pager" id="vippg"></div>
