@@ -657,12 +657,92 @@ function koR20Matches(){
   _KO_R20=matches;
   return matches;
 }
-// Find this coach's Round 20 matchup (they must have won/advanced through R19).
-function koR20MatchFor(c){
+function koScore(c,round){return (c&&c.scores&&c.scores['r'+round])||0;}
+function koMatchWinner(match,round){
+  if(!match) return null;
+  var a=match.a,b=match.b;
+  if(!a) return b;
+  if(!b) return a;
+  var as=koScore(a,round),bs=koScore(b,round);
+  if(as!==bs) return as>bs?a:b;
+  var pr=round-1;
+  if(pr>=KO_START){
+    var ap=koScore(a,pr),bp=koScore(b,pr);
+    if(ap!==bp) return ap>bp?a:b;
+  }
+  return koSeed(a)<koSeed(b)?a:b;
+}
+// Active knockout draw round: R19 fixtures pre-start; after each scored round advance one.
+function koBracketRound(){
+  if(CUR<KO_START) return KO_START;
+  if(CUR>=KO_FINAL) return KO_FINAL;
+  return CUR+1;
+}
+function koRoundOfLabel(round){
+  if(round===KO_FINAL) return 'Grand Final';
+  var n=Math.pow(2,KO_FINAL-round+1);
+  return 'Round of '+n;
+}
+var _KO_MATCHES={};
+function koMatchesForRound(round){
+  if(_KO_MATCHES[round]) return _KO_MATCHES[round];
+  if(round===KO_START+1){_KO_MATCHES[round]=koR20Matches();return _KO_MATCHES[round];}
+  var prev=koMatchesForRound(round-1),prevRound=round-1,matches=[];
+  for(var i=0;i<prev.length;i+=2){
+    var m1=prev[i],m2=prev[i+1];
+    var a=m1?koMatchWinner(m1,prevRound):null;
+    var b=m2?koMatchWinner(m2,prevRound):null;
+    if(!a&&!b) continue;
+    matches.push({a:a,b:b});
+  }
+  _KO_MATCHES[round]=matches;
+  return matches;
+}
+function koMatchForRound(c,round){
   var seed=koSeed(c);
-  return koR20Matches().filter(function(m){
+  return koMatchesForRound(round).filter(function(m){
     return (m.a&&koSeed(m.a)===seed)||(m.b&&koSeed(m.b)===seed);
   })[0]||null;
+}
+function koEliminatedIn(c){
+  var m=koMatchup(c);
+  if(m.type==='withdrawn') return {round:'withdrawn'};
+  if(m.type==='vs'&&CUR>=KO_START&&koR19Winner(koSeed(c))!==c){
+    return {round:KO_START,opp:m.opp,myScore:koScore(c,KO_START),oppScore:koScore(m.opp,KO_START)};
+  }
+  for(var r=KO_START+1;r<=CUR&&r<KO_FINAL;r++){
+    var match=koMatchForRound(c,r);
+    if(!match) continue;
+    var winner=koMatchWinner(match,r);
+    if(winner&&winner!==c){
+      var opp=(match.a&&koSeed(match.a)===koSeed(c))?match.b:match.a;
+      return {round:r,opp:opp,myScore:koScore(c,r),oppScore:koScore(opp,r)};
+    }
+  }
+  if(CUR>=KO_FINAL){
+    var finalM=koMatchesForRound(KO_FINAL)[0];
+    if(finalM){
+      var champ=koMatchWinner(finalM,KO_FINAL);
+      if(champ&&champ!==c&&(koSeed(finalM.a)===koSeed(c)||koSeed(finalM.b)===koSeed(c))){
+        var fopp=(finalM.a&&koSeed(finalM.a)===koSeed(c))?finalM.b:finalM.a;
+        return {round:KO_FINAL,opp:fopp,myScore:koScore(c,KO_FINAL),oppScore:koScore(fopp,KO_FINAL)};
+      }
+    }
+  }
+  return null;
+}
+function koRecapLine(c,throughRound){
+  var m=koMatchup(c),parts=[];
+  if(m.type==='vs'&&koR19Winner(koSeed(c))===c)
+    parts.push('Won Round '+KO_START+' '+koScore(c,KO_START)+'–'+koScore(m.opp,KO_START));
+  else if(m.type==='bye-walkover') parts.push('Advanced on a walkover');
+  else if(m.type==='bye-seed') parts.push('Top seed — Round '+KO_START+' bye');
+  for(var r=KO_START+1;r<throughRound;r++){
+    var match=koMatchForRound(c,r),opp=match?((match.a&&koSeed(match.a)===koSeed(c))?match.b:match.a):null;
+    if(opp) parts.push('Won Round '+r+' '+koScore(c,r)+'–'+koScore(opp,r));
+    else if(match) parts.push('Round '+r+' bye');
+  }
+  return parts.length?parts.join('. ')+'. ':'';
 }
 var _KO_STATS=null;
 function koStats(){
@@ -723,50 +803,62 @@ function koMatchCard(c){
     +'<div class="ko-card-foot">Higher Round '+KO_START+' score advances. Lose and your season ends here.</div>'
   +'</div>';
 }
-// Round 20 onward: R19 is fully scored, so play-ins are resolved. Show either
-// the elimination result (lost the play-in) or the live Round 20 matchup.
-function koMatchCardR20(c){
+// Knockout post-R19: resolve eliminations through the latest scored round and show the live draw.
+function koMatchCardActive(c){
   var m=koMatchup(c);
   if(m.type==='withdrawn'){
-    return '<div class="ko-card"><div class="ko-card-head"><span class="badge bp3">Round 20</span><span class="ko-card-note">Withdrawn</span></div>'
+    return '<div class="ko-card"><div class="ko-card-head"><span class="badge bp3">Knockout</span><span class="ko-card-note">Withdrawn</span></div>'
       +koSideHtml(c,'WITHDRAWN','var(--muted)')
       +'<div class="ko-card-foot">This team withdrew from the season and is not in the knockout bracket.</div></div>';
   }
-  if(m.type==='vs' && koR19Winner(koSeed(c))!==c){
-    var cs=(c.scores&&c.scores.r19)||0, os=(m.opp.scores&&m.opp.scores.r19)||0;
+  var elim=koEliminatedIn(c);
+  if(elim&&elim.round!=='withdrawn'){
+    var er=elim.round,el=er===KO_START?' · Play-in':'';
     return '<div class="ko-card">'
-      +'<div class="ko-card-head"><span class="badge bp3">Round '+KO_START+' · Play-in</span><span class="ko-card-note">Eliminated</span></div>'
+      +'<div class="ko-card-head"><span class="badge bp3">Round '+er+el+'</span><span class="ko-card-note">Eliminated</span></div>'
       +'<div class="ko-vs-body">'
         +koSideHtml(c,'YOUR TEAM','var(--muted)')
-        +'<div class="ko-vs">'+cs+' – '+os+'</div>'
-        +koSideHtml(m.opp,'OPPONENT · WON','var(--accent)')
+        +'<div class="ko-vs">'+elim.myScore+' – '+elim.oppScore+'</div>'
+        +koSideHtml(elim.opp,'OPPONENT · WON','var(--accent)')
       +'</div>'
-      +'<div class="ko-card-foot">'+esc(m.opp.coach)+' scored higher in Round '+KO_START+' ('+os+' to '+cs+') and advances. Your season ends here.</div>'
+      +'<div class="ko-card-foot">'+esc(elim.opp.coach)+' scored higher in Round '+er+' ('+elim.oppScore+' to '+elim.myScore+') and advances. Your season ends here.</div>'
     +'</div>';
   }
-  var recap = m.type==='vs' ? ('Won Round '+KO_START+' '+((c.scores&&c.scores.r19)||0)+'–'+((m.opp.scores&&m.opp.scores.r19)||0)+'. ')
-    : m.type==='bye-walkover' ? 'Advanced on a walkover. '
-    : 'Top seed — Round '+KO_START+' bye. ';
-  var r20=koR20MatchFor(c);
-  var opp = r20 ? ((r20.a&&koSeed(r20.a)===koSeed(c))?r20.b:r20.a) : null;
+  if(CUR>=KO_FINAL){
+    var finalM=koMatchesForRound(KO_FINAL)[0],champ=finalM?koMatchWinner(finalM,KO_FINAL):null;
+    if(champ===c){
+      return '<div class="ko-card ko-card-bye">'
+        +'<div class="ko-card-head"><span class="badge bp3">Round '+KO_FINAL+'</span><span class="ko-card-note">Champion</span></div>'
+        +'<div class="ko-bye-body">'
+          +koSideHtml(c,'YOUR TEAM','var(--accent)')
+          +'<div class="ko-bye-badge"><div style="font-size:1.6rem">🏆</div><div class="ko-bye-title">WINNER</div><div class="ko-bye-sub">Knockout champion</div></div>'
+        +'</div>'
+        +'<div class="ko-card-foot">'+koRecapLine(c,KO_FINAL)+'You won the Grand Final and take the top knockout prize.</div>'
+      +'</div>';
+    }
+  }
+  var displayRound=koBracketRound();
+  var recap=koRecapLine(c,displayRound-1);
+  var match=koMatchForRound(c,displayRound);
+  var opp=match?((match.a&&koSeed(match.a)===koSeed(c))?match.b:match.a):null;
   if(!opp){
     return '<div class="ko-card ko-card-bye">'
-      +'<div class="ko-card-head"><span class="badge bp3">Round 20</span><span class="ko-card-note">Bye</span></div>'
+      +'<div class="ko-card-head"><span class="badge bp3">Round '+displayRound+'</span><span class="ko-card-note">Bye</span></div>'
       +'<div class="ko-bye-body">'
         +koSideHtml(c,'YOUR TEAM','var(--accent)')
-        +'<div class="ko-bye-badge"><div style="font-size:1.6rem">🎟️</div><div class="ko-bye-title">BYE</div><div class="ko-bye-sub">No Round 20 opponent</div></div>'
+        +'<div class="ko-bye-badge"><div style="font-size:1.6rem">🎟️</div><div class="ko-bye-title">BYE</div><div class="ko-bye-sub">No Round '+displayRound+' opponent</div></div>'
       +'</div>'
-      +'<div class="ko-card-foot">'+recap+'Your side of the draw has no opponent this round — you advance straight to Round 21.</div>'
+      +'<div class="ko-card-foot">'+recap+'Your side of the draw has no opponent this round — you advance straight to Round '+(displayRound+1)+'.</div>'
     +'</div>';
   }
   return '<div class="ko-card">'
-    +'<div class="ko-card-head"><span class="badge bp3">Round 20</span><span class="ko-card-note">Round of 256</span></div>'
+    +'<div class="ko-card-head"><span class="badge bp3">Round '+displayRound+'</span><span class="ko-card-note">'+koRoundOfLabel(displayRound)+'</span></div>'
     +'<div class="ko-vs-body">'
       +koSideHtml(c,'YOUR TEAM','var(--accent)')
       +'<div class="ko-vs">VS</div>'
       +koSideHtml(opp,'OPPONENT','var(--red)')
     +'</div>'
-    +'<div class="ko-card-foot">'+recap+'Higher Round 20 score advances. Lose and your season ends here.</div>'
+    +'<div class="ko-card-foot">'+recap+'Higher Round '+displayRound+' score advances. Lose and your season ends here.</div>'
   +'</div>';
 }
 
@@ -796,10 +888,8 @@ function dKoFixtures(){
   var el=document.getElementById('ko-fixtures'); if(el) el.innerHTML=rows;
   dPager('ko-pager',tot,koPg,'setKoPage');
 }
-// Round 20 draw: sort matches by the lower (better) seed involved so the
-// listing reads top-seed-first, same convention as the R19 play-in table.
-function dKoR20Fixtures(){
-  var all=koR20Matches().map(function(m){
+function dKoRoundFixtures(round){
+  var all=koMatchesForRound(round).map(function(m){
     if(m.a&&m.b&&koSeed(m.a)>koSeed(m.b)) return {a:m.b,b:m.a};
     return m;
   }).sort(function(x,y){
@@ -819,34 +909,40 @@ function dKoR20Fixtures(){
   var el=document.getElementById('ko-fixtures'); if(el) el.innerHTML=rows;
   dPager('ko-pager',tot,koPg,'setKoPage');
 }
-window.setKoPage=function(p){koPg=p; if(CUR>=KO_START) dKoR20Fixtures(); else dKoFixtures();};
+window.setKoPage=function(p){koPg=p; if(CUR>=KO_START) dKoRoundFixtures(koBracketRound()); else dKoFixtures();};
 
 function dP3(){
   var el=document.getElementById('panel-p3'); if(!el) return;
   var chips=document.getElementById('ko-chips');
-  var pre=CUR<KO_START, postR19=CUR>=KO_START, st=koStats();
+  var pre=CUR<KO_START, postKo=CUR>=KO_START, st=koStats(), drawRound=koBracketRound();
   if(chips){
     chips.innerHTML=[
       ['Field',st.field+' coaches'],
       ['R19 Byes',st.byes+' advanced'],
       ['R19 Play-in',st.playinMatches+' played'],
-      [(pre?'Status':'This Round'),(pre?'Locked · begins R'+KO_START:(postR19?'R20':'R'+CUR))],
+      [(pre?'Status':'This Round'),(pre?'Locked · begins R'+KO_START:(CUR>=KO_FINAL?'Complete · R'+KO_FINAL:'R'+drawRound))],
       ['Grand Final','R'+KO_FINAL],
       ['Prizes','Top 4 paid']
     ].map(function(x){return '<div class="ko-chip"><div class="ko-chip-l">'+x[0]+'</div><div class="ko-chip-v">'+x[1]+'</div></div>';}).join('');
   }
   var def=document.getElementById('koDefault');
   if(def){
-    if(postR19){
+    if(postKo){
+      var drawTitle=CUR>=KO_FINAL
+        ?'Grand Final result'
+        :('Round '+drawRound+' draw — '+koRoundOfLabel(drawRound));
+      var drawSub=CUR>=KO_FINAL
+        ?'Knockout complete — search your team above for your final result'
+        :('seeded from Round '+KO_START+' results; top seeds keep the easier side of the bracket');
       def.innerHTML=
-        '<div class="ko-hint">👆 Search your team above to see your Round 20 matchup.</div>'
-        +'<div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:1.25rem 0 .6rem">Round 20 draw — Round of 256 <span style="font-weight:500;text-transform:none;letter-spacing:0">— seeded from Round '+KO_START+' results; top seeds keep the easier side of the bracket</span></div>'
+        '<div class="ko-hint">👆 Search your team above to see your '+(CUR>=KO_FINAL?'knockout result':'Round '+drawRound+' matchup')+'.</div>'
+        +'<div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:1.25rem 0 .6rem">'+drawTitle+' <span style="font-weight:500;text-transform:none;letter-spacing:0">— '+drawSub+'</span></div>'
         +'<div class="tw"><div class="tw-scroll"><table>'
         +'<colgroup><col style="width:34px"><col><col style="width:34px"><col></colgroup>'
         +'<thead><tr><th>#</th><th>Higher seed</th><th></th><th style="text-align:right">Lower seed</th></tr></thead>'
         +'<tbody id="ko-fixtures"></tbody></table></div></div>'
         +'<div class="pager" id="ko-pager"></div>';
-      dKoR20Fixtures();
+      dKoRoundFixtures(drawRound);
     } else {
       def.innerHTML=
         '<div class="ko-hint">👆 Search your team above to see your Round '+KO_START+' matchup and bye status.</div>'
@@ -883,7 +979,7 @@ window.koShow=function(rank){
   var c=COACHES.filter(function(x){return x.rank===rank;})[0]; if(!c) return;
   document.getElementById('koSearch').value=c.coach;
   document.getElementById('koDrop').style.display='none';
-  document.getElementById('koResult').innerHTML=(CUR>=KO_START?koMatchCardR20(c):koMatchCard(c));
+  document.getElementById('koResult').innerHTML=(CUR>=KO_START?koMatchCardActive(c):koMatchCard(c));
   var def=document.getElementById('koDefault'); if(def) def.style.display='none';
 };
 document.addEventListener('click',function(e){
