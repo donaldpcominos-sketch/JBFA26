@@ -957,6 +957,65 @@ function dP3(){
   }
 }
 
+// Build a coach's full knockout round-by-round history (decided rounds only).
+function koHistory(c){
+  var hist=[];
+  if(koExcluded(c)||!c.seedRank) return hist;
+  var m=koMatchup(c);
+  if(m.type==='bye-seed'){
+    hist.push({round:KO_START,type:'bye'});
+  } else if(m.type==='bye-walkover'){
+    hist.push({round:KO_START,type:'walkover',oppName:m.oppName});
+  } else if(m.type==='vs'&&CUR>=KO_START){
+    var cs=koScore(c,KO_START),os=koScore(m.opp,KO_START);
+    hist.push({round:KO_START,type:'match',opp:m.opp,myScore:cs,oppScore:os,won:koR19Winner(koSeed(c))===c});
+  }
+  var lastRound=CUR>=KO_FINAL?KO_FINAL:CUR;
+  var elim=koEliminatedIn(c);
+  var stopRound=(elim&&elim.round!=='withdrawn')?elim.round:lastRound;
+  for(var r=KO_START+1;r<=stopRound&&r<=lastRound;r++){
+    var match=koMatchForRound(c,r);
+    if(!match){ hist.push({round:r,type:'bye'}); continue; }
+    var opp=(match.a&&koSeed(match.a)===koSeed(c))?match.b:match.a;
+    if(!opp){ hist.push({round:r,type:'bye'}); continue; }
+    var myScore=koScore(c,r),oppScore=koScore(opp,r);
+    hist.push({round:r,type:'match',opp:opp,myScore:myScore,oppScore:oppScore,won:koMatchWinner(match,r)===c});
+  }
+  return hist;
+}
+function koHistoryHtml(c){
+  var hist=koHistory(c);
+  if(!hist.length) return '';
+  var rows=hist.map(function(h){
+    if(h.type==='bye'){
+      return '<tr><td class="trk">R'+h.round+'</td><td colspan="3" style="color:var(--muted)">Bye</td></tr>';
+    }
+    if(h.type==='walkover'){
+      return '<tr><td class="trk">R'+h.round+'</td><td colspan="3" style="color:var(--muted)">Walkover'+(h.oppName?' ('+esc(h.oppName)+' withdrew)':'')+'</td></tr>';
+    }
+    var margin=Math.abs(h.myScore-h.oppScore);
+    var resultTxt=h.won?('Won by '+margin):('Lost by '+margin);
+    var resultClr=h.won?'var(--green)':'var(--red)';
+    return '<tr onclick="showCoach('+h.opp.rank+')">'
+      +'<td class="trk">R'+h.round+'</td>'
+      +'<td>'+esc(h.opp.coach)+'<div style="font-size:.7rem;color:var(--muted)">'+esc(h.opp.team)+'</div></td>'
+      +'<td style="text-align:center;font-weight:700">'+h.myScore+' – '+h.oppScore+'</td>'
+      +'<td style="text-align:right;color:'+resultClr+';font-weight:700">'+resultTxt+'</td>'
+    +'</tr>';
+  }).join('');
+  return '<div class="ko-history"><div class="ko-history-toggle" onclick="koToggleHistory()">📜 Previous Rounds <span id="koHistArrow">▾</span></div>'
+    +'<div id="koHistBody" style="display:none">'
+    +'<div class="tw"><div class="tw-scroll"><table><thead><tr><th>Round</th><th>Opponent</th><th style="text-align:center">Score</th><th style="text-align:right">Result</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>'
+  +'</div>';
+}
+window.koToggleHistory=function(){
+  var b=document.getElementById('koHistBody'),a=document.getElementById('koHistArrow');
+  if(!b) return;
+  var open=b.style.display!=='none';
+  b.style.display=open?'none':'';
+  if(a) a.textContent=open?'▾':'▴';
+};
+
 // live search dropdown
 function koFilter(){
   var inp=document.getElementById('koSearch'), drop=document.getElementById('koDrop');
@@ -979,7 +1038,7 @@ window.koShow=function(rank){
   var c=COACHES.filter(function(x){return x.rank===rank;})[0]; if(!c) return;
   document.getElementById('koSearch').value=c.coach;
   document.getElementById('koDrop').style.display='none';
-  document.getElementById('koResult').innerHTML=(CUR>=KO_START?koMatchCardActive(c):koMatchCard(c));
+  document.getElementById('koResult').innerHTML=(CUR>=KO_START?koMatchCardActive(c):koMatchCard(c))+koHistoryHtml(c);
   var def=document.getElementById('koDefault'); if(def) def.style.display='none';
 };
 document.addEventListener('click',function(e){

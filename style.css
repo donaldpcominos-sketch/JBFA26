@@ -225,6 +225,14 @@ td{padding:.6rem 1rem;vertical-align:middle;}
 .ko-hint{background:var(--surface2);border:1px dashed var(--border);border-radius:10px;padding:.85rem 1rem;font-size:.85rem;color:var(--muted);text-align:center;}
 .ko-mini-coach{font-size:.82rem;font-weight:700;color:var(--text);}
 .ko-mini-team{font-size:.7rem;color:var(--muted);}
+.ko-history{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:.9rem 1.1rem;margin-bottom:1rem;}
+.ko-history-toggle{display:flex;align-items:center;justify-content:space-between;cursor:pointer;font-size:.85rem;font-weight:700;color:var(--text);user-select:none;}
+.ko-history-toggle:hover{color:var(--accent);}
+.ko-history table{width:100%;border-collapse:collapse;margin-top:.75rem;}
+.ko-history th{font-size:.62rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);text-align:left;padding:.4rem .5rem;border-bottom:1px solid var(--border);}
+.ko-history td{font-size:.82rem;padding:.5rem;border-bottom:1px solid var(--border);vertical-align:middle;}
+.ko-history tr:last-child td{border-bottom:none;}
+.ko-history tr[onclick]:hover td{background:var(--surface2);}
 @media(max-width:560px){
   .ko-vs-body,.ko-bye-body{flex-direction:column;}
   .ko-vs{padding:.15rem 0;}
