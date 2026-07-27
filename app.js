@@ -759,6 +759,14 @@ function koStats(){
   _KO_STATS={field:field,byes:byeSeed+walkover,byeSeed:byeSeed,walkover:walkover,playinMatches:vs/2};
   return _KO_STATS;
 }
+function koRemaining(){
+  var n=0;
+  COACHES.forEach(function(c){
+    if(!c.seedRank||koExcluded(c)) return;
+    if(!koEliminatedIn(c)) n++;
+  });
+  return n;
+}
 var KO_TIER_NAMES=['Premiership','Championship','State Cup'];
 function koTierBadge(c){return '<span class="badge bt'+c.tier+'" style="font-size:.6rem;padding:.1rem .4rem">'+KO_TIER_NAMES[c.tier-1]+'</span>';}
 
@@ -918,8 +926,7 @@ function dP3(){
   if(chips){
     chips.innerHTML=[
       ['Field',st.field+' coaches'],
-      ['R19 Byes',st.byes+' advanced'],
-      ['R19 Play-in',st.playinMatches+' played'],
+      ['Players Remaining',(pre?st.field:koRemaining())+' remaining'],
       [(pre?'Status':'This Round'),(pre?'Locked · begins R'+KO_START:(CUR>=KO_FINAL?'Complete · R'+KO_FINAL:'R'+drawRound))],
       ['Grand Final','R'+KO_FINAL],
       ['Prizes','Top 4 paid']
