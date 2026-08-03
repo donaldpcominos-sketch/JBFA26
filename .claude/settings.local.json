@@ -57,7 +57,9 @@
       "Bash(node --check app.js)",
       "Bash(netstat -ano)",
       "Bash(wmic process *)",
-      "Bash(curl -s http://localhost:8137/app.js)"
+      "Bash(curl -s http://localhost:8137/app.js)",
+      "Bash(git pull *)",
+      "Bash(git commit -m ' *)"
     ]
   }
 }
