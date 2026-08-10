@@ -651,7 +651,10 @@ function koR20Matches(){
   for(var i=0;i<ord.length;i+=4){
     var a=koR19Winner(ord[i])||koR19Winner(ord[i+1]);
     var b=koR19Winner(ord[i+2])||koR19Winner(ord[i+3]);
-    if(!a&&!b) continue;
+    // Always push, even when both slots are empty. Later rounds pair by array
+    // INDEX (prev[i] vs prev[i+1]), so skipping an empty slot would shift the
+    // parity of everything after it and silently marry teams to the wrong half
+    // of the bracket. Empty matches are filtered at render time instead.
     matches.push({a:a,b:b});
   }
   _KO_R20=matches;
@@ -692,12 +695,16 @@ function koMatchesForRound(round){
     var m1=prev[i],m2=prev[i+1];
     var a=m1?koMatchWinner(m1,prevRound):null;
     var b=m2?koMatchWinner(m2,prevRound):null;
-    if(!a&&!b) continue;
-    matches.push({a:a,b:b});
+    matches.push({a:a,b:b});   // keep index alignment — see koR20Matches
   }
   _KO_MATCHES[round]=matches;
   return matches;
 }
+// Matches that actually have someone in them (for display / counting).
+function koLiveMatches(round){
+  return koMatchesForRound(round).filter(function(m){return m.a||m.b;});
+}
+function koFinalMatch(){ return koLiveMatches(KO_FINAL)[0]||null; }
 function koMatchForRound(c,round){
   var seed=koSeed(c);
   return koMatchesForRound(round).filter(function(m){
@@ -720,10 +727,10 @@ function koEliminatedIn(c){
     }
   }
   if(CUR>=KO_FINAL){
-    var finalM=koMatchesForRound(KO_FINAL)[0];
+    var finalM=koFinalMatch();
     if(finalM){
       var champ=koMatchWinner(finalM,KO_FINAL);
-      if(champ&&champ!==c&&(koSeed(finalM.a)===koSeed(c)||koSeed(finalM.b)===koSeed(c))){
+      if(champ&&champ!==c&&((finalM.a&&koSeed(finalM.a)===koSeed(c))||(finalM.b&&koSeed(finalM.b)===koSeed(c)))){
         var fopp=(finalM.a&&koSeed(finalM.a)===koSeed(c))?finalM.b:finalM.a;
         return {round:KO_FINAL,opp:fopp,myScore:koScore(c,KO_FINAL),oppScore:koScore(fopp,KO_FINAL)};
       }
@@ -833,7 +840,7 @@ function koMatchCardActive(c){
     +'</div>';
   }
   if(CUR>=KO_FINAL){
-    var finalM=koMatchesForRound(KO_FINAL)[0],champ=finalM?koMatchWinner(finalM,KO_FINAL):null;
+    var finalM=koFinalMatch(),champ=finalM?koMatchWinner(finalM,KO_FINAL):null;
     if(champ===c){
       return '<div class="ko-card ko-card-bye">'
         +'<div class="ko-card-head"><span class="badge bp3">Round '+KO_FINAL+'</span><span class="ko-card-note">Champion</span></div>'
@@ -846,7 +853,10 @@ function koMatchCardActive(c){
     }
   }
   var displayRound=koBracketRound();
-  var recap=koRecapLine(c,displayRound-1);
+  // Recap covers every DECIDED round, i.e. everything before the round being
+  // displayed. koRecapLine's loop is exclusive of throughRound, so pass
+  // displayRound itself — passing displayRound-1 drops the latest result.
+  var recap=koRecapLine(c,displayRound);
   var match=koMatchForRound(c,displayRound);
   var opp=match?((match.a&&koSeed(match.a)===koSeed(c))?match.b:match.a):null;
   if(!opp){
@@ -897,7 +907,7 @@ function dKoFixtures(){
   dPager('ko-pager',tot,koPg,'setKoPage');
 }
 function dKoRoundFixtures(round){
-  var all=koMatchesForRound(round).map(function(m){
+  var all=koLiveMatches(round).map(function(m){
     if(m.a&&m.b&&koSeed(m.a)>koSeed(m.b)) return {a:m.b,b:m.a};
     return m;
   }).sort(function(x,y){

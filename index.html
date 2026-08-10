@@ -82,20 +82,23 @@
   </div>
 </div>
 
-<!-- Rosterr Bye Planner promo bar -->
+<!-- Site notice bar. Reused for whatever the current announcement is — the
+     bye-promo ids/classes are kept so the existing .bpb-* styles still apply.
+     Bump the localStorage key whenever the message changes, otherwise anyone
+     who dismissed the previous notice never sees the new one. -->
 <div id="bye-promo-bar">
-  <a href="https://rosterr.app" target="_blank" rel="noopener noreferrer" id="bye-promo-link">
-    <span class="bpb-icon">📅</span>
-    <span class="bpb-badge">NEW</span>
-    <span class="bpb-text-full">Bye Planner is now live — plan your squad around the byes at <strong>rosterr.app</strong></span>
-    <span class="bpb-text-short">Bye Planner now live at <strong>rosterr.app</strong></span>
+  <a href="#" onclick="showTab(null,'p3');window.scrollTo({top:0,behavior:'smooth'});return false;" id="bye-promo-link">
+    <span class="bpb-icon">🏆</span>
+    <span class="bpb-badge">FIXED</span>
+    <span class="bpb-text-full">Knockout audited — a seeding bug was corrupting the bracket. Every round from R19 has been rebuilt. <strong>See the R24 draw</strong></span>
+    <span class="bpb-text-short">Knockout seeding bug fixed — <strong>see R24 draw</strong></span>
     <span class="bpb-arrow">→</span>
   </a>
   <button class="bpb-close" onclick="dismissByePromo()" title="Dismiss">×</button>
 </div>
 <script>
-(function(){if(localStorage.getItem('byePromoDismissed')){var b=document.getElementById('bye-promo-bar');if(b)b.style.display='none';}})();
-function dismissByePromo(){document.getElementById('bye-promo-bar').style.display='none';localStorage.setItem('byePromoDismissed','1');}
+(function(){if(localStorage.getItem('koAuditNoticeDismissed')){var b=document.getElementById('bye-promo-bar');if(b)b.style.display='none';}})();
+function dismissByePromo(){document.getElementById('bye-promo-bar').style.display='none';localStorage.setItem('koAuditNoticeDismissed','1');}
 </script>
 
 <main>

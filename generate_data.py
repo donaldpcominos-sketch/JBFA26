@@ -25,6 +25,11 @@ TRADES_CAPACITY = TRADES_BASE + TRADES_GIFTED  # 44 total
 
 TRADES_STATE_FILE = "trades_state.json"
 
+# Seeding phase runs R9–R18 and then locks forever. SEEDING_LOCK_FILE is the
+# permanent record of that final result — see the SEEDING PHASE block below.
+SEEDING_FINAL_ROUND = 18
+SEEDING_LOCK_FILE   = "seeding_lock.json"
+
 DROP_SCHEDULE = [
     {"r":1,"d":0},{"r":2,"d":20},{"r":3,"d":20},{"r":4,"d":20},
     {"r":5,"d":20},{"r":6,"d":20},{"r":7,"d":18},{"r":8,"d":16},
@@ -537,26 +542,86 @@ for r in range(1, CURRENT_ROUND + 1):
     for i, c in enumerate(sorted_r):
         c["rankHistory"][f"r{r}"] = i + 1
 
-# ── SEEDING PHASE (R9+) ──────────────────────────────────────────────────────
+# ── SEEDING PHASE (R9–R18) ───────────────────────────────────────────────────
+# The seeding phase ENDS at R18. Its results are final: they decide the seeding
+# cash prizes AND every knockout seed, because the bracket seed is
+# (tier-1)*100 + seedRank. Recomputing these after R18 retroactively rewrites
+# the entire knockout bracket, so once locked they are never recalculated.
+#
+# SEEDING_LOCK_FILE holds the frozen R18 result and is the single source of
+# truth from R18 onwards. It is written once (at R18) and read forever after.
 if CURRENT_ROUND >= 9:
-    qual_sorted = sorted(
-        coaches,
-        key=lambda c: sum(c["scores"].get(f"r{x}", 0) for x in range(1, 9)),
-        reverse=True,
-    )
-    for i, c in enumerate(qual_sorted):
-        c["qualifyingRank"] = i + 1
-        c["tier"] = 1 if i + 1 <= 100 else 2 if i + 1 <= 200 else 3
-    for c in coaches:
-        c["seedScore"] = sum(c["scores"].get(f"r{x}", 0) for x in range(9, CURRENT_ROUND + 1))
-    for tier_num in [1, 2, 3]:
-        tier_group = sorted(
-            [c for c in coaches if c["tier"] == tier_num],
-            key=lambda c: c["seedScore"],
+    lock = None
+    if os.path.exists(SEEDING_LOCK_FILE):
+        with open(SEEDING_LOCK_FILE, encoding="utf-8") as f:
+            lock = json.load(f).get("coaches", {})
+
+    if lock:
+        missing = [c["coach"] for c in coaches if str(c["teamId"]) not in lock]
+        if missing:
+            raise SystemExit(
+                f"ERROR: {len(missing)} coach(es) are absent from {SEEDING_LOCK_FILE}: "
+                f"{', '.join(missing[:5])}. The seeding lock is final — it must not be "
+                "regenerated. Add the missing coaches to the lock file by hand."
+            )
+        for c in coaches:
+            entry = lock[str(c["teamId"])]
+            c["qualifyingRank"] = entry["qualifyingRank"]
+            c["tier"] = entry["tier"]
+            c["seedScore"] = entry["seedScore"]
+            c["seedRank"] = entry["seedRank"]
+    else:
+        # Pre-lock (R9–R17): the phase is still live, so ranks move each round.
+        qual_sorted = sorted(
+            coaches,
+            key=lambda c: sum(c["scores"].get(f"r{x}", 0) for x in range(1, 9)),
             reverse=True,
         )
-        for i, c in enumerate(tier_group):
-            c["seedRank"] = i + 1
+        for i, c in enumerate(qual_sorted):
+            c["qualifyingRank"] = i + 1
+            c["tier"] = 1 if i + 1 <= 100 else 2 if i + 1 <= 200 else 3
+        # Never accumulate past R18 — the seeding window is R9–R18, full stop.
+        seed_through = min(CURRENT_ROUND, SEEDING_FINAL_ROUND)
+        for c in coaches:
+            c["seedScore"] = sum(
+                c["scores"].get(f"r{x}", 0) for x in range(9, seed_through + 1)
+            )
+        for tier_num in [1, 2, 3]:
+            tier_group = sorted(
+                [c for c in coaches if c["tier"] == tier_num],
+                key=lambda c: c["seedScore"],
+                reverse=True,
+            )
+            for i, c in enumerate(tier_group):
+                c["seedRank"] = i + 1
+
+        # R18 is the final seeding round — freeze the result permanently.
+        if CURRENT_ROUND >= SEEDING_FINAL_ROUND:
+            payload = {
+                "note": (
+                    "Seeding phase (R9-R18) FINAL. Locked after Round 18. "
+                    "tier/qualifyingRank/seedRank/seedScore must never be recomputed - "
+                    "the knockout bracket seed is (tier-1)*100+seedRank, so any change "
+                    "retroactively rewrites the whole bracket."
+                ),
+                "lockedAfterRound": SEEDING_FINAL_ROUND,
+                "source": f"generate_data.py at CURRENT_ROUND={CURRENT_ROUND}",
+                "coaches": {
+                    str(c["teamId"]): {
+                        "coach": c["coach"],
+                        "team": c["team"],
+                        "qualifyingRank": c["qualifyingRank"],
+                        "tier": c["tier"],
+                        "seedScore": c["seedScore"],
+                        "seedRank": c["seedRank"],
+                        "seed": (c["tier"] - 1) * 100 + c["seedRank"],
+                    }
+                    for c in sorted(coaches, key=lambda c: (c["tier"], c["seedRank"]))
+                },
+            }
+            with open(SEEDING_LOCK_FILE, "w", encoding="utf-8") as f:
+                json.dump(payload, f, indent=1, ensure_ascii=False)
+            print(f"  Seeding locked after R{SEEDING_FINAL_ROUND} -> {SEEDING_LOCK_FILE}")
 else:
     for c in coaches:
         c["qualifyingRank"] = None

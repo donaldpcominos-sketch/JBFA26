@@ -1,0 +1,2707 @@
+{
+ "note": "Seeding phase (R9-R18) FINAL. Locked after Round 18 from commit 5144ec2 and cross-checked against JBFA_Seeding_Prize_Winners.html. tier/qualifyingRank/seedRank/seedScore must never be recomputed - the knockout bracket seed is (tier-1)*100+seedRank, so any change retroactively rewrites the whole bracket.",
+ "lockedAfterRound": 18,
+ "source": "commit 5144ec2 (R18)",
+ "coaches": {
+  "6218": {
+   "coach": "Kane Flemming",
+   "team": "Coochiemen",
+   "qualifyingRank": 34,
+   "tier": 1,
+   "seedScore": 8981,
+   "seedRank": 1,
+   "seed": 1
+  },
+  "1051": {
+   "coach": "Zakk Patterson",
+   "team": "Nick Politis Budget",
+   "qualifyingRank": 5,
+   "tier": 1,
+   "seedScore": 8958,
+   "seedRank": 2,
+   "seed": 2
+  },
+  "13350": {
+   "coach": "Andrew Hobbs",
+   "team": "Bone Crushing Ballerina",
+   "qualifyingRank": 55,
+   "tier": 1,
+   "seedScore": 8880,
+   "seedRank": 3,
+   "seed": 3
+  },
+  "1015": {
+   "coach": "Will Morrison",
+   "team": "Setu & Forget",
+   "qualifyingRank": 50,
+   "tier": 1,
+   "seedScore": 8866,
+   "seedRank": 4,
+   "seed": 4
+  },
+  "51386": {
+   "coach": "James Jackson",
+   "team": "Cristian",
+   "qualifyingRank": 6,
+   "tier": 1,
+   "seedScore": 8857,
+   "seedRank": 5,
+   "seed": 5
+  },
+  "2145": {
+   "coach": "Jay See Ess",
+   "team": "JBFA Jordan’s Mojo",
+   "qualifyingRank": 61,
+   "tier": 1,
+   "seedScore": 8850,
+   "seedRank": 6,
+   "seed": 6
+  },
+  "123": {
+   "coach": "Chris Cook",
+   "team": "Bunny boy brothers LMC",
+   "qualifyingRank": 15,
+   "tier": 1,
+   "seedScore": 8838,
+   "seedRank": 7,
+   "seed": 7
+  },
+  "52949": {
+   "coach": "Rory Diver",
+   "team": "ICU2 Jerry Jerry",
+   "qualifyingRank": 36,
+   "tier": 1,
+   "seedScore": 8831,
+   "seedRank": 8,
+   "seed": 8
+  },
+  "11483": {
+   "coach": "Dean Smith",
+   "team": "Jenna Talia WTA",
+   "qualifyingRank": 79,
+   "tier": 1,
+   "seedScore": 8828,
+   "seedRank": 9,
+   "seed": 9
+  },
+  "965": {
+   "coach": "Killian Slevin",
+   "team": "JBFA Slevdog",
+   "qualifyingRank": 67,
+   "tier": 1,
+   "seedScore": 8826,
+   "seedRank": 10,
+   "seed": 10
+  },
+  "1009": {
+   "coach": "Jack Cranston",
+   "team": "Cranno69",
+   "qualifyingRank": 69,
+   "tier": 1,
+   "seedScore": 8817,
+   "seedRank": 11,
+   "seed": 11
+  },
+  "3664": {
+   "coach": "Aaron Henderson",
+   "team": "Hendos Warriors",
+   "qualifyingRank": 43,
+   "tier": 1,
+   "seedScore": 8816,
+   "seedRank": 12,
+   "seed": 12
+  },
+  "14141": {
+   "coach": "Sam Murray",
+   "team": "Brad Arthur 40-20",
+   "qualifyingRank": 4,
+   "tier": 1,
+   "seedScore": 8811,
+   "seedRank": 13,
+   "seed": 13
+  },
+  "379": {
+   "coach": "Kyle Goldsack",
+   "team": "Trell-yeah",
+   "qualifyingRank": 84,
+   "tier": 1,
+   "seedScore": 8811,
+   "seedRank": 14,
+   "seed": 14
+  },
+  "101009": {
+   "coach": "Richard Lane",
+   "team": "BUSLANE",
+   "qualifyingRank": 31,
+   "tier": 1,
+   "seedScore": 8810,
+   "seedRank": 15,
+   "seed": 15
+  },
+  "15187": {
+   "coach": "Shane Krautz",
+   "team": "Skrautz",
+   "qualifyingRank": 45,
+   "tier": 1,
+   "seedScore": 8790,
+   "seedRank": 16,
+   "seed": 16
+  },
+  "69951": {
+   "coach": "Liam Trumble",
+   "team": "Trumble",
+   "qualifyingRank": 92,
+   "tier": 1,
+   "seedScore": 8787,
+   "seedRank": 17,
+   "seed": 17
+  },
+  "2112": {
+   "coach": "Eli Johannessen",
+   "team": "NSW DONT GET ORIGIN",
+   "qualifyingRank": 80,
+   "tier": 1,
+   "seedScore": 8784,
+   "seedRank": 18,
+   "seed": 18
+  },
+  "2179": {
+   "coach": "Benjamin Wright",
+   "team": "Wrighty’s Golden Team",
+   "qualifyingRank": 91,
+   "tier": 1,
+   "seedScore": 8784,
+   "seedRank": 19,
+   "seed": 19
+  },
+  "864": {
+   "coach": "Riley Connor",
+   "team": "Vossy for PM - Talking League",
+   "qualifyingRank": 7,
+   "tier": 1,
+   "seedScore": 8752,
+   "seedRank": 20,
+   "seed": 20
+  },
+  "1207": {
+   "coach": "Abdallah Jabado",
+   "team": "WEAK KIRAZY SALMON",
+   "qualifyingRank": 39,
+   "tier": 1,
+   "seedScore": 8752,
+   "seedRank": 21,
+   "seed": 21
+  },
+  "55057": {
+   "coach": "Dan Keen",
+   "team": "FuqBuk",
+   "qualifyingRank": 57,
+   "tier": 1,
+   "seedScore": 8734,
+   "seedRank": 22,
+   "seed": 22
+  },
+  "77617": {
+   "coach": "Charlie Rowe",
+   "team": "darcy’s fat",
+   "qualifyingRank": 47,
+   "tier": 1,
+   "seedScore": 8727,
+   "seedRank": 23,
+   "seed": 23
+  },
+  "73907": {
+   "coach": "Matty Van Loon",
+   "team": "Loonatics",
+   "qualifyingRank": 2,
+   "tier": 1,
+   "seedScore": 8722,
+   "seedRank": 24,
+   "seed": 24
+  },
+  "26007": {
+   "coach": "Dylan Martin",
+   "team": "The Tongan Fisherman",
+   "qualifyingRank": 41,
+   "tier": 1,
+   "seedScore": 8715,
+   "seedRank": 25,
+   "seed": 25
+  },
+  "33783": {
+   "coach": "Matthew Sylvander",
+   "team": "Deardon2Drinkwater JBFA",
+   "qualifyingRank": 73,
+   "tier": 1,
+   "seedScore": 8708,
+   "seedRank": 26,
+   "seed": 26
+  },
+  "109": {
+   "coach": "Jake Venn",
+   "team": "JBFA jv724",
+   "qualifyingRank": 66,
+   "tier": 1,
+   "seedScore": 8697,
+   "seedRank": 27,
+   "seed": 27
+  },
+  "158322": {
+   "coach": "Michael Doig",
+   "team": "Resting Mitch Face XVII",
+   "qualifyingRank": 89,
+   "tier": 1,
+   "seedScore": 8697,
+   "seedRank": 28,
+   "seed": 28
+  },
+  "1428": {
+   "coach": "Brandon Trpezanovski",
+   "team": "Brandon’s lil Whores",
+   "qualifyingRank": 78,
+   "tier": 1,
+   "seedScore": 8688,
+   "seedRank": 29,
+   "seed": 29
+  },
+  "22355": {
+   "coach": "David Moody",
+   "team": "Newcastle Eels - 2019 Winner",
+   "qualifyingRank": 100,
+   "tier": 1,
+   "seedScore": 8678,
+   "seedRank": 30,
+   "seed": 30
+  },
+  "76870": {
+   "coach": "Samuel Carson",
+   "team": "Carsonious",
+   "qualifyingRank": 9,
+   "tier": 1,
+   "seedScore": 8667,
+   "seedRank": 31,
+   "seed": 31
+  },
+  "48524": {
+   "coach": "Hayden Pewhairangi",
+   "team": "BIG PUMP",
+   "qualifyingRank": 59,
+   "tier": 1,
+   "seedScore": 8658,
+   "seedRank": 32,
+   "seed": 32
+  },
+  "10982": {
+   "coach": "Jarrad Knight",
+   "team": "Blk Mumba",
+   "qualifyingRank": 64,
+   "tier": 1,
+   "seedScore": 8656,
+   "seedRank": 33,
+   "seed": 33
+  },
+  "67743": {
+   "coach": "Rohan Slater",
+   "team": "I Miss Petro",
+   "qualifyingRank": 14,
+   "tier": 1,
+   "seedScore": 8655,
+   "seedRank": 34,
+   "seed": 34
+  },
+  "39104": {
+   "coach": "Andrew Phillipps",
+   "team": "Can’t Stop Trading",
+   "qualifyingRank": 8,
+   "tier": 1,
+   "seedScore": 8652,
+   "seedRank": 35,
+   "seed": 35
+  },
+  "1213": {
+   "coach": "Gianni Bouzoukis",
+   "team": "Barba Blak Sheep",
+   "qualifyingRank": 37,
+   "tier": 1,
+   "seedScore": 8632,
+   "seedRank": 36,
+   "seed": 36
+  },
+  "6467": {
+   "coach": "Caleb Metz",
+   "team": "Metz's",
+   "qualifyingRank": 13,
+   "tier": 1,
+   "seedScore": 8629,
+   "seedRank": 37,
+   "seed": 37
+  },
+  "5431": {
+   "coach": "Paul Steele",
+   "team": "JBFA Sound the Alarm",
+   "qualifyingRank": 83,
+   "tier": 1,
+   "seedScore": 8626,
+   "seedRank": 38,
+   "seed": 38
+  },
+  "86218": {
+   "coach": "Justin Daly",
+   "team": "Knee Capped",
+   "qualifyingRank": 86,
+   "tier": 1,
+   "seedScore": 8624,
+   "seedRank": 39,
+   "seed": 39
+  },
+  "16656": {
+   "coach": "Glenn Wykes",
+   "team": "Guru Central",
+   "qualifyingRank": 72,
+   "tier": 1,
+   "seedScore": 8620,
+   "seedRank": 40,
+   "seed": 40
+  },
+  "26885": {
+   "coach": "Sam Wilson",
+   "team": "Squirrel Gripperz",
+   "qualifyingRank": 40,
+   "tier": 1,
+   "seedScore": 8615,
+   "seedRank": 41,
+   "seed": 41
+  },
+  "90253": {
+   "coach": "Stephen Beatty",
+   "team": "JBFA BEATO83",
+   "qualifyingRank": 93,
+   "tier": 1,
+   "seedScore": 8611,
+   "seedRank": 42,
+   "seed": 42
+  },
+  "5733": {
+   "coach": "Imran Ayoubi",
+   "team": "Arab Fantasy",
+   "qualifyingRank": 24,
+   "tier": 1,
+   "seedScore": 8609,
+   "seedRank": 43,
+   "seed": 43
+  },
+  "63773": {
+   "coach": "Debbie Dixon",
+   "team": "JBFA Love the Sharks",
+   "qualifyingRank": 23,
+   "tier": 1,
+   "seedScore": 8592,
+   "seedRank": 44,
+   "seed": 44
+  },
+  "37962": {
+   "coach": "Jarrod Etherington",
+   "team": "Frosty Mangoes",
+   "qualifyingRank": 58,
+   "tier": 1,
+   "seedScore": 8592,
+   "seedRank": 45,
+   "seed": 45
+  },
+  "86790": {
+   "coach": "Evan Cook",
+   "team": "metzgerhund",
+   "qualifyingRank": 17,
+   "tier": 1,
+   "seedScore": 8591,
+   "seedRank": 46,
+   "seed": 46
+  },
+  "17255": {
+   "coach": "Brendon McCormack",
+   "team": "Nrloosers",
+   "qualifyingRank": 74,
+   "tier": 1,
+   "seedScore": 8590,
+   "seedRank": 47,
+   "seed": 47
+  },
+  "13785": {
+   "coach": "Brodie Monaghan",
+   "team": "Up the Bois",
+   "qualifyingRank": 51,
+   "tier": 1,
+   "seedScore": 8587,
+   "seedRank": 48,
+   "seed": 48
+  },
+  "18249": {
+   "coach": "David Moody",
+   "team": "Singleton Bulldogs",
+   "qualifyingRank": 56,
+   "tier": 1,
+   "seedScore": 8566,
+   "seedRank": 49,
+   "seed": 49
+  },
+  "7836": {
+   "coach": "Katie Jane",
+   "team": "K80s",
+   "qualifyingRank": 76,
+   "tier": 1,
+   "seedScore": 8562,
+   "seedRank": 50,
+   "seed": 50
+  },
+  "1469": {
+   "coach": "Cameron Jennings",
+   "team": "Ben Hunt’s Hands",
+   "qualifyingRank": 21,
+   "tier": 1,
+   "seedScore": 8554,
+   "seedRank": 51,
+   "seed": 51
+  },
+  "38980": {
+   "coach": "Jason Wathall",
+   "team": "Duplex",
+   "qualifyingRank": 25,
+   "tier": 1,
+   "seedScore": 8550,
+   "seedRank": 52,
+   "seed": 52
+  },
+  "41496": {
+   "coach": "Liam Trumble",
+   "team": "Freckle Wreckers",
+   "qualifyingRank": 54,
+   "tier": 1,
+   "seedScore": 8549,
+   "seedRank": 53,
+   "seed": 53
+  },
+  "26656": {
+   "coach": "John Herrera",
+   "team": "Jacked Eagles",
+   "qualifyingRank": 1,
+   "tier": 1,
+   "seedScore": 8543,
+   "seedRank": 54,
+   "seed": 54
+  },
+  "14643": {
+   "coach": "David Bugler",
+   "team": "Hopper",
+   "qualifyingRank": 88,
+   "tier": 1,
+   "seedScore": 8536,
+   "seedRank": 55,
+   "seed": 55
+  },
+  "2539": {
+   "coach": "Blake Whitaker",
+   "team": "Never Got The Late Mail",
+   "qualifyingRank": 52,
+   "tier": 1,
+   "seedScore": 8530,
+   "seedRank": 56,
+   "seed": 56
+  },
+  "145657": {
+   "coach": "Matt Lyons",
+   "team": "Chicken Winging It",
+   "qualifyingRank": 48,
+   "tier": 1,
+   "seedScore": 8523,
+   "seedRank": 57,
+   "seed": 57
+  },
+  "613": {
+   "coach": "Nigel Bowling",
+   "team": "Boozecluez",
+   "qualifyingRank": 44,
+   "tier": 1,
+   "seedScore": 8521,
+   "seedRank": 58,
+   "seed": 58
+  },
+  "23149": {
+   "coach": "Marcus Callander",
+   "team": "Marcus Callander",
+   "qualifyingRank": 68,
+   "tier": 1,
+   "seedScore": 8519,
+   "seedRank": 59,
+   "seed": 59
+  },
+  "29032": {
+   "coach": "Brock Haidle",
+   "team": "Truckin Useless",
+   "qualifyingRank": 77,
+   "tier": 1,
+   "seedScore": 8510,
+   "seedRank": 60,
+   "seed": 60
+  },
+  "39856": {
+   "coach": "Martin Dalton",
+   "team": "KAMAEMCO",
+   "qualifyingRank": 70,
+   "tier": 1,
+   "seedScore": 8498,
+   "seedRank": 61,
+   "seed": 61
+  },
+  "80861": {
+   "coach": "Jesse Lentini",
+   "team": "Thinkin Cleary",
+   "qualifyingRank": 97,
+   "tier": 1,
+   "seedScore": 8493,
+   "seedRank": 62,
+   "seed": 62
+  },
+  "45380": {
+   "coach": "Joseph Cradock",
+   "team": "JosephCradock",
+   "qualifyingRank": 11,
+   "tier": 1,
+   "seedScore": 8473,
+   "seedRank": 63,
+   "seed": 63
+  },
+  "3788": {
+   "coach": "Darrin Booth",
+   "team": "Daza11",
+   "qualifyingRank": 12,
+   "tier": 1,
+   "seedScore": 8473,
+   "seedRank": 64,
+   "seed": 64
+  },
+  "11789": {
+   "coach": "Liam King",
+   "team": "Wong Option",
+   "qualifyingRank": 27,
+   "tier": 1,
+   "seedScore": 8472,
+   "seedRank": 65,
+   "seed": 65
+  },
+  "10054": {
+   "coach": "Jackson Parkinson",
+   "team": "Danikaring My Mason",
+   "qualifyingRank": 87,
+   "tier": 1,
+   "seedScore": 8471,
+   "seedRank": 66,
+   "seed": 66
+  },
+  "58313": {
+   "coach": "Isobel Saccaro",
+   "team": "IS6300",
+   "qualifyingRank": 18,
+   "tier": 1,
+   "seedScore": 8450,
+   "seedRank": 67,
+   "seed": 67
+  },
+  "2605": {
+   "coach": "Jodeci Pene",
+   "team": "The Reall Warriors",
+   "qualifyingRank": 81,
+   "tier": 1,
+   "seedScore": 8448,
+   "seedRank": 68,
+   "seed": 68
+  },
+  "78886": {
+   "coach": "Craig Ingram",
+   "team": "JBFA Scorchers",
+   "qualifyingRank": 32,
+   "tier": 1,
+   "seedScore": 8445,
+   "seedRank": 69,
+   "seed": 69
+  },
+  "37628": {
+   "coach": "Craig Sloane",
+   "team": "Crack12",
+   "qualifyingRank": 42,
+   "tier": 1,
+   "seedScore": 8428,
+   "seedRank": 70,
+   "seed": 70
+  },
+  "11251": {
+   "coach": "Theo Veeren",
+   "team": "Threat Level Midnight NRL",
+   "qualifyingRank": 62,
+   "tier": 1,
+   "seedScore": 8416,
+   "seedRank": 71,
+   "seed": 71
+  },
+  "40826": {
+   "coach": "Mark Wilson",
+   "team": "BigBunnyHass",
+   "qualifyingRank": 20,
+   "tier": 1,
+   "seedScore": 8410,
+   "seedRank": 72,
+   "seed": 72
+  },
+  "488": {
+   "coach": "Michael Maung",
+   "team": "The Burman Mongoose",
+   "qualifyingRank": 28,
+   "tier": 1,
+   "seedScore": 8390,
+   "seedRank": 73,
+   "seed": 73
+  },
+  "29811": {
+   "coach": "Andrew Rumball",
+   "team": "JBFA KickAss Boys",
+   "qualifyingRank": 94,
+   "tier": 1,
+   "seedScore": 8386,
+   "seedRank": 74,
+   "seed": 74
+  },
+  "10967": {
+   "coach": "Liam Doyle",
+   "team": "JBFA Elbanditos",
+   "qualifyingRank": 22,
+   "tier": 1,
+   "seedScore": 8380,
+   "seedRank": 75,
+   "seed": 75
+  },
+  "1314": {
+   "coach": "Tony Martin",
+   "team": "Tozza Hammers",
+   "qualifyingRank": 85,
+   "tier": 1,
+   "seedScore": 8380,
+   "seedRank": 76,
+   "seed": 76
+  },
+  "81418": {
+   "coach": "Manuel Poteri",
+   "team": "Rumble in tha Bronx",
+   "qualifyingRank": 96,
+   "tier": 1,
+   "seedScore": 8376,
+   "seedRank": 77,
+   "seed": 77
+  },
+  "11919": {
+   "coach": "Stuart Cane",
+   "team": "Cockatoo Stu",
+   "qualifyingRank": 38,
+   "tier": 1,
+   "seedScore": 8372,
+   "seedRank": 78,
+   "seed": 78
+  },
+  "128078": {
+   "coach": "James Hoggett",
+   "team": "Jim’s Dream 13",
+   "qualifyingRank": 82,
+   "tier": 1,
+   "seedScore": 8369,
+   "seedRank": 79,
+   "seed": 79
+  },
+  "4889": {
+   "coach": "Liam Corson",
+   "team": "I Quit C U in 2027",
+   "qualifyingRank": 10,
+   "tier": 1,
+   "seedScore": 8366,
+   "seedRank": 80,
+   "seed": 80
+  },
+  "29478": {
+   "coach": "Bevan Hoĺzheimer",
+   "team": "Rogue Don't know newcomers",
+   "qualifyingRank": 30,
+   "tier": 1,
+   "seedScore": 8360,
+   "seedRank": 81,
+   "seed": 81
+  },
+  "14869": {
+   "coach": "Ayden Cashman",
+   "team": "Shower Slipper",
+   "qualifyingRank": 26,
+   "tier": 1,
+   "seedScore": 8348,
+   "seedRank": 82,
+   "seed": 82
+  },
+  "2987": {
+   "coach": "Qio Tavanavanua",
+   "team": "team big vudi",
+   "qualifyingRank": 53,
+   "tier": 1,
+   "seedScore": 8341,
+   "seedRank": 83,
+   "seed": 83
+  },
+  "350": {
+   "coach": "Harry Fuller",
+   "team": "Fuller Fantasy",
+   "qualifyingRank": 60,
+   "tier": 1,
+   "seedScore": 8340,
+   "seedRank": 84,
+   "seed": 84
+  },
+  "6843": {
+   "coach": "Gregory Simon",
+   "team": "Channel4 News Team",
+   "qualifyingRank": 19,
+   "tier": 1,
+   "seedScore": 8339,
+   "seedRank": 85,
+   "seed": 85
+  },
+  "15141": {
+   "coach": "Anthony L",
+   "team": "Blocker ROACHES",
+   "qualifyingRank": 49,
+   "tier": 1,
+   "seedScore": 8337,
+   "seedRank": 86,
+   "seed": 86
+  },
+  "19277": {
+   "coach": "Tom Hore",
+   "team": "Deeply Closeted Storm Fan",
+   "qualifyingRank": 75,
+   "tier": 1,
+   "seedScore": 8337,
+   "seedRank": 87,
+   "seed": 87
+  },
+  "133051": {
+   "coach": "Hayden Pewhairangi",
+   "team": "Haydz Dog Pound",
+   "qualifyingRank": 29,
+   "tier": 1,
+   "seedScore": 8328,
+   "seedRank": 88,
+   "seed": 88
+  },
+  "41991": {
+   "coach": "Matthew Sahota",
+   "team": "Sahota’s Benchwarmers",
+   "qualifyingRank": 98,
+   "tier": 1,
+   "seedScore": 8315,
+   "seedRank": 89,
+   "seed": 89
+  },
+  "184040": {
+   "coach": "Jamie Sisley",
+   "team": "White Zombies",
+   "qualifyingRank": 46,
+   "tier": 1,
+   "seedScore": 8293,
+   "seedRank": 90,
+   "seed": 90
+  },
+  "11961": {
+   "coach": "Kent Somerville",
+   "team": "Cleary Haas a Plan",
+   "qualifyingRank": 99,
+   "tier": 1,
+   "seedScore": 8210,
+   "seedRank": 91,
+   "seed": 91
+  },
+  "11932": {
+   "coach": "Bailey Bajic",
+   "team": "TurkeyNugget18",
+   "qualifyingRank": 90,
+   "tier": 1,
+   "seedScore": 8205,
+   "seedRank": 92,
+   "seed": 92
+  },
+  "50239": {
+   "coach": "David Conlon",
+   "team": "Horrifically Gorgeous",
+   "qualifyingRank": 63,
+   "tier": 1,
+   "seedScore": 8183,
+   "seedRank": 93,
+   "seed": 93
+  },
+  "32756": {
+   "coach": "Jeremy Hubbard",
+   "team": "But I'm a Stallion",
+   "qualifyingRank": 65,
+   "tier": 1,
+   "seedScore": 8161,
+   "seedRank": 94,
+   "seed": 94
+  },
+  "33572": {
+   "coach": "Isaac Wiremu Borell-Hunt",
+   "team": "Api- Salute Dud",
+   "qualifyingRank": 33,
+   "tier": 1,
+   "seedScore": 8142,
+   "seedRank": 95,
+   "seed": 95
+  },
+  "82363": {
+   "coach": "Jackie Ou",
+   "team": "Jingling Joes",
+   "qualifyingRank": 71,
+   "tier": 1,
+   "seedScore": 8129,
+   "seedRank": 96,
+   "seed": 96
+  },
+  "556": {
+   "coach": "Kyle Ryland",
+   "team": "Woolston War Pigs",
+   "qualifyingRank": 35,
+   "tier": 1,
+   "seedScore": 8091,
+   "seedRank": 97,
+   "seed": 97
+  },
+  "2828": {
+   "coach": "Jeremy Wirth",
+   "team": "Weststigers1",
+   "qualifyingRank": 3,
+   "tier": 1,
+   "seedScore": 7929,
+   "seedRank": 98,
+   "seed": 98
+  },
+  "83441": {
+   "coach": "Craig Ingram",
+   "team": "JBFA The Scorchers",
+   "qualifyingRank": 95,
+   "tier": 1,
+   "seedScore": 7123,
+   "seedRank": 99,
+   "seed": 99
+  },
+  "55374": {
+   "coach": "Kevin Maxted",
+   "team": "Fucksmithfield2nd",
+   "qualifyingRank": 16,
+   "tier": 1,
+   "seedScore": 6703,
+   "seedRank": 100,
+   "seed": 100
+  },
+  "179533": {
+   "coach": "Peter Harding",
+   "team": "Pistols Panthers",
+   "qualifyingRank": 151,
+   "tier": 2,
+   "seedScore": 8859,
+   "seedRank": 1,
+   "seed": 101
+  },
+  "5134": {
+   "coach": "Kye Beck",
+   "team": "Kyeskillersss",
+   "qualifyingRank": 192,
+   "tier": 2,
+   "seedScore": 8838,
+   "seedRank": 2,
+   "seed": 102
+  },
+  "53287": {
+   "coach": "Logan Flutey",
+   "team": "Marty 5711",
+   "qualifyingRank": 137,
+   "tier": 2,
+   "seedScore": 8821,
+   "seedRank": 3,
+   "seed": 103
+  },
+  "2670": {
+   "coach": "Joshua Windsor",
+   "team": "Money8all",
+   "qualifyingRank": 133,
+   "tier": 2,
+   "seedScore": 8804,
+   "seedRank": 4,
+   "seed": 104
+  },
+  "49775": {
+   "coach": "Max Cockrem",
+   "team": "LickMyCockrem",
+   "qualifyingRank": 104,
+   "tier": 2,
+   "seedScore": 8795,
+   "seedRank": 5,
+   "seed": 105
+  },
+  "35702": {
+   "coach": "Michael Whitford",
+   "team": "Whitson Warriors",
+   "qualifyingRank": 109,
+   "tier": 2,
+   "seedScore": 8788,
+   "seedRank": 6,
+   "seed": 106
+  },
+  "1618": {
+   "coach": "James Taylor",
+   "team": "Six2Go",
+   "qualifyingRank": 136,
+   "tier": 2,
+   "seedScore": 8740,
+   "seedRank": 7,
+   "seed": 107
+  },
+  "297": {
+   "coach": "Sam Owen",
+   "team": "Sam Owen",
+   "qualifyingRank": 123,
+   "tier": 2,
+   "seedScore": 8735,
+   "seedRank": 8,
+   "seed": 108
+  },
+  "3779": {
+   "coach": "Caleb Greene",
+   "team": "Yeo win some Yeo lose some",
+   "qualifyingRank": 187,
+   "tier": 2,
+   "seedScore": 8733,
+   "seedRank": 9,
+   "seed": 109
+  },
+  "605": {
+   "coach": "Lachlan Smythe",
+   "team": "Smythe05",
+   "qualifyingRank": 130,
+   "tier": 2,
+   "seedScore": 8721,
+   "seedRank": 10,
+   "seed": 110
+  },
+  "7225": {
+   "coach": "Jake Wood",
+   "team": "Check Out My Sombrero",
+   "qualifyingRank": 117,
+   "tier": 2,
+   "seedScore": 8680,
+   "seedRank": 11,
+   "seed": 111
+  },
+  "3954": {
+   "coach": "Henry Budd",
+   "team": "Henrys Hobos",
+   "qualifyingRank": 126,
+   "tier": 2,
+   "seedScore": 8680,
+   "seedRank": 12,
+   "seed": 112
+  },
+  "25937": {
+   "coach": "Greg Peters",
+   "team": "To'o Good For Yeo",
+   "qualifyingRank": 135,
+   "tier": 2,
+   "seedScore": 8676,
+   "seedRank": 13,
+   "seed": 113
+  },
+  "69769": {
+   "coach": "James Peters",
+   "team": "JBFA What about Capewell",
+   "qualifyingRank": 124,
+   "tier": 2,
+   "seedScore": 8671,
+   "seedRank": 14,
+   "seed": 114
+  },
+  "4419": {
+   "coach": "Joshua Forrest-White",
+   "team": "The Savvy Davvys",
+   "qualifyingRank": 118,
+   "tier": 2,
+   "seedScore": 8653,
+   "seedRank": 15,
+   "seed": 115
+  },
+  "5587": {
+   "coach": "Stephen Stelmach",
+   "team": "stelmarky",
+   "qualifyingRank": 110,
+   "tier": 2,
+   "seedScore": 8651,
+   "seedRank": 16,
+   "seed": 116
+  },
+  "13275": {
+   "coach": "Jake Vincent",
+   "team": "JBFA YeoBeauty",
+   "qualifyingRank": 198,
+   "tier": 2,
+   "seedScore": 8648,
+   "seedRank": 17,
+   "seed": 117
+  },
+  "3790": {
+   "coach": "John Curtin",
+   "team": "Jockey's Jokers",
+   "qualifyingRank": 128,
+   "tier": 2,
+   "seedScore": 8647,
+   "seedRank": 18,
+   "seed": 118
+  },
+  "27830": {
+   "coach": "Xavier Cook",
+   "team": "Waiharara Worriers",
+   "qualifyingRank": 111,
+   "tier": 2,
+   "seedScore": 8645,
+   "seedRank": 19,
+   "seed": 119
+  },
+  "51619": {
+   "coach": "Nate Schreurs",
+   "team": "Ooo Long Johnson",
+   "qualifyingRank": 116,
+   "tier": 2,
+   "seedScore": 8644,
+   "seedRank": 20,
+   "seed": 120
+  },
+  "34400": {
+   "coach": "Geordie Hardcastle",
+   "team": "Liam’s Martinis",
+   "qualifyingRank": 101,
+   "tier": 2,
+   "seedScore": 8639,
+   "seedRank": 21,
+   "seed": 121
+  },
+  "575": {
+   "coach": "Oli White",
+   "team": "Revilo's Raptors",
+   "qualifyingRank": 102,
+   "tier": 2,
+   "seedScore": 8631,
+   "seedRank": 22,
+   "seed": 122
+  },
+  "17114": {
+   "coach": "Tyler Kendall",
+   "team": "Ruben Thiccy",
+   "qualifyingRank": 156,
+   "tier": 2,
+   "seedScore": 8631,
+   "seedRank": 23,
+   "seed": 123
+  },
+  "49226": {
+   "coach": "David Bade",
+   "team": "Snake Point Wekas",
+   "qualifyingRank": 132,
+   "tier": 2,
+   "seedScore": 8627,
+   "seedRank": 24,
+   "seed": 124
+  },
+  "10907": {
+   "coach": "Joel Despea",
+   "team": "Typsy Gypsy",
+   "qualifyingRank": 131,
+   "tier": 2,
+   "seedScore": 8625,
+   "seedRank": 25,
+   "seed": 125
+  },
+  "27175": {
+   "coach": "Wayne Ritchie",
+   "team": "BIG black DOG",
+   "qualifyingRank": 169,
+   "tier": 2,
+   "seedScore": 8623,
+   "seedRank": 26,
+   "seed": 126
+  },
+  "13569": {
+   "coach": "Dane Taleni",
+   "team": "Bad News Browns",
+   "qualifyingRank": 119,
+   "tier": 2,
+   "seedScore": 8621,
+   "seedRank": 27,
+   "seed": 127
+  },
+  "4060": {
+   "coach": "Sam Mcalister",
+   "team": "Ohoka oranges",
+   "qualifyingRank": 155,
+   "tier": 2,
+   "seedScore": 8621,
+   "seedRank": 28,
+   "seed": 128
+  },
+  "1682": {
+   "coach": "Thomas Condon",
+   "team": "BenSickHunt",
+   "qualifyingRank": 182,
+   "tier": 2,
+   "seedScore": 8618,
+   "seedRank": 29,
+   "seed": 129
+  },
+  "139823": {
+   "coach": "Skye Brooks",
+   "team": "Scrum And Coke 98",
+   "qualifyingRank": 103,
+   "tier": 2,
+   "seedScore": 8613,
+   "seedRank": 30,
+   "seed": 130
+  },
+  "27032": {
+   "coach": "Aleki Morris-Lome",
+   "team": "Leki’s Boys",
+   "qualifyingRank": 147,
+   "tier": 2,
+   "seedScore": 8606,
+   "seedRank": 31,
+   "seed": 131
+  },
+  "29135": {
+   "coach": "Cole De Git",
+   "team": "Haas Been",
+   "qualifyingRank": 186,
+   "tier": 2,
+   "seedScore": 8595,
+   "seedRank": 32,
+   "seed": 132
+  },
+  "3021": {
+   "coach": "Jamie Vooght",
+   "team": "Evilda",
+   "qualifyingRank": 143,
+   "tier": 2,
+   "seedScore": 8586,
+   "seedRank": 33,
+   "seed": 133
+  },
+  "11819": {
+   "coach": "Jessie Hammond",
+   "team": "Woorabindies",
+   "qualifyingRank": 145,
+   "tier": 2,
+   "seedScore": 8575,
+   "seedRank": 34,
+   "seed": 134
+  },
+  "175190": {
+   "coach": "Geordie Hardcastle",
+   "team": "The UnbeClearybles",
+   "qualifyingRank": 112,
+   "tier": 2,
+   "seedScore": 8564,
+   "seedRank": 35,
+   "seed": 135
+  },
+  "2941": {
+   "coach": "Jacob Pang",
+   "team": "PangJs Pandas",
+   "qualifyingRank": 152,
+   "tier": 2,
+   "seedScore": 8554,
+   "seedRank": 36,
+   "seed": 136
+  },
+  "13307": {
+   "coach": "Jamie Brown",
+   "team": "JB Fantasy Analysis",
+   "qualifyingRank": 176,
+   "tier": 2,
+   "seedScore": 8552,
+   "seedRank": 37,
+   "seed": 137
+  },
+  "15377": {
+   "coach": "Kelvin Danielson",
+   "team": "The WAH-Tang Clan",
+   "qualifyingRank": 170,
+   "tier": 2,
+   "seedScore": 8547,
+   "seedRank": 38,
+   "seed": 138
+  },
+  "12885": {
+   "coach": "Jeremy Jones",
+   "team": "Jerome’s Homies",
+   "qualifyingRank": 114,
+   "tier": 2,
+   "seedScore": 8529,
+   "seedRank": 39,
+   "seed": 139
+  },
+  "13026": {
+   "coach": "Matt Thompson",
+   "team": "JBFA HaasNoTrades",
+   "qualifyingRank": 146,
+   "tier": 2,
+   "seedScore": 8525,
+   "seedRank": 40,
+   "seed": 140
+  },
+  "63055": {
+   "coach": "James Brooking",
+   "team": "Bye round lover",
+   "qualifyingRank": 183,
+   "tier": 2,
+   "seedScore": 8517,
+   "seedRank": 41,
+   "seed": 141
+  },
+  "13423": {
+   "coach": "Sean James",
+   "team": "Scrubcats",
+   "qualifyingRank": 108,
+   "tier": 2,
+   "seedScore": 8515,
+   "seedRank": 42,
+   "seed": 142
+  },
+  "399": {
+   "coach": "Caleb Williams",
+   "team": "To’o Sexy For This Shirt",
+   "qualifyingRank": 191,
+   "tier": 2,
+   "seedScore": 8483,
+   "seedRank": 43,
+   "seed": 143
+  },
+  "1052": {
+   "coach": "Mitch Deguara",
+   "team": "This Time Hunt Held It",
+   "qualifyingRank": 174,
+   "tier": 2,
+   "seedScore": 8480,
+   "seedRank": 44,
+   "seed": 144
+  },
+  "11275": {
+   "coach": "Kaylem Bidois",
+   "team": "TUMZ88",
+   "qualifyingRank": 196,
+   "tier": 2,
+   "seedScore": 8471,
+   "seedRank": 45,
+   "seed": 145
+  },
+  "27667": {
+   "coach": "Josh Malouf",
+   "team": "Malo’s Dogs",
+   "qualifyingRank": 157,
+   "tier": 2,
+   "seedScore": 8465,
+   "seedRank": 46,
+   "seed": 146
+  },
+  "22860": {
+   "coach": "Heath Fitzgerald",
+   "team": "JBFA Roundtheleggzzz",
+   "qualifyingRank": 179,
+   "tier": 2,
+   "seedScore": 8459,
+   "seedRank": 47,
+   "seed": 147
+  },
+  "45664": {
+   "coach": "Jacques Millichamp",
+   "team": "Murray Me Cam",
+   "qualifyingRank": 105,
+   "tier": 2,
+   "seedScore": 8451,
+   "seedRank": 48,
+   "seed": 148
+  },
+  "6336": {
+   "coach": "Gary Vogel",
+   "team": "Garysboys",
+   "qualifyingRank": 125,
+   "tier": 2,
+   "seedScore": 8443,
+   "seedRank": 49,
+   "seed": 149
+  },
+  "147623": {
+   "coach": "Heath Fitzgerald",
+   "team": "JBFA Heath's Blackbookers",
+   "qualifyingRank": 190,
+   "tier": 2,
+   "seedScore": 8440,
+   "seedRank": 50,
+   "seed": 150
+  },
+  "5221": {
+   "coach": "Tyson Coles",
+   "team": "Bennett Stole My Haas",
+   "qualifyingRank": 199,
+   "tier": 2,
+   "seedScore": 8440,
+   "seedRank": 51,
+   "seed": 151
+  },
+  "5591": {
+   "coach": "James Phillips",
+   "team": "JPDRAGONS JBFA",
+   "qualifyingRank": 140,
+   "tier": 2,
+   "seedScore": 8426,
+   "seedRank": 52,
+   "seed": 152
+  },
+  "9031": {
+   "coach": "William Walter Geary",
+   "team": "dids team",
+   "qualifyingRank": 172,
+   "tier": 2,
+   "seedScore": 8426,
+   "seedRank": 53,
+   "seed": 153
+  },
+  "51716": {
+   "coach": "Marcus Burst",
+   "team": "Yeooo Boyyy",
+   "qualifyingRank": 165,
+   "tier": 2,
+   "seedScore": 8419,
+   "seedRank": 54,
+   "seed": 154
+  },
+  "17608": {
+   "coach": "Jayden Addei",
+   "team": "yrnjay",
+   "qualifyingRank": 163,
+   "tier": 2,
+   "seedScore": 8413,
+   "seedRank": 55,
+   "seed": 155
+  },
+  "155259": {
+   "coach": "Lazar Bodiroza",
+   "team": "Get Tuivasa Shrektttt",
+   "qualifyingRank": 188,
+   "tier": 2,
+   "seedScore": 8412,
+   "seedRank": 56,
+   "seed": 156
+  },
+  "22169": {
+   "coach": "Adam Grant",
+   "team": "Grant's Giants",
+   "qualifyingRank": 121,
+   "tier": 2,
+   "seedScore": 8407,
+   "seedRank": 57,
+   "seed": 157
+  },
+  "63092": {
+   "coach": "John Herrera",
+   "team": "68th is Back",
+   "qualifyingRank": 106,
+   "tier": 2,
+   "seedScore": 8405,
+   "seedRank": 58,
+   "seed": 158
+  },
+  "57801": {
+   "coach": "Chris Breese",
+   "team": "Oldirty",
+   "qualifyingRank": 171,
+   "tier": 2,
+   "seedScore": 8402,
+   "seedRank": 59,
+   "seed": 159
+  },
+  "4358": {
+   "coach": "Mike Washington",
+   "team": "INJURY MAGNET",
+   "qualifyingRank": 189,
+   "tier": 2,
+   "seedScore": 8399,
+   "seedRank": 60,
+   "seed": 160
+  },
+  "1012": {
+   "coach": "Patrick Brennan",
+   "team": "PaddyB02",
+   "qualifyingRank": 144,
+   "tier": 2,
+   "seedScore": 8387,
+   "seedRank": 61,
+   "seed": 161
+  },
+  "76971": {
+   "coach": "Hayden Hunter",
+   "team": "JBFA Superstorm",
+   "qualifyingRank": 127,
+   "tier": 2,
+   "seedScore": 8386,
+   "seedRank": 62,
+   "seed": 162
+  },
+  "52980": {
+   "coach": "Max Ennis",
+   "team": "Max’s Magic Monkeys",
+   "qualifyingRank": 194,
+   "tier": 2,
+   "seedScore": 8364,
+   "seedRank": 63,
+   "seed": 163
+  },
+  "1920": {
+   "coach": "Harry Keir",
+   "team": "Savage Opress",
+   "qualifyingRank": 122,
+   "tier": 2,
+   "seedScore": 8362,
+   "seedRank": 64,
+   "seed": 164
+  },
+  "63591": {
+   "coach": "Blake Fowke",
+   "team": "Kotoni Baggs",
+   "qualifyingRank": 197,
+   "tier": 2,
+   "seedScore": 8352,
+   "seedRank": 65,
+   "seed": 165
+  },
+  "43392": {
+   "coach": "Benji Leonard",
+   "team": "Ben's Bois",
+   "qualifyingRank": 166,
+   "tier": 2,
+   "seedScore": 8344,
+   "seedRank": 66,
+   "seed": 166
+  },
+  "745": {
+   "coach": "Brodee Barrett",
+   "team": "DonkRylesDynasty",
+   "qualifyingRank": 150,
+   "tier": 2,
+   "seedScore": 8312,
+   "seedRank": 67,
+   "seed": 167
+  },
+  "55379": {
+   "coach": "Jared Kroeger",
+   "team": "Hellman’s Hornets",
+   "qualifyingRank": 161,
+   "tier": 2,
+   "seedScore": 8309,
+   "seedRank": 68,
+   "seed": 168
+  },
+  "57531": {
+   "coach": "Jordan Visser",
+   "team": "VissA's Vikings",
+   "qualifyingRank": 195,
+   "tier": 2,
+   "seedScore": 8293,
+   "seedRank": 69,
+   "seed": 169
+  },
+  "2144": {
+   "coach": "Joseph Smith",
+   "team": "SMITTYS LADS AND LEGENDS",
+   "qualifyingRank": 115,
+   "tier": 2,
+   "seedScore": 8292,
+   "seedRank": 70,
+   "seed": 170
+  },
+  "12843": {
+   "coach": "Hayden Niehus",
+   "team": "JBFA Johnathan Hit You On The Burston's",
+   "qualifyingRank": 159,
+   "tier": 2,
+   "seedScore": 8292,
+   "seedRank": 71,
+   "seed": 171
+  },
+  "5941": {
+   "coach": "James Peters",
+   "team": "Schiller's List",
+   "qualifyingRank": 184,
+   "tier": 2,
+   "seedScore": 8288,
+   "seedRank": 72,
+   "seed": 172
+  },
+  "68418": {
+   "coach": "Kieran Mckay",
+   "team": "Back to Back Wooden Spooners",
+   "qualifyingRank": 142,
+   "tier": 2,
+   "seedScore": 8278,
+   "seedRank": 73,
+   "seed": 173
+  },
+  "148089": {
+   "coach": "Chris Ward",
+   "team": "The Corey Pickers",
+   "qualifyingRank": 164,
+   "tier": 2,
+   "seedScore": 8273,
+   "seedRank": 74,
+   "seed": 174
+  },
+  "84646": {
+   "coach": "Elijah Moors",
+   "team": "Big Bundas",
+   "qualifyingRank": 113,
+   "tier": 2,
+   "seedScore": 8267,
+   "seedRank": 75,
+   "seed": 175
+  },
+  "82112": {
+   "coach": "Raymond Timbery",
+   "team": "TimberyJuice",
+   "qualifyingRank": 120,
+   "tier": 2,
+   "seedScore": 8263,
+   "seedRank": 76,
+   "seed": 176
+  },
+  "52634": {
+   "coach": "Matthew Robbins",
+   "team": "Just a Stormchaser",
+   "qualifyingRank": 160,
+   "tier": 2,
+   "seedScore": 8260,
+   "seedRank": 77,
+   "seed": 177
+  },
+  "7750": {
+   "coach": "Jakeb Brown",
+   "team": "TuiWahsa-Sheck",
+   "qualifyingRank": 177,
+   "tier": 2,
+   "seedScore": 8259,
+   "seedRank": 78,
+   "seed": 178
+  },
+  "8073": {
+   "coach": "Jason Swain",
+   "team": "Up tha boys",
+   "qualifyingRank": 173,
+   "tier": 2,
+   "seedScore": 8258,
+   "seedRank": 79,
+   "seed": 179
+  },
+  "6430": {
+   "coach": "Ryan Heathcote",
+   "team": "Charging Rhinos",
+   "qualifyingRank": 167,
+   "tier": 2,
+   "seedScore": 8241,
+   "seedRank": 80,
+   "seed": 180
+  },
+  "86149": {
+   "coach": "Mark Coleman",
+   "team": "EzraGramm",
+   "qualifyingRank": 181,
+   "tier": 2,
+   "seedScore": 8241,
+   "seedRank": 81,
+   "seed": 181
+  },
+  "26268": {
+   "coach": "Tye Sheather",
+   "team": "Bonnie Blue and Gold Eels",
+   "qualifyingRank": 148,
+   "tier": 2,
+   "seedScore": 8239,
+   "seedRank": 82,
+   "seed": 182
+  },
+  "32015": {
+   "coach": "Zac Cohen",
+   "team": "Choamps",
+   "qualifyingRank": 139,
+   "tier": 2,
+   "seedScore": 8221,
+   "seedRank": 83,
+   "seed": 183
+  },
+  "4960": {
+   "coach": "Zarin Tuhua",
+   "team": "Amaiden",
+   "qualifyingRank": 193,
+   "tier": 2,
+   "seedScore": 8221,
+   "seedRank": 84,
+   "seed": 184
+  },
+  "192988": {
+   "coach": "Kyle Whittle",
+   "team": "JBFA Hectic 8-ball 2",
+   "qualifyingRank": 154,
+   "tier": 2,
+   "seedScore": 8197,
+   "seedRank": 85,
+   "seed": 185
+  },
+  "8370": {
+   "coach": "Jake Morea",
+   "team": "Manu Chiefs",
+   "qualifyingRank": 168,
+   "tier": 2,
+   "seedScore": 8131,
+   "seedRank": 86,
+   "seed": 186
+  },
+  "12191": {
+   "coach": "William Hall",
+   "team": "Probly Popd Aneky",
+   "qualifyingRank": 149,
+   "tier": 2,
+   "seedScore": 8130,
+   "seedRank": 87,
+   "seed": 187
+  },
+  "80748": {
+   "coach": "Jay See Ess",
+   "team": "Kobe’s Mojo",
+   "qualifyingRank": 185,
+   "tier": 2,
+   "seedScore": 8118,
+   "seedRank": 88,
+   "seed": 188
+  },
+  "150109": {
+   "coach": "Jayden Brown",
+   "team": "JBFA Fruitbat",
+   "qualifyingRank": 158,
+   "tier": 2,
+   "seedScore": 8099,
+   "seedRank": 89,
+   "seed": 189
+  },
+  "100727": {
+   "coach": "Hayden Moore",
+   "team": "Stocklands Mooseknuckles",
+   "qualifyingRank": 175,
+   "tier": 2,
+   "seedScore": 8096,
+   "seedRank": 90,
+   "seed": 190
+  },
+  "102413": {
+   "coach": "Bowen Refalo",
+   "team": "Doueihing Yeo Mam",
+   "qualifyingRank": 138,
+   "tier": 2,
+   "seedScore": 8088,
+   "seedRank": 91,
+   "seed": 191
+  },
+  "3922": {
+   "coach": "Will Taylor",
+   "team": "Bens Barber",
+   "qualifyingRank": 178,
+   "tier": 2,
+   "seedScore": 7970,
+   "seedRank": 92,
+   "seed": 192
+  },
+  "14905": {
+   "coach": "Kingi Kamariera",
+   "team": "KINGZWORLD",
+   "qualifyingRank": 141,
+   "tier": 2,
+   "seedScore": 7966,
+   "seedRank": 93,
+   "seed": 193
+  },
+  "4834": {
+   "coach": "Mathew Belyea",
+   "team": "MangroveMatty",
+   "qualifyingRank": 180,
+   "tier": 2,
+   "seedScore": 7965,
+   "seedRank": 94,
+   "seed": 194
+  },
+  "9498": {
+   "coach": "Ryan Bailey",
+   "team": "Stealthracing",
+   "qualifyingRank": 134,
+   "tier": 2,
+   "seedScore": 7921,
+   "seedRank": 95,
+   "seed": 195
+  },
+  "37155": {
+   "coach": "Adam Thomas",
+   "team": "NFE",
+   "qualifyingRank": 107,
+   "tier": 2,
+   "seedScore": 7875,
+   "seedRank": 96,
+   "seed": 196
+  },
+  "431": {
+   "coach": "Nick Bowring",
+   "team": "Fasi your Mulitalo",
+   "qualifyingRank": 153,
+   "tier": 2,
+   "seedScore": 7844,
+   "seedRank": 97,
+   "seed": 197
+  },
+  "11095": {
+   "coach": "Dave Lang",
+   "team": "Gravies",
+   "qualifyingRank": 162,
+   "tier": 2,
+   "seedScore": 7583,
+   "seedRank": 98,
+   "seed": 198
+  },
+  "130270": {
+   "coach": "Don Cominos",
+   "team": "TwoSeasonWonder",
+   "qualifyingRank": 129,
+   "tier": 2,
+   "seedScore": 7273,
+   "seedRank": 99,
+   "seed": 199
+  },
+  "7104": {
+   "coach": "Sam Kennedy",
+   "team": "Chan Kum Bong",
+   "qualifyingRank": 200,
+   "tier": 2,
+   "seedScore": 6818,
+   "seedRank": 100,
+   "seed": 200
+  },
+  "26068": {
+   "coach": "David Mckenzie",
+   "team": "DMack Entertainers",
+   "qualifyingRank": 241,
+   "tier": 3,
+   "seedScore": 8946,
+   "seedRank": 1,
+   "seed": 201
+  },
+  "1299": {
+   "coach": "Les Farah",
+   "team": "Nathan Ramjet",
+   "qualifyingRank": 230,
+   "tier": 3,
+   "seedScore": 8785,
+   "seedRank": 2,
+   "seed": 202
+  },
+  "36665": {
+   "coach": "Paul Humphries",
+   "team": "TRASH GORDON",
+   "qualifyingRank": 248,
+   "tier": 3,
+   "seedScore": 8780,
+   "seedRank": 3,
+   "seed": 203
+  },
+  "1312": {
+   "coach": "William Anasi",
+   "team": "WDA DOO",
+   "qualifyingRank": 232,
+   "tier": 3,
+   "seedScore": 8774,
+   "seedRank": 4,
+   "seed": 204
+  },
+  "2392": {
+   "coach": "Nikki Mcintosh",
+   "team": "Pretendy Chasers",
+   "qualifyingRank": 215,
+   "tier": 3,
+   "seedScore": 8762,
+   "seedRank": 5,
+   "seed": 205
+  },
+  "625": {
+   "coach": "Blake Whipp",
+   "team": "Whippys Fantasy",
+   "qualifyingRank": 226,
+   "tier": 3,
+   "seedScore": 8744,
+   "seedRank": 6,
+   "seed": 206
+  },
+  "37931": {
+   "coach": "Finbarr Reynolds",
+   "team": "Triumph & Disaster",
+   "qualifyingRank": 201,
+   "tier": 3,
+   "seedScore": 8727,
+   "seedRank": 7,
+   "seed": 207
+  },
+  "106954": {
+   "coach": "Jack Feeney",
+   "team": "The Bear Necessities",
+   "qualifyingRank": 258,
+   "tier": 3,
+   "seedScore": 8678,
+   "seedRank": 8,
+   "seed": 208
+  },
+  "5208": {
+   "coach": "Nash Beck",
+   "team": "Busuuuuuu",
+   "qualifyingRank": 295,
+   "tier": 3,
+   "seedScore": 8645,
+   "seedRank": 9,
+   "seed": 209
+  },
+  "166561": {
+   "coach": "Ethan Jeong",
+   "team": "FIVELINES",
+   "qualifyingRank": 236,
+   "tier": 3,
+   "seedScore": 8643,
+   "seedRank": 10,
+   "seed": 210
+  },
+  "25006": {
+   "coach": "Liam Weber",
+   "team": "Benny Barba's Bulldogs",
+   "qualifyingRank": 202,
+   "tier": 3,
+   "seedScore": 8642,
+   "seedRank": 11,
+   "seed": 211
+  },
+  "10358": {
+   "coach": "Kyle Goldsack",
+   "team": "Cleary Out Of Options",
+   "qualifyingRank": 264,
+   "tier": 3,
+   "seedScore": 8607,
+   "seedRank": 12,
+   "seed": 212
+  },
+  "6859": {
+   "coach": "Joey Braund",
+   "team": "Dennis Burgess Enthusiast",
+   "qualifyingRank": 265,
+   "tier": 3,
+   "seedScore": 8599,
+   "seedRank": 13,
+   "seed": 213
+  },
+  "12727": {
+   "coach": "Krik Turner",
+   "team": "selgae aes hagnirraw ylnam",
+   "qualifyingRank": 221,
+   "tier": 3,
+   "seedScore": 8594,
+   "seedRank": 14,
+   "seed": 214
+  },
+  "8952": {
+   "coach": "Jesse Lockyer",
+   "team": "MADHATTER’S",
+   "qualifyingRank": 251,
+   "tier": 3,
+   "seedScore": 8578,
+   "seedRank": 15,
+   "seed": 215
+  },
+  "4862": {
+   "coach": "Oskar Morrison",
+   "team": "HughRooChu",
+   "qualifyingRank": 206,
+   "tier": 3,
+   "seedScore": 8571,
+   "seedRank": 16,
+   "seed": 216
+  },
+  "37522": {
+   "coach": "Sam Motu",
+   "team": "SAMJNR77",
+   "qualifyingRank": 275,
+   "tier": 3,
+   "seedScore": 8565,
+   "seedRank": 17,
+   "seed": 217
+  },
+  "49858": {
+   "coach": "Russell Metge",
+   "team": "Up the Wahs 95",
+   "qualifyingRank": 234,
+   "tier": 3,
+   "seedScore": 8528,
+   "seedRank": 18,
+   "seed": 218
+  },
+  "77880": {
+   "coach": "Don Cominos",
+   "team": "OneSeasonWonder",
+   "qualifyingRank": 207,
+   "tier": 3,
+   "seedScore": 8519,
+   "seedRank": 19,
+   "seed": 219
+  },
+  "680": {
+   "coach": "Dylan Lawson",
+   "team": "DBagzz",
+   "qualifyingRank": 272,
+   "tier": 3,
+   "seedScore": 8512,
+   "seedRank": 20,
+   "seed": 220
+  },
+  "56561": {
+   "coach": "Sam Eaton",
+   "team": "Sam's Meatheads",
+   "qualifyingRank": 267,
+   "tier": 3,
+   "seedScore": 8505,
+   "seedRank": 21,
+   "seed": 221
+  },
+  "14546": {
+   "coach": "Johno Fitch",
+   "team": "JBFA Football Factory",
+   "qualifyingRank": 220,
+   "tier": 3,
+   "seedScore": 8494,
+   "seedRank": 22,
+   "seed": 222
+  },
+  "36384": {
+   "coach": "Chris Smith",
+   "team": "Sharkies uk",
+   "qualifyingRank": 254,
+   "tier": 3,
+   "seedScore": 8493,
+   "seedRank": 23,
+   "seed": 223
+  },
+  "3158": {
+   "coach": "Reece Hughes",
+   "team": "Hughesy3939",
+   "qualifyingRank": 252,
+   "tier": 3,
+   "seedScore": 8487,
+   "seedRank": 24,
+   "seed": 224
+  },
+  "90291": {
+   "coach": "Liam Stewart",
+   "team": "In Ciro We Trust",
+   "qualifyingRank": 278,
+   "tier": 3,
+   "seedScore": 8487,
+   "seedRank": 25,
+   "seed": 225
+  },
+  "21798": {
+   "coach": "Jeffrey Topping",
+   "team": "Devils Donkeys",
+   "qualifyingRank": 231,
+   "tier": 3,
+   "seedScore": 8486,
+   "seedRank": 26,
+   "seed": 226
+  },
+  "7702": {
+   "coach": "Mark Lawless",
+   "team": "LA Knight",
+   "qualifyingRank": 271,
+   "tier": 3,
+   "seedScore": 8485,
+   "seedRank": 27,
+   "seed": 227
+  },
+  "16742": {
+   "coach": "Brad Malone",
+   "team": "Bugsy's Brawlers",
+   "qualifyingRank": 228,
+   "tier": 3,
+   "seedScore": 8474,
+   "seedRank": 28,
+   "seed": 228
+  },
+  "7870": {
+   "coach": "Matthew Keyworth",
+   "team": "JBFA FC",
+   "qualifyingRank": 208,
+   "tier": 3,
+   "seedScore": 8461,
+   "seedRank": 29,
+   "seed": 229
+  },
+  "12594": {
+   "coach": "Jake Mullen",
+   "team": "Skibidii",
+   "qualifyingRank": 212,
+   "tier": 3,
+   "seedScore": 8460,
+   "seedRank": 30,
+   "seed": 230
+  },
+  "947": {
+   "coach": "Callum Ferguson",
+   "team": "Random As Funk",
+   "qualifyingRank": 260,
+   "tier": 3,
+   "seedScore": 8455,
+   "seedRank": 31,
+   "seed": 231
+  },
+  "56665": {
+   "coach": "Andrew Wilson",
+   "team": "TheCracker",
+   "qualifyingRank": 218,
+   "tier": 3,
+   "seedScore": 8446,
+   "seedRank": 32,
+   "seed": 232
+  },
+  "7131": {
+   "coach": "Alex Jennings",
+   "team": "Kalyns Ponga",
+   "qualifyingRank": 274,
+   "tier": 3,
+   "seedScore": 8443,
+   "seedRank": 33,
+   "seed": 233
+  },
+  "61519": {
+   "coach": "John Piko",
+   "team": "80Mint",
+   "qualifyingRank": 261,
+   "tier": 3,
+   "seedScore": 8436,
+   "seedRank": 34,
+   "seed": 234
+  },
+  "81561": {
+   "coach": "Glen Surjadinata",
+   "team": "Le Tryads",
+   "qualifyingRank": 262,
+   "tier": 3,
+   "seedScore": 8433,
+   "seedRank": 35,
+   "seed": 235
+  },
+  "4126": {
+   "coach": "Lj Andrews",
+   "team": "LeBronco James",
+   "qualifyingRank": 225,
+   "tier": 3,
+   "seedScore": 8432,
+   "seedRank": 36,
+   "seed": 236
+  },
+  "18502": {
+   "coach": "Cameron Bridge",
+   "team": "DGCS 2",
+   "qualifyingRank": 216,
+   "tier": 3,
+   "seedScore": 8429,
+   "seedRank": 37,
+   "seed": 237
+  },
+  "81528": {
+   "coach": "David Papponetti",
+   "team": "Pappa Dogs",
+   "qualifyingRank": 214,
+   "tier": 3,
+   "seedScore": 8423,
+   "seedRank": 38,
+   "seed": 238
+  },
+  "71328": {
+   "coach": "Brent Compton",
+   "team": "The Parkwood Pork Swords",
+   "qualifyingRank": 211,
+   "tier": 3,
+   "seedScore": 8415,
+   "seedRank": 39,
+   "seed": 239
+  },
+  "291": {
+   "coach": "Austin Murphy",
+   "team": "NRLFA Fletcher Mullets",
+   "qualifyingRank": 279,
+   "tier": 3,
+   "seedScore": 8413,
+   "seedRank": 40,
+   "seed": 240
+  },
+  "7879": {
+   "coach": "Matt Henderson",
+   "team": "Mrhenderson",
+   "qualifyingRank": 222,
+   "tier": 3,
+   "seedScore": 8412,
+   "seedRank": 41,
+   "seed": 241
+  },
+  "5313": {
+   "coach": "Johnny Zibara",
+   "team": "ZouzWalsh",
+   "qualifyingRank": 273,
+   "tier": 3,
+   "seedScore": 8411,
+   "seedRank": 42,
+   "seed": 242
+  },
+  "36563": {
+   "coach": "Jaz Brady",
+   "team": "jazman84",
+   "qualifyingRank": 291,
+   "tier": 3,
+   "seedScore": 8411,
+   "seedRank": 43,
+   "seed": 243
+  },
+  "9901": {
+   "coach": "Kyle Whittle",
+   "team": "JBFA Hectic 8-Ball",
+   "qualifyingRank": 237,
+   "tier": 3,
+   "seedScore": 8410,
+   "seedRank": 44,
+   "seed": 244
+  },
+  "35244": {
+   "coach": "Martin Griffiths",
+   "team": "Griffs Greats 26",
+   "qualifyingRank": 209,
+   "tier": 3,
+   "seedScore": 8405,
+   "seedRank": 45,
+   "seed": 245
+  },
+  "11728": {
+   "coach": "Shane Vos",
+   "team": "its Vossy",
+   "qualifyingRank": 255,
+   "tier": 3,
+   "seedScore": 8392,
+   "seedRank": 46,
+   "seed": 246
+  },
+  "53594": {
+   "coach": "Bradley Horne",
+   "team": "Hornedogs",
+   "qualifyingRank": 247,
+   "tier": 3,
+   "seedScore": 8388,
+   "seedRank": 47,
+   "seed": 247
+  },
+  "57362": {
+   "coach": "Adam Grant",
+   "team": "Adam’s Warriors88",
+   "qualifyingRank": 217,
+   "tier": 3,
+   "seedScore": 8382,
+   "seedRank": 48,
+   "seed": 248
+  },
+  "31421": {
+   "coach": "Ian Webster",
+   "team": "Canberra isol",
+   "qualifyingRank": 292,
+   "tier": 3,
+   "seedScore": 8382,
+   "seedRank": 49,
+   "seed": 249
+  },
+  "1987": {
+   "coach": "Dion Willcocks",
+   "team": "Green Schist Hooligans",
+   "qualifyingRank": 244,
+   "tier": 3,
+   "seedScore": 8376,
+   "seedRank": 50,
+   "seed": 250
+  },
+  "11304": {
+   "coach": "Hayden Wise",
+   "team": "Wise23",
+   "qualifyingRank": 256,
+   "tier": 3,
+   "seedScore": 8375,
+   "seedRank": 51,
+   "seed": 251
+  },
+  "220": {
+   "coach": "Tyson Hullena",
+   "team": "Masterton Magpies",
+   "qualifyingRank": 277,
+   "tier": 3,
+   "seedScore": 8364,
+   "seedRank": 52,
+   "seed": 252
+  },
+  "43320": {
+   "coach": "Matthew Jackson",
+   "team": "Wackos  Warriors",
+   "qualifyingRank": 240,
+   "tier": 3,
+   "seedScore": 8357,
+   "seedRank": 53,
+   "seed": 253
+  },
+  "1348": {
+   "coach": "Aaron Johnson",
+   "team": "Eagles - Nest",
+   "qualifyingRank": 268,
+   "tier": 3,
+   "seedScore": 8357,
+   "seedRank": 54,
+   "seed": 254
+  },
+  "46090": {
+   "coach": "Cam Mackellar",
+   "team": "Kamoshika",
+   "qualifyingRank": 263,
+   "tier": 3,
+   "seedScore": 8339,
+   "seedRank": 55,
+   "seed": 255
+  },
+  "41170": {
+   "coach": "Lj Andrews",
+   "team": "Minor Prem Madhouse",
+   "qualifyingRank": 235,
+   "tier": 3,
+   "seedScore": 8328,
+   "seedRank": 56,
+   "seed": 256
+  },
+  "6726": {
+   "coach": "Joe Auimatagi",
+   "team": "Kainga dat shi cuzz",
+   "qualifyingRank": 238,
+   "tier": 3,
+   "seedScore": 8327,
+   "seedRank": 57,
+   "seed": 257
+  },
+  "23366": {
+   "coach": "Steve Toyer",
+   "team": "JBFA Mybestteam",
+   "qualifyingRank": 293,
+   "tier": 3,
+   "seedScore": 8327,
+   "seedRank": 58,
+   "seed": 258
+  },
+  "3547": {
+   "coach": "David Hindson",
+   "team": "Fatter pigs",
+   "qualifyingRank": 259,
+   "tier": 3,
+   "seedScore": 8319,
+   "seedRank": 59,
+   "seed": 259
+  },
+  "516": {
+   "coach": "Liam Connolly",
+   "team": "LiamC",
+   "qualifyingRank": 223,
+   "tier": 3,
+   "seedScore": 8311,
+   "seedRank": 60,
+   "seed": 260
+  },
+  "442": {
+   "coach": "James Craig",
+   "team": "Whangaehu Wizards",
+   "qualifyingRank": 229,
+   "tier": 3,
+   "seedScore": 8305,
+   "seedRank": 61,
+   "seed": 261
+  },
+  "1294": {
+   "coach": "Callum Ferguson",
+   "team": "Fizzays Raskals",
+   "qualifyingRank": 224,
+   "tier": 3,
+   "seedScore": 8291,
+   "seedRank": 62,
+   "seed": 262
+  },
+  "11425": {
+   "coach": "Simon Jones",
+   "team": "Bondi Spy",
+   "qualifyingRank": 233,
+   "tier": 3,
+   "seedScore": 8264,
+   "seedRank": 63,
+   "seed": 263
+  },
+  "1264": {
+   "coach": "Jake Christie",
+   "team": "Doggies 13 Plus’s",
+   "qualifyingRank": 289,
+   "tier": 3,
+   "seedScore": 8263,
+   "seedRank": 64,
+   "seed": 264
+  },
+  "3836": {
+   "coach": "Jayme Waka Hemi",
+   "team": "Waka571p",
+   "qualifyingRank": 294,
+   "tier": 3,
+   "seedScore": 8262,
+   "seedRank": 65,
+   "seed": 265
+  },
+  "15917": {
+   "coach": "Andy Ryan",
+   "team": "WWJTD",
+   "qualifyingRank": 253,
+   "tier": 3,
+   "seedScore": 8223,
+   "seedRank": 66,
+   "seed": 266
+  },
+  "15060": {
+   "coach": "Kim Clayton",
+   "team": "JBFA SkrumBags",
+   "qualifyingRank": 287,
+   "tier": 3,
+   "seedScore": 8223,
+   "seedRank": 67,
+   "seed": 267
+  },
+  "41326": {
+   "coach": "Lloyd Mitchell",
+   "team": "QLD49",
+   "qualifyingRank": 280,
+   "tier": 3,
+   "seedScore": 8189,
+   "seedRank": 68,
+   "seed": 268
+  },
+  "47123": {
+   "coach": "Woc Smith",
+   "team": "JBFA HOOKED NEK WEEK",
+   "qualifyingRank": 281,
+   "tier": 3,
+   "seedScore": 8187,
+   "seedRank": 69,
+   "seed": 269
+  },
+  "22093": {
+   "coach": "Peter Framhein",
+   "team": "Cleary Not Fair",
+   "qualifyingRank": 227,
+   "tier": 3,
+   "seedScore": 8116,
+   "seedRank": 70,
+   "seed": 270
+  },
+  "86005": {
+   "coach": "Bevan Stratton",
+   "team": "JBFA Bevs Mungo Team",
+   "qualifyingRank": 203,
+   "tier": 3,
+   "seedScore": 8103,
+   "seedRank": 71,
+   "seed": 271
+  },
+  "16654": {
+   "coach": "Andrew Luu",
+   "team": "Rage Trade Mondays",
+   "qualifyingRank": 213,
+   "tier": 3,
+   "seedScore": 8093,
+   "seedRank": 72,
+   "seed": 272
+  },
+  "44802": {
+   "coach": "Lee Stinson",
+   "team": "Pee Wee's Raiders",
+   "qualifyingRank": 245,
+   "tier": 3,
+   "seedScore": 8084,
+   "seedRank": 73,
+   "seed": 273
+  },
+  "11307": {
+   "coach": "Braithan Collins",
+   "team": "364mafia",
+   "qualifyingRank": 219,
+   "tier": 3,
+   "seedScore": 8076,
+   "seedRank": 74,
+   "seed": 274
+  },
+  "55856": {
+   "coach": "Christian Iodice",
+   "team": "REEDZ TEEM 6",
+   "qualifyingRank": 204,
+   "tier": 3,
+   "seedScore": 8072,
+   "seedRank": 75,
+   "seed": 275
+  },
+  "4482": {
+   "coach": "Joseph Coutts",
+   "team": "JBFA Payne in the Haaas",
+   "qualifyingRank": 250,
+   "tier": 3,
+   "seedScore": 8060,
+   "seedRank": 76,
+   "seed": 276
+  },
+  "144505": {
+   "coach": "Sally Carter",
+   "team": "Cicada",
+   "qualifyingRank": 290,
+   "tier": 3,
+   "seedScore": 8052,
+   "seedRank": 77,
+   "seed": 277
+  },
+  "12881": {
+   "coach": "Paul Steele",
+   "team": "Dinner 4 Tu",
+   "qualifyingRank": 283,
+   "tier": 3,
+   "seedScore": 8041,
+   "seedRank": 78,
+   "seed": 278
+  },
+  "17749": {
+   "coach": "Kingi Kamariera",
+   "team": "Stacked az Bro",
+   "qualifyingRank": 239,
+   "tier": 3,
+   "seedScore": 8017,
+   "seedRank": 79,
+   "seed": 279
+  },
+  "10954": {
+   "coach": "Luke Saragozza",
+   "team": "Saragozza Raptors",
+   "qualifyingRank": 210,
+   "tier": 3,
+   "seedScore": 7999,
+   "seedRank": 80,
+   "seed": 280
+  },
+  "78538": {
+   "coach": "Selwynn Kraus",
+   "team": "Flagstone Flannies",
+   "qualifyingRank": 242,
+   "tier": 3,
+   "seedScore": 7998,
+   "seedRank": 81,
+   "seed": 281
+  },
+  "62065": {
+   "coach": "Brendan Riche",
+   "team": "Sukkar May Penisini To'a Knight",
+   "qualifyingRank": 257,
+   "tier": 3,
+   "seedScore": 7993,
+   "seedRank": 82,
+   "seed": 282
+  },
+  "27128": {
+   "coach": "Darryl Kereopa",
+   "team": "The Mattress Room",
+   "qualifyingRank": 282,
+   "tier": 3,
+   "seedScore": 7980,
+   "seedRank": 83,
+   "seed": 283
+  },
+  "216": {
+   "coach": "Jae Starling",
+   "team": "JPSTAR",
+   "qualifyingRank": 284,
+   "tier": 3,
+   "seedScore": 7935,
+   "seedRank": 84,
+   "seed": 284
+  },
+  "64149": {
+   "coach": "Mohamad Sibassi",
+   "team": "Bench Warmer Sibassi",
+   "qualifyingRank": 246,
+   "tier": 3,
+   "seedScore": 7925,
+   "seedRank": 85,
+   "seed": 285
+  },
+  "11015": {
+   "coach": "Samuel Hooper",
+   "team": "Hoopers365",
+   "qualifyingRank": 249,
+   "tier": 3,
+   "seedScore": 7913,
+   "seedRank": 86,
+   "seed": 286
+  },
+  "12225": {
+   "coach": "Edward Kidd",
+   "team": "JBFA Aurum",
+   "qualifyingRank": 243,
+   "tier": 3,
+   "seedScore": 7847,
+   "seedRank": 87,
+   "seed": 287
+  },
+  "118373": {
+   "coach": "Thomas Procter",
+   "team": "Dark Arts",
+   "qualifyingRank": 297,
+   "tier": 3,
+   "seedScore": 7814,
+   "seedRank": 88,
+   "seed": 288
+  },
+  "122086": {
+   "coach": "Jhonte McFadyen-MacDonald",
+   "team": "Wigan My Warrior",
+   "qualifyingRank": 270,
+   "tier": 3,
+   "seedScore": 7743,
+   "seedRank": 89,
+   "seed": 289
+  },
+  "28759": {
+   "coach": "Jack Ferguson",
+   "team": "DreamTeam253",
+   "qualifyingRank": 296,
+   "tier": 3,
+   "seedScore": 7720,
+   "seedRank": 90,
+   "seed": 290
+  },
+  "17865": {
+   "coach": "Mark Johnston",
+   "team": "johnohardyards",
+   "qualifyingRank": 205,
+   "tier": 3,
+   "seedScore": 7499,
+   "seedRank": 91,
+   "seed": 291
+  },
+  "60924": {
+   "coach": "Liam Prichard",
+   "team": "Hass to the Rabbitohs 2027",
+   "qualifyingRank": 276,
+   "tier": 3,
+   "seedScore": 7424,
+   "seedRank": 92,
+   "seed": 292
+  },
+  "71238": {
+   "coach": "Robin Smith",
+   "team": "BobsBigBadBlueBulguruBulldogs",
+   "qualifyingRank": 269,
+   "tier": 3,
+   "seedScore": 7405,
+   "seedRank": 93,
+   "seed": 293
+  },
+  "36325": {
+   "coach": "Amon Broadhurst",
+   "team": "TopBinsFC",
+   "qualifyingRank": 286,
+   "tier": 3,
+   "seedScore": 7173,
+   "seedRank": 94,
+   "seed": 294
+  },
+  "4051": {
+   "coach": "Soren Moon",
+   "team": "Sozsta",
+   "qualifyingRank": 266,
+   "tier": 3,
+   "seedScore": 7164,
+   "seedRank": 95,
+   "seed": 295
+  },
+  "187343": {
+   "coach": "Toby Mccaw",
+   "team": "Filled To The Brim Son",
+   "qualifyingRank": 285,
+   "tier": 3,
+   "seedScore": 6920,
+   "seedRank": 96,
+   "seed": 296
+  },
+  "3768": {
+   "coach": "Jayme Waka Hemi",
+   "team": "JBFA Hemi",
+   "qualifyingRank": 299,
+   "tier": 3,
+   "seedScore": 6399,
+   "seedRank": 97,
+   "seed": 297
+  },
+  "62847": {
+   "coach": "Hamish Callander",
+   "team": "Bray park bandaids",
+   "qualifyingRank": 288,
+   "tier": 3,
+   "seedScore": 6194,
+   "seedRank": 98,
+   "seed": 298
+  },
+  "75637": {
+   "coach": "Matthew Sylvander",
+   "team": "RednoseReindeer",
+   "qualifyingRank": 298,
+   "tier": 3,
+   "seedScore": 5635,
+   "seedRank": 99,
+   "seed": 299
+  },
+  "77": {
+   "coach": "Scott Fulcher",
+   "team": "trell mit dally m",
+   "qualifyingRank": 300,
+   "tier": 3,
+   "seedScore": 0,
+   "seedRank": 100,
+   "seed": 300
+  }
+ }
+}
