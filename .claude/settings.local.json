@@ -76,7 +76,10 @@
       "Bash(git commit *)",
       "Read(//c/Users/donal/Desktop/**)",
       "Read(//c/Users/donal/**)",
-      "Bash(cat \"C:/Users/donal/.claude/skills/anthropic-skills/rosterr-engineer/SKILL.md\" 2>/dev/null | head -80 || find \"C:/Users/donal/.claude\" -ipath \"*rosterr*\" -name \"*.md\" 2>/dev/null | head)"
+      "Bash(cat \"C:/Users/donal/.claude/skills/anthropic-skills/rosterr-engineer/SKILL.md\" 2>/dev/null | head -80 || find \"C:/Users/donal/.claude\" -ipath \"*rosterr*\" -name \"*.md\" 2>/dev/null | head)",
+      "Bash(node -e \"const d=require\\('./data.json'\\); console.log\\(JSON.stringify\\(d.meta,null,0\\).slice\\(0,300\\)\\)\")",
+      "Bash(node -e \"const d=require\\('./data.json'\\); console.log\\(d.meta.lastUpdated, d.meta.currentRound, d.meta.statsRound, d.meta.topScoreThisRound, d.meta.topCoachThisRound\\)\")",
+      "Bash(node -e \"const d=require\\('./data.json'\\); console.log\\(d.meta.cutScore, d.meta.topScoreThisRound, d.meta.topCoachThisRound\\)\")"
     ]
   }
 }
