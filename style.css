@@ -1101,19 +1101,18 @@ td{padding:.6rem 1rem;vertical-align:middle;}
 .bye-mr-bye{background:var(--surface2);color:var(--muted);border:1px solid var(--border);opacity:.6;}
 .bye-manual-player{padding:.4rem 0;border-bottom:1px solid var(--border);}
 
-/* ── Rosterr Bye Planner promo bar ──────────────────────────── */
-#bye-promo-bar{background:linear-gradient(90deg,rgba(200,70,20,.28) 0%,rgba(180,55,15,.18) 50%,rgba(220,100,30,.22) 100%);border-bottom:1px solid rgba(220,90,30,.45);display:flex;align-items:center;justify-content:center;padding:.42rem 3rem .42rem 1rem;position:relative;min-height:36px;}
-#bye-promo-link{display:flex;align-items:center;gap:.55rem;text-decoration:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:500;transition:color .15s;}
-#bye-promo-link:hover{color:var(--accent);}
-.bpb-icon{font-size:.95rem;flex-shrink:0;}
-.bpb-badge{display:inline-flex;font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:.12rem .42rem;border-radius:4px;background:rgba(240,180,41,.15);color:var(--accent);border:1px solid rgba(240,180,41,.32);flex-shrink:0;}
-.bpb-text-full strong,.bpb-text-short strong{color:var(--accent);font-weight:700;}
-.bpb-text-short{display:none;}
-.bpb-arrow{font-size:.88rem;color:var(--accent);flex-shrink:0;transition:transform .15s;}
-#bye-promo-link:hover .bpb-arrow{transform:translateX(3px);}
-.bpb-close{position:absolute;right:.6rem;background:none;border:none;color:var(--muted);font-size:1.1rem;line-height:1;cursor:pointer;padding:.2rem .45rem;border-radius:4px;transition:color .15s,background .15s;}
-.bpb-close:hover{color:var(--text);background:rgba(255,255,255,.08);}
-@media(max-width:520px){.bpb-text-full{display:none;}.bpb-text-short{display:inline;}}
+/* ── Finals quick links bar ───────────────────────────────────── */
+#finals-quick-bar{background:linear-gradient(90deg,rgba(240,180,41,.16) 0%,rgba(26,58,143,.14) 50%,rgba(220,38,38,.12) 100%);border-bottom:1px solid rgba(240,180,41,.28);display:flex;align-items:center;justify-content:center;gap:.55rem;padding:.5rem 1rem;flex-wrap:wrap;}
+.fqb-label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin-right:.15rem;}
+.fqb-btn{display:inline-flex;align-items:center;gap:.45rem;border:none;border-radius:999px;padding:.38rem .85rem;font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:600;color:var(--text);cursor:pointer;transition:transform .15s,background .15s,border-color .15s;}
+.fqb-surv{background:rgba(248,113,113,.14);border:1px solid rgba(248,113,113,.35);}
+.fqb-surv:hover{background:rgba(248,113,113,.22);transform:translateY(-1px);}
+.fqb-ko{background:rgba(96,165,250,.14);border:1px solid rgba(96,165,250,.35);}
+.fqb-ko:hover{background:rgba(96,165,250,.22);transform:translateY(-1px);}
+.fqb-icon{font-size:.9rem;line-height:1;}
+.fqb-arrow{font-size:.82rem;color:var(--accent);transition:transform .15s;}
+.fqb-btn:hover .fqb-arrow{transform:translateX(2px);}
+@media(max-width:520px){#finals-quick-bar{gap:.4rem;padding:.45rem .75rem;}.fqb-label{width:100%;text-align:center;margin-right:0;}.fqb-btn{flex:1 1 calc(50% - .25rem);justify-content:center;min-width:0;padding:.38rem .65rem;}.fqb-text{font-size:.76rem;}}
 
 /* ══════════════════════════════════════════════════════════════
    PWA — Bottom Navigation (mobile only)

@@ -82,24 +82,20 @@
   </div>
 </div>
 
-<!-- Site notice bar. Reused for whatever the current announcement is — the
-     bye-promo ids/classes are kept so the existing .bpb-* styles still apply.
-     Bump the localStorage key whenever the message changes, otherwise anyone
-     who dismissed the previous notice never sees the new one. -->
-<div id="bye-promo-bar">
-  <a href="#" onclick="showTab(null,'p3');window.scrollTo({top:0,behavior:'smooth'});return false;" id="bye-promo-link">
-    <span class="bpb-icon">🏆</span>
-    <span class="bpb-badge">FIXED</span>
-    <span class="bpb-text-full">Knockout audited — a seeding bug was corrupting the bracket. Every round from R19 has been rebuilt. <strong>See the R24 draw</strong></span>
-    <span class="bpb-text-short">Knockout seeding bug fixed — <strong>see R24 draw</strong></span>
-    <span class="bpb-arrow">→</span>
-  </a>
-  <button class="bpb-close" onclick="dismissByePromo()" title="Dismiss">×</button>
+<!-- Finals quick links -->
+<div id="finals-quick-bar">
+  <span class="fqb-label">R27 Finals</span>
+  <button type="button" class="fqb-btn fqb-surv" onclick="goFinals('surv')">
+    <span class="fqb-icon">🎯</span>
+    <span class="fqb-text">Survivor Final</span>
+    <span class="fqb-arrow">→</span>
+  </button>
+  <button type="button" class="fqb-btn fqb-ko" onclick="goFinals('ko')">
+    <span class="fqb-icon">⚔️</span>
+    <span class="fqb-text">Knockout Final</span>
+    <span class="fqb-arrow">→</span>
+  </button>
 </div>
-<script>
-(function(){if(localStorage.getItem('koAuditNoticeDismissed')){var b=document.getElementById('bye-promo-bar');if(b)b.style.display='none';}})();
-function dismissByePromo(){document.getElementById('bye-promo-bar').style.display='none';localStorage.setItem('koAuditNoticeDismissed','1');}
-</script>
 
 <main>
 
@@ -318,7 +314,7 @@ function dismissByePromo(){document.getElementById('bye-promo-bar').style.displa
     <p style="font-size:.78rem;color:var(--muted);margin-bottom:.5rem;">💡 <strong style="color:var(--text)">Click any round</strong> to see which coaches were eliminated that round.</p>
     <div class="sg" id="sgrid"></div>
     <div id="elim-popup" style="display:none;margin-top:.75rem;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:1rem;"></div>
-    <div class="sh" style="margin-top:1.75rem"><div class="sht">Who's Still Alive</div><div class="shl"></div><span class="badge balive" id="alive-count-badge"></span></div>
+    <div class="sh" id="surv-final" style="margin-top:1.75rem"><div class="sht">Survivor Final — Who's Still Alive</div><div class="shl"></div><span class="badge balive" id="alive-count-badge"></span></div>
     <div class="fr" style="margin-bottom:.75rem">
       <span class="fil">Filter:</span>
       <input class="fi" id="c2fi" placeholder="Search coach or team…" oninput="fC2()" style="width:200px">

@@ -83,11 +83,7 @@ function showTopTab(grp){
     document.querySelectorAll('.nb').forEach(function(b){b.classList.remove('active');});
     document.getElementById('panel-ov').classList.add('active');
     curTab='ov';
-    var _bp=document.getElementById('bye-promo-bar');
-    if(_bp&&!localStorage.getItem('byePromoDismissed')) _bp.style.display='';
   } else {
-    var _bp=document.getElementById('bye-promo-bar');
-    if(_bp) _bp.style.display='none';
     // activate first sub-tab in this group if none active
     var firstMap={'comp':'how','insights':'stats'};
     var firstTab=firstMap[grp];
@@ -105,8 +101,6 @@ function showTab(e,id){
   if(nb) nb.classList.add('active');
   else if(e&&e.target) e.target.classList.add('active');
   curTab=id;
-  var _bp=document.getElementById('bye-promo-bar');
-  if(_bp){if(id==='ov'&&!localStorage.getItem('byePromoDismissed'))_bp.style.display='';else if(id!=='ov')_bp.style.display='none';}
   // sync top tab
   var grp=_TAB_GROUP[id];
   if(grp){
@@ -119,6 +113,15 @@ function showTab(e,id){
     });
   }
 }
+function goFinals(type){
+  showTab(null,type==='surv'?'c2':'p3');
+  setTimeout(function(){
+    var el=document.getElementById(type==='surv'?'surv-final':'koDefault');
+    if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
+    else window.scrollTo({top:0,behavior:'smooth'});
+  },50);
+}
+window.goFinals=goFinals;
 function goHome(){
   document.querySelectorAll('.nb-top').forEach(function(b){b.classList.remove('active');});
   document.getElementById('nbt-ov').classList.add('active');
