@@ -407,6 +407,35 @@ ROUND_AVGS = {
 CURRENT_ROUND = len(_available_scrape_rounds)
 print(f"  True STATS_ROUND = {CURRENT_ROUND}  (ROUND_AVGS[{CURRENT_ROUND}] = {ROUND_AVGS.get(CURRENT_ROUND, 'MISSING')})")
 
+# The NRL Fantasy API already rolls to the next (unplayed) round. Scraping
+# that round writes a file of zero scores. If we treat it as completed,
+# every coach shows 0, field average is 0, and survivor cuts people at 0.
+while CURRENT_ROUND >= 1 and CURRENT_ROUND in scrapes_dedup:
+    trailing_scores = pd.to_numeric(
+        scrapes_dedup[CURRENT_ROUND]["round_score"], errors="coerce"
+    ).fillna(0)
+    if not trailing_scores.eq(0).all():
+        break
+    print(
+        f"  Dropping stats round {CURRENT_ROUND} — all round_scores are 0 "
+        "(upcoming/unplayed round, not a completed stats week)"
+    )
+    del scrapes_full[CURRENT_ROUND]
+    del scrapes_dedup[CURRENT_ROUND]
+    ROUND_AVGS.pop(CURRENT_ROUND, None)
+    CURRENT_ROUND -= 1
+    print(f"  True STATS_ROUND = {CURRENT_ROUND}  (ROUND_AVGS[{CURRENT_ROUND}] = {ROUND_AVGS.get(CURRENT_ROUND, 'MISSING')})")
+
+# NRL / homepage round number = the scrape file for this stats week (R26 file
+# → 26 of 27). Stats round stays compressed because there is no R13 file;
+# survivor and knockout keep using the compressed keys so we do not cut twice
+# on the same scores.
+_stats_to_scrape = {
+    st: sr for sr, st in _scrape_to_stats.items() if st in scrapes_dedup
+}
+DISPLAY_ROUND = _stats_to_scrape.get(CURRENT_ROUND, CURRENT_ROUND)
+print(f"  DISPLAY_ROUND = {DISPLAY_ROUND} (homepage)  STATS_ROUND = {CURRENT_ROUND} (score keys)")
+
 # R1 platform rank fix
 # R1 platform rank fix
 # The round-2 scrape contains the previous-round rank for round 1.
@@ -837,8 +866,8 @@ top_coach = max(coaches, key=lambda c: c["scores"].get(cur_rkey, 0))
 
 output = {
     "meta": {
-        "currentRound":          CURRENT_ROUND,
-        "statsRound":            CURRENT_ROUND,  # same: sequential remapping resolved the offset
+        "currentRound":          DISPLAY_ROUND,
+        "statsRound":            CURRENT_ROUND,
         "roundAvg":              ROUND_AVGS[CURRENT_ROUND],
         "roundAvgs":             ROUND_AVGS,
         "totalCoaches":          len(coaches),
@@ -868,7 +897,7 @@ output = {
         "kMagic":    K_MAGIC,   # 13000 — rolling window constant
         "ppp":       PPP,       # 1000  — dollars per point above/below BE
         "window":    5,         # 5-game rolling window
-        "currentRound": CURRENT_ROUND,
+        "currentRound": DISPLAY_ROUND,
     },
 }
 
@@ -878,12 +907,12 @@ with open("data.json", "w") as f:
 
 try:
     print(
-        f"R{CURRENT_ROUND} | {len(coaches)} coaches | {alive_count} alive | "
+        f"R{DISPLAY_ROUND} (stats R{CURRENT_ROUND}) | {len(coaches)} coaches | {alive_count} alive | "
         f"cut: {cut_score} | top: {top_coach['scores'].get(cur_rkey, 0)} ({top_coach['coach']})"
     )
 except UnicodeEncodeError:
     print(
-        f"R{CURRENT_ROUND} | {len(coaches)} coaches | {alive_count} alive | "
+        f"R{DISPLAY_ROUND} (stats R{CURRENT_ROUND}) | {len(coaches)} coaches | {alive_count} alive | "
         f"cut: {cut_score} | top: {top_coach['scores'].get(cur_rkey, 0)} ({top_coach['coach'].encode('ascii', 'replace').decode('ascii')})"
     )
 print(f"Players: {len(players_global)} | BEs calculated: {len(be_values)} | "

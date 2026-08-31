@@ -145,6 +145,14 @@ def calculate_and_store_round_avg(round_num: int) -> int:
 
     round_avg = int(round(filtered["round_score"].mean(), 0))
 
+    if filtered["round_score"].fillna(0).eq(0).all() or round_avg == 0:
+        raise RuntimeError(
+            f"Round {round_num} scores are still all zeros after backfill. "
+            "That scrape is the upcoming unplayed round, not a completed week. "
+            "Enter the round number whose CSV already has scores "
+            "(this week: 26, not 27), then re-run Generate Data."
+        )
+
     round_avgs = load_round_avgs()
     round_avgs[str(round_num)] = round_avg
     save_round_avgs(round_avgs)
