@@ -24,6 +24,7 @@ TRADES_GIFTED   = 8
 TRADES_CAPACITY = TRADES_BASE + TRADES_GIFTED  # 44 total
 
 TRADES_STATE_FILE = "trades_state.json"
+SCORES_LOCK_FILE = "scores_lock.json"
 
 # Seeding phase runs R9–R18 and then locks forever. SEEDING_LOCK_FILE is the
 # permanent record of that final result — see the SEEDING PHASE block below.
@@ -426,15 +427,68 @@ while CURRENT_ROUND >= 1 and CURRENT_ROUND in scrapes_dedup:
     CURRENT_ROUND -= 1
     print(f"  True STATS_ROUND = {CURRENT_ROUND}  (ROUND_AVGS[{CURRENT_ROUND}] = {ROUND_AVGS.get(CURRENT_ROUND, 'MISSING')})")
 
-# NRL / homepage round number = the scrape file for this stats week (R26 file
-# → 26 of 27). Stats round stays compressed because there is no R13 file;
-# survivor and knockout keep using the compressed keys so we do not cut twice
-# on the same scores.
-_stats_to_scrape = {
-    st: sr for sr, st in _scrape_to_stats.items() if st in scrapes_dedup
-}
-DISPLAY_ROUND = _stats_to_scrape.get(CURRENT_ROUND, CURRENT_ROUND)
-print(f"  DISPLAY_ROUND = {DISPLAY_ROUND} (homepage)  STATS_ROUND = {CURRENT_ROUND} (score keys)")
+# Published weeks are frozen from scores_lock.json / last week's data.json so a
+# new scrape file cannot overwrite e.g. R25 with R26 scores. The newest scrape
+# FILE number (R26) is then attached as that round only.
+STATS_ROUND = CURRENT_ROUND
+
+def _load_published_scores():
+    lock_path = SCORES_LOCK_FILE
+    prior_env = os.getenv("PRIOR_DATA_JSON")
+    candidates = [
+        lock_path,
+        prior_env,
+        r"C:\Users\donal\Downloads\data (5).json",
+    ]
+    for path in candidates:
+        if not path or not os.path.exists(path):
+            continue
+        with open(path, encoding="utf-8") as f:
+            raw = json.load(f)
+        if "scores" in raw and "throughRound" in raw:
+            print(f"  Loaded score lock from {path} through R{raw['throughRound']}")
+            return raw
+        if "coaches" in raw:
+            lock = {
+                "throughRound": int((raw.get("meta") or {}).get("currentRound") or 0),
+                "roundAvgs": (raw.get("meta") or {}).get("roundAvgs") or {},
+                "scores": {
+                    str(c["teamId"]): dict(c.get("scores") or {})
+                    for c in raw["coaches"]
+                },
+            }
+            print(f"  Loaded published scores from {path} through R{lock['throughRound']}")
+            return lock
+    return None
+
+_published = _load_published_scores()
+if _published and _published.get("roundAvgs"):
+    ROUND_AVGS.update({int(k): int(v) for k, v in _published["roundAvgs"].items()})
+
+_newest_file = None
+for _fr in range(30, 0, -1):
+    _fp = f"JBFA_R{_fr}_Master_Scrape.csv"
+    if not os.path.exists(_fp):
+        continue
+    _fdf = pd.read_csv(_fp)
+    _fscores = pd.to_numeric(_fdf["round_score"], errors="coerce").fillna(0)
+    if _fscores.eq(0).all():
+        continue
+    _newest_file = _fr
+    _fdf = _fdf[_fdf["team_id"].isin(master_ids)]
+    scrapes_full[_fr] = _fdf
+    scrapes_dedup[_fr] = _fdf.drop_duplicates("team_id", keep="first")
+    if _fr not in ROUND_AVGS:
+        ROUND_AVGS[_fr] = int(round(scrapes_dedup[_fr]["round_score"].mean(), 0))
+    print(f"  Newest scored scrape file = R{_fr} (avg {ROUND_AVGS[_fr]})")
+    break
+
+DISPLAY_ROUND = _newest_file or (
+    _published["throughRound"] if _published else CURRENT_ROUND
+)
+if DISPLAY_ROUND > CURRENT_ROUND:
+    CURRENT_ROUND = DISPLAY_ROUND
+print(f"  DISPLAY_ROUND = {DISPLAY_ROUND}  CURRENT_ROUND = {CURRENT_ROUND}")
 
 # R1 platform rank fix
 # R1 platform rank fix
@@ -540,7 +594,7 @@ for _, row in master.iterrows():
         "vipEntry":         vip_entry,
         "survivorEligible": surv_elig,
         "scores":           scores,
-        "total":            sum(scores.values()),
+        "total":            sum(scores.get(f"r{x}", 0) for x in range(1, STATS_ROUND + 1)),
         "wealth":           wealth,
         "platformRanks":    platform_ranks,
         "survivorStatus":   "alive" if surv_elig else "ineligible",
@@ -555,6 +609,37 @@ for _, row in master.iterrows():
         "tradesRemaining":  (TRADES_CAPACITY if CURRENT_ROUND >= 19 else TRADES_BASE) - used,
         "tradesCapacity":   TRADES_CAPACITY,
     })
+
+
+# Freeze already-published weekly scores, then attach the newest scrape file
+# as its own round (R26 stays R26; it must not replace last week's R25).
+if _published:
+    restored = 0
+    for c in coaches:
+        hist = _published["scores"].get(str(c["teamId"]))
+        if not hist:
+            continue
+        for k, v in hist.items():
+            try:
+                c["scores"][k] = int(v)
+            except (TypeError, ValueError):
+                continue
+        restored += 1
+    print(f"  Restored published weekly scores for {restored} coaches through R{_published['throughRound']}")
+
+if _newest_file and _newest_file in scrapes_dedup:
+    new_df = scrapes_dedup[_newest_file]
+    applied = 0
+    for c in coaches:
+        match = new_df[new_df["team_id"].astype(int) == c["teamId"]]
+        if len(match) == 0:
+            continue
+        c["scores"][f"r{_newest_file}"] = int(match.iloc[0]["round_score"])
+        applied += 1
+    print(f"  Applied R{_newest_file} scores from scrape file for {applied} coaches")
+
+for c in coaches:
+    c["total"] = sum(int(v) for v in c["scores"].values())
 
 
 # ── RANKINGS ─────────────────────────────────────────────────
@@ -904,6 +989,18 @@ output = {
 compact = json.dumps(output, separators=(",", ":"))
 with open("data.json", "w") as f:
     f.write(compact)
+
+with open(SCORES_LOCK_FILE, "w", encoding="utf-8") as f:
+    json.dump(
+        {
+            "throughRound": CURRENT_ROUND,
+            "roundAvgs": {str(k): int(v) for k, v in ROUND_AVGS.items()},
+            "scores": {str(c["teamId"]): c["scores"] for c in coaches},
+        },
+        f,
+        separators=(",", ":"),
+    )
+print(f"  Updated {SCORES_LOCK_FILE} through R{CURRENT_ROUND}")
 
 try:
     print(
