@@ -1,5 +1,6 @@
 import csv
 import json
+import os
 import time
 
 import requests
@@ -8,19 +9,29 @@ from config import LEAGUE_ID, build_headers, get_current_round
 
 ROUND = get_current_round()
 
+# API_ROUND lets the actual NRL Fantasy round queried differ from ROUND (which
+# still controls the output filename / round_avgs key / pipeline sequencing).
+# Needed for the season's final round: there's no "upcoming round" for the
+# platform to report, so querying ROUND (stats_week+1, e.g. 28) returns no
+# data at all. Set API_ROUND to the real last round (e.g. 27) in that case.
+API_ROUND = int(os.getenv("API_ROUND", ROUND))
+
 HEADERS = build_headers(
     cookie_required=True,
     referer=f"https://fantasy.nrl.com/fantasy/league/{LEAGUE_ID}/ladder",
 )
 
-print(f"--- STARTING ULTIMATE SCRAPE: Round {ROUND} ---")
+if API_ROUND != ROUND:
+    print(f"--- STARTING ULTIMATE SCRAPE: File Round {ROUND} (querying NRL API round {API_ROUND}) ---")
+else:
+    print(f"--- STARTING ULTIMATE SCRAPE: Round {ROUND} ---")
 team_metadata_lookup = {}
 offset = 0
 
 while True:
     url = (
         "https://fantasy.nrl.com/nrl_classic/api/leagues_classic/show_overall_points"
-        f"?league_id={LEAGUE_ID}&offset={offset}&limit=50&round={ROUND}"
+        f"?league_id={LEAGUE_ID}&offset={offset}&limit=50&round={API_ROUND}"
     )
 
     try:
@@ -41,10 +52,10 @@ while True:
                 "rank": team.get("rank"),
                 "team_name": team.get("name"),
                 "coach": f"{team.get('firstname', '')} {team.get('lastname', '')}",
-                "round_score": scoreflow.get(str(ROUND), 0),
+                "round_score": scoreflow.get(str(API_ROUND), 0),
                 "total_wealth": team.get("value", 0),
                 "cumulative_points": team.get("points", 0),
-                "prev_round_rank": rank_history.get(str(ROUND - 1), 0),
+                "prev_round_rank": rank_history.get(str(API_ROUND - 1), 0),
             }
 
         offset += 50
@@ -68,11 +79,13 @@ final_output = []
 print("\nMerging rosters and calculating sub-ledgers...")
 
 for i, (t_id, meta) in enumerate(team_metadata_lookup.items()):
-    url = f"https://fantasy.nrl.com/nrl_classic/api/teams_classic/show?id={t_id}&round={ROUND}"
+    url = f"https://fantasy.nrl.com/nrl_classic/api/teams_classic/show?id={t_id}&round={API_ROUND}"
 
     try:
         resp = requests.get(url, headers=HEADERS, timeout=10)
         t_data = resp.json().get("result", {})
+        if not isinstance(t_data, dict):
+            raise ValueError(f"unexpected 'result' shape for round {API_ROUND}: {type(t_data).__name__}")
         lineup = t_data.get("lineup", {})
 
         player_ids = []
