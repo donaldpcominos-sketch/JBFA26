@@ -432,6 +432,22 @@ function renderChampions(){
   }
 
   banner.style.display = shown ? '' : 'none';
+
+  // Prize Pool dropdown — clone the Prizes tab's Winnings Leaderboard table
+  // (already ordered largest → smallest) so it's one source of truth.
+  var poolWrap=document.getElementById('ov-prize-pool-wrap');
+  var poolSrc=document.getElementById('prizes-leaderboard-table');
+  if(poolWrap && poolSrc && !poolWrap.firstChild){
+    var poolTw=document.createElement('div');
+    poolTw.className='tw';
+    var poolScroll=document.createElement('div');
+    poolScroll.className='tw-scroll';
+    var poolClone=poolSrc.cloneNode(true);
+    poolClone.removeAttribute('id');
+    poolScroll.appendChild(poolClone);
+    poolTw.appendChild(poolScroll);
+    poolWrap.appendChild(poolTw);
+  }
 }
 
 // ── SCHED ─────────────────────────────────────────────────────────────────

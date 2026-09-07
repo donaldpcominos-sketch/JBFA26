@@ -119,8 +119,7 @@ main{max-width:1400px;margin:0 auto;padding:1.5rem;}
 .prize-winner{margin-top:auto;padding-top:.75rem;}
 .prize-pill{display:inline-flex;align-items:center;gap:.35rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;padding:.2rem .6rem;font-size:.72rem;color:var(--muted);font-weight:600;}
 .prize-pill-dot{width:6px;height:6px;border-radius:50%;background:var(--border);flex-shrink:0;}
-.prize-pill-won{background:rgba(52,211,153,.12);border-color:rgba(52,211,153,.45);color:var(--green,#34d399);}
-.prize-pill-won .prize-pill-dot{background:var(--green,#34d399);}
+.prize-name-final{font-size:.85rem;font-weight:700;color:var(--text);line-height:1.4;}
 .prizes-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-bottom:1.5rem;}
 
 /* STAT CARDS */
@@ -1133,6 +1132,18 @@ td{padding:.6rem 1rem;vertical-align:middle;}
 .champ-card.green::before{background:linear-gradient(90deg,var(--vip),var(--green));}
 @media(max-width:720px){.champ-grid{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:420px){.champ-grid{grid-template-columns:1fr;}}
+
+.champ-prizes-link{text-align:center;margin-top:1rem;}
+.champ-prizes-link button{background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:.55rem 1.2rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.85rem;font-weight:700;cursor:pointer;transition:transform .15s,border-color .15s;}
+.champ-prizes-link button:hover{transform:translateY(-1px);border-color:rgba(240,180,41,.5);color:var(--accent);}
+
+.prize-pool-dd{margin-top:.85rem;background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.prize-pool-dd summary{list-style:none;cursor:pointer;padding:.85rem 1.1rem;font-size:.85rem;font-weight:700;color:var(--text);display:flex;align-items:center;justify-content:space-between;}
+.prize-pool-dd summary::-webkit-details-marker{display:none;}
+.prize-pool-dd summary::after{content:'▾';color:var(--muted);transition:transform .15s;margin-left:.5rem;}
+.prize-pool-dd[open] summary::after{transform:rotate(180deg);}
+.prize-pool-dd summary:hover{color:var(--accent);}
+.prize-pool-dd .tw{padding:0 1.1rem 1.1rem;}
 
 /* ── VIP jackpot bonus tag (Prizes tab) ───────────────────────── */
 .vip-boost-tag{display:inline-flex;align-items:center;gap:.3rem;background:rgba(52,211,153,.12);border:1px solid rgba(52,211,153,.4);color:var(--vip);border-radius:5px;padding:.15rem .5rem;font-size:.66rem;font-weight:700;margin-top:.35rem;}
