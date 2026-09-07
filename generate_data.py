@@ -466,21 +466,30 @@ if _published and _published.get("roundAvgs"):
     ROUND_AVGS.update({int(k): int(v) for k, v in _published["roundAvgs"].items()})
 
 _newest_file = None
+_newest_stats_round = None
 for _fr in range(30, 0, -1):
     _fp = f"JBFA_R{_fr}_Master_Scrape.csv"
     if not os.path.exists(_fp):
         continue
-    _fdf = pd.read_csv(_fp)
-    _fscores = pd.to_numeric(_fdf["round_score"], errors="coerce").fillna(0)
+    # Store/read this file's data under its REMAPPED stats-round key, never
+    # the raw file number — when API_ROUND (fetch_rosters.py) differs from
+    # the file/scrape round (season finale: file R28 holds real round-27
+    # data), the raw file number doesn't match any stats round already in
+    # scrapes_dedup, so keying by it here created a SECOND entry for the
+    # same round (e.g. both "r27" and "r28" holding round 27's score),
+    # double-counting it into every coach's total. Keying by the mapped
+    # stats round makes this an idempotent re-read of the same entry.
+    _stats_r = _scrape_to_stats.get(_fr)
+    if _stats_r is None or _stats_r not in scrapes_dedup:
+        continue
+    _fscores = pd.to_numeric(scrapes_dedup[_stats_r]["round_score"], errors="coerce").fillna(0)
     if _fscores.eq(0).all():
         continue
     _newest_file = _fr
-    _fdf = _fdf[_fdf["team_id"].isin(master_ids)]
-    scrapes_full[_fr] = _fdf
-    scrapes_dedup[_fr] = _fdf.drop_duplicates("team_id", keep="first")
-    if _fr not in ROUND_AVGS:
-        ROUND_AVGS[_fr] = int(round(scrapes_dedup[_fr]["round_score"].mean(), 0))
-    print(f"  Newest scored scrape file = R{_fr} (avg {ROUND_AVGS[_fr]})")
+    _newest_stats_round = _stats_r
+    if _stats_r not in ROUND_AVGS:
+        ROUND_AVGS[_stats_r] = int(round(scrapes_dedup[_stats_r]["round_score"].mean(), 0))
+    print(f"  Newest scored scrape file = R{_fr} (stats round {_stats_r}, avg {ROUND_AVGS[_stats_r]})")
     break
 
 DISPLAY_ROUND = _newest_file or (
@@ -627,19 +636,33 @@ if _published:
         restored += 1
     print(f"  Restored published weekly scores for {restored} coaches through R{_published['throughRound']}")
 
-if _newest_file and _newest_file in scrapes_dedup:
-    new_df = scrapes_dedup[_newest_file]
+if _newest_stats_round and _newest_stats_round in scrapes_dedup:
+    new_df = scrapes_dedup[_newest_stats_round]
     applied = 0
     for c in coaches:
         match = new_df[new_df["team_id"].astype(int) == c["teamId"]]
         if len(match) == 0:
             continue
-        c["scores"][f"r{_newest_file}"] = int(match.iloc[0]["round_score"])
+        c["scores"][f"r{_newest_stats_round}"] = int(match.iloc[0]["round_score"])
         applied += 1
-    print(f"  Applied R{_newest_file} scores from scrape file for {applied} coaches")
+    print(f"  Applied R{_newest_file} (stats round {_newest_stats_round}) scores from scrape file for {applied} coaches")
+
+# DISPLAY_ROUND (raw file/API-round label, e.g. "R28" for a season finale
+# scraped as file R28 but really round 27) can differ from STATS_ROUND (the
+# true count of completed rounds). The frontend looks up "this round's
+# score" by DISPLAY_ROUND (STAT), so mirror the real round's score under
+# that label too — but ONLY as a display alias. It must never be summed
+# into total (bounded to STATS_ROUND below) or it double-counts the round.
+if DISPLAY_ROUND != STATS_ROUND:
+    alias_key, real_key = f"r{DISPLAY_ROUND}", f"r{STATS_ROUND}"
+    for c in coaches:
+        if real_key in c["scores"]:
+            c["scores"][alias_key] = c["scores"][real_key]
+    if STATS_ROUND in ROUND_AVGS:
+        ROUND_AVGS[DISPLAY_ROUND] = ROUND_AVGS[STATS_ROUND]
 
 for c in coaches:
-    c["total"] = sum(int(v) for v in c["scores"].values())
+    c["total"] = sum(c["scores"].get(f"r{x}", 0) for x in range(1, STATS_ROUND + 1))
 
 
 # ── RANKINGS ─────────────────────────────────────────────────
@@ -647,7 +670,7 @@ coaches.sort(key=lambda c: c["total"], reverse=True)
 for i, c in enumerate(coaches):
     c["rank"] = i + 1
 
-for r in range(1, CURRENT_ROUND + 1):
+for r in range(1, STATS_ROUND + 1):
     sorted_r = sorted(
         coaches,
         key=lambda c: sum(c["scores"].get(f"r{x}", 0) for x in range(1, r + 1)),
@@ -775,8 +798,12 @@ for drop in DROP_SCHEDULE:
 
 
 # ── PLAYER DATA ───────────────────────────────────────────────
-cur_full  = scrapes_full[CURRENT_ROUND]
-prev_full = scrapes_full.get(CURRENT_ROUND - 1)
+# Indexed by STATS_ROUND (true completed round), not CURRENT_ROUND — the
+# latter can be DISPLAY_ROUND (a raw file/API-round label, e.g. "28" for a
+# season finale really scraped as round 27) which was never a real key in
+# scrapes_full/scrapes_dedup, only STATS_ROUND is guaranteed to be.
+cur_full  = scrapes_full[STATS_ROUND]
+prev_full = scrapes_full.get(STATS_ROUND - 1)
 total_teams = len(master_ids)
 
 ownership_cur = cur_full.groupby("player_id")["team_id"].count()
