@@ -8,7 +8,7 @@
 <title>JBFA Fantasy League — 2026</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=20260907">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#1a3a8f">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -107,9 +107,43 @@
 
   <!-- OVERVIEW -->
   <div class="panel active" id="panel-ov">
+    <!-- Champions banner — populated by renderChampions() once results are known -->
+    <div id="champ-banner" style="display:none">
+      <div class="champ-hdr"><span style="font-size:1.3rem">🏆</span><span class="champ-hdr-title">2026 Champions</span></div>
+      <div class="champ-grid">
+        <div class="champ-card gold" id="champ-overall" onclick="document.getElementById('ovt').scrollIntoView({behavior:'smooth',block:'center'})">
+          <div class="champ-icon">🌟</div>
+          <div class="champ-label" id="champ-overall-label">Overall Points</div>
+          <div class="champ-name" id="champ-overall-name">—</div>
+          <div class="champ-team" id="champ-overall-team"></div>
+          <div class="champ-cta">View leaders →</div>
+        </div>
+        <div class="champ-card blue" id="champ-ko" onclick="goFinals('ko')">
+          <div class="champ-icon">⚔️</div>
+          <div class="champ-label">Knockout</div>
+          <div class="champ-name" id="champ-ko-name">—</div>
+          <div class="champ-team" id="champ-ko-team"></div>
+          <div class="champ-cta">View bracket →</div>
+        </div>
+        <div class="champ-card red" id="champ-surv" onclick="goFinals('surv')">
+          <div class="champ-icon">🎯</div>
+          <div class="champ-label" id="champ-surv-label">Survivor</div>
+          <div class="champ-name" id="champ-surv-name">—</div>
+          <div class="champ-team" id="champ-surv-team"></div>
+          <div class="champ-cta">View final →</div>
+        </div>
+        <div class="champ-card green" id="champ-vip" onclick="showTab(null,'vip')">
+          <div class="champ-icon">⭐</div>
+          <div class="champ-label" id="champ-vip-label">VIP Comp</div>
+          <div class="champ-name" id="champ-vip-name">—</div>
+          <div class="champ-team" id="champ-vip-team"></div>
+          <div class="champ-cta">View leaderboard →</div>
+        </div>
+      </div>
+    </div>
     <div class="sr">
       <div class="sc"><div class="scl">Coaches</div><div class="scv" id="sc-total">--</div><div class="scs"></div></div>
-      <div class="sc"><div class="scl">Current Round</div><div class="scv" style="color:var(--accent)" id="sc-cur-round">--</div><div class="scs">of 27</div></div>
+      <div class="sc"><div class="scl">Current Round</div><div class="scv" style="color:var(--accent)" id="sc-cur-round">--</div><div class="scs" id="sc-cur-round-sub">of 27</div></div>
       <div class="sc"><div class="scl" id="sc-top-label">Top Score R--</div><div class="scv" style="color:var(--accent)" id="sc-top-val">--</div><div class="scs" id="sc-top-coach" style="color:var(--text);font-weight:700;font-size:.8rem">--</div></div>
       <div class="sc"><div class="scl" id="sc-avg-label">Field Avg R--</div><div class="scv" id="sc-avg-val">--</div><div class="scs" id="sc-avg-sub"></div></div>
     </div>
@@ -421,15 +455,15 @@
             <div style="font-size:.72rem;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.1em">All JBFA coaches · Cumulative all 27 rounds</div>
           </div>
         </div>
-        <span class="badge bt1" style="font-size:.7rem">Top 5 Paid</span>
+        <span class="badge" style="background:rgba(52,211,153,.15);color:var(--green,#34d399);border:1px solid rgba(52,211,153,.4);font-size:.62rem">✓ Final — Winners Confirmed</span>
       </div>
       <div style="padding:1.5rem;">
         <div class="prizes-grid">
-          <div class="prize-card gold"><div class="prize-title">🥇 1st Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--accent);letter-spacing:.04em;margin:.5rem 0;">$750</div><div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div></div>
-          <div class="prize-card gold"><div class="prize-title">🥈 2nd Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--accent);letter-spacing:.04em;margin:.5rem 0;">$350</div><div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div></div>
-          <div class="prize-card gold"><div class="prize-title">🥉 3rd Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;color:var(--accent);letter-spacing:.04em;margin:.5rem 0;">2027 JBFA<br>VIP Package</div><div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div></div>
-          <div class="prize-card gold"><div class="prize-title">4th Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--accent);letter-spacing:.04em;margin:.5rem 0;">$100 <span style="font-size:.9rem">+ Hat &amp; Shirt</span></div><div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div></div>
-          <div class="prize-card gold"><div class="prize-title">5th Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--accent);letter-spacing:.04em;margin:.5rem 0;">$75</div><div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div></div>
+          <div class="prize-card gold"><div class="prize-title">🥇 1st Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--accent);letter-spacing:.04em;margin:.5rem 0;">$750</div><div class="prize-winner"><span class="prize-pill prize-pill-won"><span class="prize-pill-dot"></span>Zakk Patterson <span style="opacity:.6">· Nick Politis Budget</span></span></div></div>
+          <div class="prize-card gold"><div class="prize-title">🥈 2nd Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--accent);letter-spacing:.04em;margin:.5rem 0;">$350</div><div class="prize-winner"><span class="prize-pill prize-pill-won"><span class="prize-pill-dot"></span>James Jackson <span style="opacity:.6">· Cristian</span></span></div></div>
+          <div class="prize-card gold"><div class="prize-title">🥉 3rd Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;color:var(--accent);letter-spacing:.04em;margin:.5rem 0;">2027 JBFA<br>VIP Package</div><div class="prize-winner"><span class="prize-pill prize-pill-won"><span class="prize-pill-dot"></span>Sam Murray <span style="opacity:.6">· Brad Arthur 40-20</span></span></div></div>
+          <div class="prize-card gold"><div class="prize-title">4th Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--accent);letter-spacing:.04em;margin:.5rem 0;">$100 <span style="font-size:.9rem">+ Hat &amp; Shirt</span></div><div class="prize-winner"><span class="prize-pill prize-pill-won"><span class="prize-pill-dot"></span>Chris Cook <span style="opacity:.6">· Bunny boy brothers LMC</span></span></div></div>
+          <div class="prize-card gold"><div class="prize-title">5th Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--accent);letter-spacing:.04em;margin:.5rem 0;">$75</div><div class="prize-winner"><span class="prize-pill prize-pill-won"><span class="prize-pill-dot"></span>Jarrod Etherington <span style="opacity:.6">· Frosty Mangoes</span></span></div></div>
         </div>
       </div>
     </div>
@@ -483,12 +517,12 @@
             <div style="margin-top:.4rem"><span class="prize-pill prize-pill-won"><span class="prize-pill-dot"></span>Les Farah <span style="opacity:.6">· Nathan Ramjet</span></span></div>
           </div>
         </div>
-        <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.75rem">Knockout — Top 4 (Rounds 19–27)</div>
+        <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin-bottom:.75rem"><span style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)">Knockout — Top 4 (Rounds 19–27)</span><span class="badge" style="background:rgba(52,211,153,.15);color:var(--green,#34d399);border:1px solid rgba(52,211,153,.4);font-size:.62rem">✓ Final — Winners Confirmed</span></div>
         <div class="prizes-grid">
-          <div class="prize-card gold"><div class="prize-title">🥇 1st Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--accent);letter-spacing:.04em;margin:.5rem 0;">$350</div><div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div></div>
-          <div class="prize-card gold"><div class="prize-title">🥈 2nd Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--accent);letter-spacing:.04em;margin:.5rem 0;">$250</div><div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div></div>
-          <div class="prize-card gold"><div class="prize-title">🥉 3rd Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--accent);letter-spacing:.04em;margin:.5rem 0;">$150</div><div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div></div>
-          <div class="prize-card gold"><div class="prize-title">4th Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;color:var(--accent);letter-spacing:.04em;margin:.5rem 0;">2027 JBFA<br>Legends Package</div><div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div></div>
+          <div class="prize-card gold"><div class="prize-title">🥇 1st Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--accent);letter-spacing:.04em;margin:.5rem 0;">$350</div><div class="prize-winner"><span class="prize-pill prize-pill-won"><span class="prize-pill-dot"></span>Jarrod Etherington <span style="opacity:.6">· Frosty Mangoes</span></span></div></div>
+          <div class="prize-card gold"><div class="prize-title">🥈 2nd Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--accent);letter-spacing:.04em;margin:.5rem 0;">$250</div><div class="prize-winner"><span class="prize-pill prize-pill-won"><span class="prize-pill-dot"></span>Jeremy Jones <span style="opacity:.6">· Jerome's Homies</span></span></div></div>
+          <div class="prize-card gold"><div class="prize-title">🥉 3rd Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--accent);letter-spacing:.04em;margin:.5rem 0;">$150</div><div class="prize-winner"><span class="prize-pill prize-pill-won"><span class="prize-pill-dot"></span>Kyle Ryland <span style="opacity:.6">· Woolston War Pigs</span></span></div></div>
+          <div class="prize-card gold"><div class="prize-title">4th Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;color:var(--accent);letter-spacing:.04em;margin:.5rem 0;">2027 JBFA<br>Legends Package</div><div class="prize-winner"><span class="prize-pill prize-pill-won"><span class="prize-pill-dot"></span>Zakk Patterson <span style="opacity:.6">· Nick Politis Budget</span></span></div></div>
         </div>
       </div>
     </div>
@@ -503,14 +537,14 @@
             <div style="font-size:.72rem;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.1em">Last coaches standing · Top 4 paid</div>
           </div>
         </div>
-        <span class="badge balive" style="font-size:.7rem">Weekly Score Only</span>
+        <span class="badge" style="background:rgba(52,211,153,.15);color:var(--green,#34d399);border:1px solid rgba(52,211,153,.4);font-size:.62rem">✓ Final — Winners Confirmed</span>
       </div>
       <div style="padding:1.5rem;">
         <div class="prizes-grid">
-          <div class="prize-card green"><div class="prize-title">🥇 1st Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--green);letter-spacing:.04em;margin:.5rem 0;">$400</div><div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div></div>
-          <div class="prize-card green"><div class="prize-title">🥈 2nd Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--green);letter-spacing:.04em;margin:.5rem 0;">$300</div><div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div></div>
-          <div class="prize-card green"><div class="prize-title">🥉 3rd Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--green);letter-spacing:.04em;margin:.5rem 0;">$150</div><div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div></div>
-          <div class="prize-card green"><div class="prize-title">4th Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;color:var(--green);letter-spacing:.04em;margin:.5rem 0;">2027 JBFA<br>Legends Package</div><div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div></div>
+          <div class="prize-card green"><div class="prize-title">🥇 1st Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--green);letter-spacing:.04em;margin:.5rem 0;">$400</div><div class="prize-winner"><span class="prize-pill prize-pill-won"><span class="prize-pill-dot"></span>John Curtin <span style="opacity:.6">· Jockey's Jokers</span></span></div></div>
+          <div class="prize-card green"><div class="prize-title">🥈 2nd Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--green);letter-spacing:.04em;margin:.5rem 0;">$300</div><div class="prize-winner"><span class="prize-pill prize-pill-won"><span class="prize-pill-dot"></span>James Jackson <span style="opacity:.6">· Cristian</span></span></div></div>
+          <div class="prize-card green"><div class="prize-title">🥉 3rd Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--green);letter-spacing:.04em;margin:.5rem 0;">$150</div><div class="prize-winner"><span class="prize-pill prize-pill-won"><span class="prize-pill-dot"></span>Evan Cook <span style="opacity:.6">· metzgerhund</span></span></div><div class="vip-boost-tag">⭐ VIP jackpot bonus: +25% → $187.50</div></div>
+          <div class="prize-card green"><div class="prize-title">4th Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;color:var(--green);letter-spacing:.04em;margin:.5rem 0;">2027 JBFA<br>Legends Package</div><div class="prize-winner"><span class="prize-pill prize-pill-won"><span class="prize-pill-dot"></span>Zakk Patterson <span style="opacity:.6">· Nick Politis Budget</span></span></div></div>
         </div>
       </div>
     </div>
@@ -525,12 +559,12 @@
             <div style="font-size:.72rem;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.1em">68 entries · Cumulative all season</div>
           </div>
         </div>
-        <span class="badge bvip dyn-vip-badge" style="font-size:.7rem">68 Entries</span>
+        <span class="badge" style="background:rgba(52,211,153,.15);color:var(--green,#34d399);border:1px solid rgba(52,211,153,.4);font-size:.62rem">✓ Final — Winners Confirmed</span>
       </div>
       <div style="padding:1.5rem;">
         <div class="prizes-grid" style="margin-bottom:1rem">
-          <div class="prize-card purple"><div class="prize-title">⭐ VIP Season Champion</div><div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:.25rem 0">1st Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--vip);letter-spacing:.04em;margin:.2rem 0;">$500</div><div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div></div>
-          <div class="prize-card purple"><div class="prize-title">⭐ VIP Season Runner-Up</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--vip);letter-spacing:.04em;margin:.5rem 0;">$100 <span style="font-size:1rem;color:var(--muted)">JBFA Credit</span></div><div class="prize-winner"><span class="prize-pill"><span class="prize-pill-dot"></span>Winner TBD</span></div></div>
+          <div class="prize-card purple"><div class="prize-title">⭐ VIP Season Champion</div><div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:.25rem 0">1st Place</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--vip);letter-spacing:.04em;margin:.2rem 0;">$500</div><div class="prize-winner"><span class="prize-pill prize-pill-won"><span class="prize-pill-dot"></span>Shane Krautz <span style="opacity:.6">· Skrautz</span></span></div></div>
+          <div class="prize-card purple"><div class="prize-title">⭐ VIP Season Runner-Up</div><div class="prize-amount" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--vip);letter-spacing:.04em;margin:.5rem 0;">$100 <span style="font-size:1rem;color:var(--muted)">JBFA Credit</span></div><div class="prize-winner"><span class="prize-pill prize-pill-won"><span class="prize-pill-dot"></span>Richard Lane <span style="opacity:.6">· BUSLANE</span></span></div></div>
         </div>
         <div style="background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.2);border-radius:10px;padding:.85rem 1.1rem;display:flex;align-items:flex-start;gap:.75rem;">
           <span style="font-size:1.1rem;flex-shrink:0">⭐</span>
@@ -592,12 +626,27 @@
     <div class="tw"><div class="tw-scroll"><table>
       <thead><tr><th>#</th><th>Coach</th><th>Team</th><th>Comp Won</th><th>Winnings</th></tr></thead>
       <tbody>
-        <tr><td class="trk">1</td><td><div class="tco">Kane Flemming</div></td><td><div class="tte">Coochiemen</div></td><td>Premiership (T1) — 🥇 1st</td><td style="font-weight:700;color:var(--accent)">$400</td></tr>
-        <tr><td class="trk">2</td><td><div class="tco">Peter Harding</div></td><td><div class="tte">Pistols Panthers</div></td><td>Championship (T2) — 🥇 1st</td><td style="font-weight:700;color:var(--accent)">$200</td></tr>
-        <tr><td class="trk">3</td><td><div class="tco">Zakk Patterson</div></td><td><div class="tte">Nick Politis Budget</div></td><td>Premiership (T1) — 🥈 2nd</td><td style="font-weight:700;color:var(--accent)">$150 + Hat</td></tr>
-        <tr><td class="trk">4</td><td><div class="tco">David Mckenzie</div></td><td><div class="tte">DMack Entertainers</div></td><td>State Cup (T3) — 🥇 1st</td><td style="font-weight:700;color:var(--accent)">$100</td></tr>
-        <tr><td class="trk">5</td><td><div class="tco">Kye Beck</div></td><td><div class="tte">Kyeskillersss</div></td><td>Championship (T2) — 🥈 2nd</td><td style="font-weight:700;color:var(--text)">2027 Legends Pack</td></tr>
-        <tr><td class="trk">6</td><td><div class="tco">Les Farah</div></td><td><div class="tte">Nathan Ramjet</div></td><td>State Cup (T3) — 🥈 2nd</td><td style="font-weight:700;color:var(--text)">Hat &amp; T-Shirt</td></tr>
+        <tr><td class="trk">1</td><td><div class="tco">Zakk Patterson</div></td><td><div class="tte">Nick Politis Budget</div></td><td>Overall Points — 🥇 1st</td><td style="font-weight:700;color:var(--accent)">$750</td></tr>
+        <tr><td class="trk">2</td><td><div class="tco">Shane Krautz <span class="vip">★ VIP</span></div></td><td><div class="tte">Skrautz</div></td><td>VIP Comp — ⭐ Champion</td><td style="font-weight:700;color:var(--accent)">$500</td></tr>
+        <tr><td class="trk">3</td><td><div class="tco">Kane Flemming</div></td><td><div class="tte">Coochiemen</div></td><td>Premiership (T1) — 🥇 1st</td><td style="font-weight:700;color:var(--accent)">$400</td></tr>
+        <tr><td class="trk">4</td><td><div class="tco">John Curtin</div></td><td><div class="tte">Jockey's Jokers</div></td><td>Survivor — 🥇 1st</td><td style="font-weight:700;color:var(--accent)">$400</td></tr>
+        <tr><td class="trk">5</td><td><div class="tco">James Jackson</div></td><td><div class="tte">Cristian</div></td><td>Overall Points — 🥈 2nd</td><td style="font-weight:700;color:var(--accent)">$350</td></tr>
+        <tr><td class="trk">6</td><td><div class="tco">Jarrod Etherington</div></td><td><div class="tte">Frosty Mangoes</div></td><td>Knockout — 🥇 1st</td><td style="font-weight:700;color:var(--accent)">$350</td></tr>
+        <tr><td class="trk">7</td><td><div class="tco">James Jackson</div></td><td><div class="tte">Cristian</div></td><td>Survivor — 🥈 2nd</td><td style="font-weight:700;color:var(--accent)">$300</td></tr>
+        <tr><td class="trk">8</td><td><div class="tco">Jeremy Jones</div></td><td><div class="tte">Jerome's Homies</div></td><td>Knockout — 🥈 2nd</td><td style="font-weight:700;color:var(--accent)">$250</td></tr>
+        <tr><td class="trk">9</td><td><div class="tco">Peter Harding</div></td><td><div class="tte">Pistols Panthers</div></td><td>Championship (T2) — 🥇 1st</td><td style="font-weight:700;color:var(--accent)">$200</td></tr>
+        <tr><td class="trk">10</td><td><div class="tco">Evan Cook <span class="vip">★ VIP</span></div></td><td><div class="tte">metzgerhund</div></td><td>Survivor — 🥉 3rd <span style="color:var(--vip);font-size:.72rem">(+25% VIP bonus)</span></td><td style="font-weight:700;color:var(--accent)">$187.50</td></tr>
+        <tr><td class="trk">11</td><td><div class="tco">Zakk Patterson</div></td><td><div class="tte">Nick Politis Budget</div></td><td>Premiership (T1) — 🥈 2nd</td><td style="font-weight:700;color:var(--accent)">$150 + Hat</td></tr>
+        <tr><td class="trk">12</td><td><div class="tco">Kyle Ryland</div></td><td><div class="tte">Woolston War Pigs</div></td><td>Knockout — 🥉 3rd</td><td style="font-weight:700;color:var(--accent)">$150</td></tr>
+        <tr><td class="trk">13</td><td><div class="tco">David Mckenzie</div></td><td><div class="tte">DMack Entertainers</div></td><td>State Cup (T3) — 🥇 1st</td><td style="font-weight:700;color:var(--accent)">$100</td></tr>
+        <tr><td class="trk">14</td><td><div class="tco">Chris Cook</div></td><td><div class="tte">Bunny boy brothers LMC</div></td><td>Overall Points — 4th</td><td style="font-weight:700;color:var(--accent)">$100 + Hat &amp; Shirt</td></tr>
+        <tr><td class="trk">15</td><td><div class="tco">Richard Lane <span class="vip">★ VIP</span></div></td><td><div class="tte">BUSLANE</div></td><td>VIP Comp — Runner-Up</td><td style="font-weight:700;color:var(--accent)">$100 JBFA Credit</td></tr>
+        <tr><td class="trk">16</td><td><div class="tco">Jarrod Etherington</div></td><td><div class="tte">Frosty Mangoes</div></td><td>Overall Points — 5th</td><td style="font-weight:700;color:var(--accent)">$75</td></tr>
+        <tr><td class="trk">17</td><td><div class="tco">Sam Murray</div></td><td><div class="tte">Brad Arthur 40-20</div></td><td>Overall Points — 🥉 3rd</td><td style="font-weight:700;color:var(--text)">2027 JBFA VIP Package</td></tr>
+        <tr><td class="trk">18</td><td><div class="tco">Kye Beck</div></td><td><div class="tte">Kyeskillersss</div></td><td>Championship (T2) — 🥈 2nd</td><td style="font-weight:700;color:var(--text)">2027 Legends Pack</td></tr>
+        <tr><td class="trk">19</td><td><div class="tco">Zakk Patterson</div></td><td><div class="tte">Nick Politis Budget</div></td><td>Knockout — 4th</td><td style="font-weight:700;color:var(--text)">2027 JBFA Legends Package</td></tr>
+        <tr><td class="trk">20</td><td><div class="tco">Zakk Patterson</div></td><td><div class="tte">Nick Politis Budget</div></td><td>Survivor — 4th</td><td style="font-weight:700;color:var(--text)">2027 JBFA Legends Package</td></tr>
+        <tr><td class="trk">21</td><td><div class="tco">Les Farah</div></td><td><div class="tte">Nathan Ramjet</div></td><td>State Cup (T3) — 🥈 2nd</td><td style="font-weight:700;color:var(--text)">Hat &amp; T-Shirt</td></tr>
       </tbody>
     </table></div></div>
   </div>
@@ -945,9 +994,9 @@
   <button class="sw-toast-close" onclick="this.parentElement.classList.remove('visible')" aria-label="Dismiss">×</button>
 </div>
 
-<script src="dataFetcher.js"></script>
-<script src="uiRenderer.js"></script>
-<script src="app.js"></script>
+<script src="dataFetcher.js?v=20260907"></script>
+<script src="uiRenderer.js?v=20260907"></script>
+<script src="app.js?v=20260907"></script>
 
 <script>
 function closeFeedback(){

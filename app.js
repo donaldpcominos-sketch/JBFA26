@@ -372,6 +372,68 @@ function renderOvVip(){
   }
 }
 
+// ── CHAMPIONS BANNER (Overview front page) ──────────────────────────────
+// Only meaningful once each comp has actually concluded — a knockout champion
+// only exists once STAT reaches KO_FINAL (koFinalMatch/koMatchWinner are
+// defined further down this closure, in the KO section), and a survivor
+// champion only exists once exactly one coach is left alive. Overall/VIP are
+// cumulative all season, so their current #1 becomes final on the last round.
+function renderChampions(){
+  var banner=document.getElementById('champ-banner');
+  if(!banner) return;
+  var seasonOver = STAT>=KO_FINAL;
+  var shown=false;
+
+  // Overall Points — cumulative leaderboard, COACHES is already rank-sorted.
+  if(COACHES.length){
+    var top=COACHES[0];
+    document.getElementById('champ-overall-label').textContent = seasonOver ? 'Overall Points' : 'Overall Points (Leader)';
+    document.getElementById('champ-overall-name').textContent = top.coach;
+    document.getElementById('champ-overall-team').textContent = top.team;
+    shown=true;
+  }
+
+  // Knockout — only resolved once the grand final round has been played.
+  var koEl=document.getElementById('champ-ko');
+  if(seasonOver){
+    var finalM = (typeof koFinalMatch==='function') ? koFinalMatch() : null;
+    var champ = finalM ? koMatchWinner(finalM,KO_FINAL) : null;
+    if(champ){
+      document.getElementById('champ-ko-name').textContent = champ.coach;
+      document.getElementById('champ-ko-team').textContent = champ.team;
+      koEl.style.display='';
+      shown=true;
+    } else koEl.style.display='none';
+  } else koEl.style.display='none';
+
+  // Survivor — champion once exactly one coach remains alive.
+  var survEl=document.getElementById('champ-surv');
+  if(_c2Alive && _c2Alive.length===1){
+    document.getElementById('champ-surv-label').textContent='Survivor';
+    document.getElementById('champ-surv-name').textContent=_c2Alive[0].coach;
+    document.getElementById('champ-surv-team').textContent=_c2Alive[0].team;
+    survEl.style.display='';
+    shown=true;
+  } else if(_c2Alive && _c2Alive.length>1){
+    document.getElementById('champ-surv-label').textContent=_c2Alive.length+' Still Alive';
+    document.getElementById('champ-surv-name').textContent='Survivor final in progress';
+    document.getElementById('champ-surv-team').textContent='';
+    survEl.style.display='';
+    shown=true;
+  } else survEl.style.display='none';
+
+  // VIP — cumulative leaderboard, VIP_LIST is already sorted by total desc.
+  if(VIP_LIST.length){
+    var vipTop=VIP_LIST[0];
+    document.getElementById('champ-vip-label').textContent = seasonOver ? 'VIP Comp' : 'VIP Comp (Leader)';
+    document.getElementById('champ-vip-name').textContent = vipTop.coach;
+    document.getElementById('champ-vip-team').textContent = vipTop.team;
+    shown=true;
+  }
+
+  banner.style.display = shown ? '' : 'none';
+}
+
 // ── SCHED ─────────────────────────────────────────────────────────────────
 function renderSched(){
   var rem=_D.meta.survivorEligibleCount || SURVIVOR_COACHES.length;
@@ -580,6 +642,10 @@ window.setP2Tier=function(t){p2ActiveTier=t;dP2();};
 // Standard fill to next power of two → top (POW2-FIELD) seeds get a R19 bye;
 // remaining seeds play a mirror-paired play-in (seed s vs POW2+1-s).
 var KO_START=19, KO_FINAL=27;
+// True once the season's final round has been played — used to swap
+// "Round N of 27" style labels for "Season Complete" wherever CUR/STAT
+// would otherwise read as a round number past the real 27-round season.
+var SEASON_OVER = STAT>=KO_FINAL;
 var KO_POW2=(function(n){var p=1;while(p<n)p*=2;return p;})(COACHES.length); // 512 for 300
 var KO_FIELD=COACHES.length;
 var KO_BYES=KO_POW2-KO_FIELD;                 // 212
@@ -1113,7 +1179,7 @@ function dC2(){
   var badge=document.getElementById('alive-count-badge');
   if(badge) badge.textContent=_c2Alive.length+' alive';
   var hdr=document.getElementById('c2-score-hdr');
-  if(hdr) hdr.textContent='R'+CUR+' Score';
+  if(hdr) hdr.textContent=SEASON_OVER?'Final Score':'R'+CUR+' Score';
   var rows=c2l.map(function(c,i){
     return '<tr onclick="showCoach('+c.rank+')" style="cursor:pointer;border-bottom:1px solid var(--border)">'
       +'<td style="padding:.4rem .6rem;font-size:.8rem;color:var(--muted);width:36px">'+(i+1)+'</td>'
@@ -1476,7 +1542,7 @@ function sparklineHtml(c){
 
 
 // ── INIT ──────────────────────────────────────────────────────────────────
-renderOvTop();renderOvVip();renderPodcasters();renderSched();dP1();dP2();dP3();dVip();dC2();buildPlList();fPlayers();renderTradeSummary();
+renderOvTop();renderOvVip();renderPodcasters();renderSched();dP1();dP2();dP3();dVip();dC2();buildPlList();fPlayers();renderTradeSummary();renderChampions();
 // Dismiss loading overlay now that data is rendered
 (function(){var lo=document.getElementById('app-loading');if(lo)lo.style.display='none';})();
 
@@ -1576,15 +1642,15 @@ function closePlModal(){
   var elimSubEl=document.getElementById('sc-elim-sub');
   if(elimSubEl) elimSubEl.textContent='of '+eligibleCount+' eligible';
   var elimLabelEl=document.getElementById('sc-elim-label');
-  if(elimLabelEl) elimLabelEl.textContent='Eliminated R'+CUR;
+  if(elimLabelEl) elimLabelEl.textContent=SEASON_OVER?'Eliminated (Final)':'Eliminated R'+CUR;
   var cutLabelOvEl=document.getElementById('sc-cut-label-ov');
-  if(cutLabelOvEl) cutLabelOvEl.textContent='R'+CUR+' Cut Score';
+  if(cutLabelOvEl) cutLabelOvEl.textContent=SEASON_OVER?'Final Cut Score':'R'+CUR+' Cut Score';
   var cutScsOvEl=document.getElementById('sc-cut-scs-ov');
-  if(cutScsOvEl) cutScsOvEl.textContent='lowest safe R'+CUR+' score';
+  if(cutScsOvEl) cutScsOvEl.textContent=SEASON_OVER?'lowest safe final-round score':'lowest safe R'+CUR+' score';
   var aliveLabel=document.getElementById('sc-alive-label');
-  if(aliveLabel) aliveLabel.textContent='Alive After R'+CUR;
+  if(aliveLabel) aliveLabel.textContent=SEASON_OVER?'Alive After Final':'Alive After R'+CUR;
   var aliveSub=document.getElementById('sc-alive-sub');
-  if(aliveSub){var elimN=_D.meta.totalCoaches-aliveCount;aliveSub.textContent=elimN+' cut after R'+CUR;}
+  if(aliveSub){var elimN=_D.meta.totalCoaches-aliveCount;aliveSub.textContent=SEASON_OVER?elimN+' cut in the final round':elimN+' cut after R'+CUR;}
   var aliveFixEl=document.getElementById('sc-alive'); if(aliveFixEl) aliveFixEl.textContent=aliveCount;
   var stillFixEl=document.getElementById('sc-still-alive'); if(stillFixEl) stillFixEl.textContent=aliveCount;
   document.querySelectorAll('.dyn-total').forEach(function(el){el.textContent=total;});
@@ -1593,7 +1659,7 @@ function closePlModal(){
 
   // Top score tile — from data
   var topLabel=document.getElementById('sc-top-label');
-  if(topLabel) topLabel.textContent='Top Score R'+CUR;
+  if(topLabel) topLabel.textContent=SEASON_OVER?'Final Top Score':'Top Score R'+CUR;
   var topVal=document.getElementById('sc-top-val');
   if(topVal) topVal.textContent=_D.meta.topScoreThisRound||'—';
   var topCoach=document.getElementById('sc-top-coach');
@@ -1601,7 +1667,7 @@ function closePlModal(){
 
   // Avg tile — from data
   var avgLabel=document.getElementById('sc-avg-label');
-  if(avgLabel) avgLabel.textContent='Field Avg R'+CUR;
+  if(avgLabel) avgLabel.textContent=SEASON_OVER?'Final Field Avg':'Field Avg R'+CUR;
   var avgVal=document.getElementById('sc-avg-val');
   if(avgVal) avgVal.textContent=_D.meta.roundAvg;
   // Last updated — shown as subtitle of Field Avg tile
@@ -1614,7 +1680,8 @@ function closePlModal(){
   }
 
   // Cut score tile — from data
-  var cutLbl='R'+CUR+' Cut Score';
+  var cutLbl=SEASON_OVER?'Final Cut Score':'R'+CUR+' Cut Score';
+  var cutScsLbl=SEASON_OVER?'lowest safe final-round score':'lowest safe R'+CUR+' score';
   var cutLabel=document.getElementById('sc-cut-label');
   if(cutLabel) cutLabel.textContent=cutLbl;
   var cutLabelOv=document.getElementById('sc-cut-label-ov');
@@ -1625,9 +1692,9 @@ function closePlModal(){
   var cutValOv=document.getElementById('sc-cut-val-ov');
   if(cutValOv) cutValOv.textContent=cutScore;
   var cutScsOv=document.getElementById('sc-cut-scs-ov');
-  if(cutScsOv) cutScsOv.textContent='lowest safe R'+CUR+' score';
+  if(cutScsOv) cutScsOv.textContent=cutScsLbl;
   var cutScs=document.getElementById('sc-cut-scs');
-  if(cutScs) cutScs.textContent='lowest safe R'+CUR+' score';
+  if(cutScs) cutScs.textContent=cutScsLbl;
 
   // Alive count — from data
   var aliveEl=document.getElementById('sc-alive');
@@ -1635,7 +1702,7 @@ function closePlModal(){
   var stillEl=document.getElementById('sc-still-alive');
   if(stillEl) stillEl.textContent=_D.meta.aliveAfterLastRound;
   var stillSubEl=document.getElementById('sc-still-alive-sub');
-  if(stillSubEl) stillSubEl.textContent='after R'+CUR;
+  if(stillSubEl) stillSubEl.textContent=SEASON_OVER?'final result':'after R'+CUR;
 
   // VIP top score tile — from VIP_LIST sorted by current round
   var curRkey='r'+STAT;
@@ -1647,20 +1714,22 @@ function closePlModal(){
     var vipTeamEl=document.getElementById('vip-top-team');
     if(vipTeamEl) vipTeamEl.textContent=vipCurLeader.coach;
     var vipTopLabel=document.getElementById('vip-top-label');
-    if(vipTopLabel) vipTopLabel.textContent='Top Score R'+CUR;
+    if(vipTopLabel) vipTopLabel.textContent=SEASON_OVER?'Final Top Score':'Top Score R'+CUR;
   }
 
   // Current round tile
   var curRndEl=document.getElementById('sc-cur-round');
-  if(curRndEl) curRndEl.textContent=CUR;
+  if(curRndEl) curRndEl.textContent=SEASON_OVER?'Final':CUR;
+  var curRndSubEl=document.getElementById('sc-cur-round-sub');
+  if(curRndSubEl) curRndSubEl.textContent=SEASON_OVER?'season complete':'of 27';
 
   // Round pill
   var rpillEl=document.getElementById('rpill');
-  if(rpillEl) rpillEl.textContent='Round '+CUR+' of 27';
+  if(rpillEl) rpillEl.textContent=SEASON_OVER?'Season Complete':'Round '+CUR+' of 27';
   // Column headers
   document.querySelectorAll('th.scol-hdr').forEach(function(el){el.textContent=SCOL;});
   var plBadge=document.getElementById('pl-round-badge');
-  if(plBadge) plBadge.textContent='Round '+CUR+' data';
+  if(plBadge) plBadge.textContent=SEASON_OVER?'Final data':'Round '+CUR+' data';
   var standingsSub=document.getElementById('standings-sub');
   if(standingsSub) standingsSub.textContent=CUR>=9?'Final Qualifying Standings — locked after Round 8. Click any row for coach profile.':'Standings after Round '+CUR+'. Click any row for coach profile.';
 })();
@@ -1678,7 +1747,7 @@ document.getElementById('rpill').addEventListener('click',function(){
     this.textContent='Stop clicking that. It won\'t make the round go faster. 😤';
     rpClicks=0;
     var el=this;
-    setTimeout(function(){el.textContent='Round '+CUR+' of 27';},3000);
+    setTimeout(function(){el.textContent=SEASON_OVER?'Season Complete':'Round '+CUR+' of 27';},3000);
   }
 });
 
@@ -4505,7 +4574,8 @@ fetch(dataUrl)
     _initPricePredictor(data.beModel || null);
     _initStats();
     if (ENABLE_BYE_PLANNER) {
-      document.getElementById('nb-bye').style.display = '';
+      var nbBye = document.getElementById('nb-bye');
+      if (nbBye) nbBye.style.display = '';
       _initByePlanner(data);
     }
   })
